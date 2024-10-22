@@ -7,10 +7,10 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { USER_MODEL, UserDocument } from 'src/schemas/user-schema';
-import { RegisterUserDto } from './dto/registerUserDto';
 import * as bcrypt from 'bcrypt';
-import { LoginUserDto } from './dto/loginDto';
 import { generateToken } from 'src/utils/generateToken';
+import { RegisterUserDto } from 'src/defination/dtos/user/registerUserDto';
+import { LoginUserDto } from 'src/defination/dtos/user/loginDto';
 
 @Injectable()
 export class UserService {
