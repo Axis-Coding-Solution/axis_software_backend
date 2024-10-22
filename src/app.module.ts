@@ -4,8 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { DataBaseModule } from './infra/mongoose/database.module';
 import { CheckDbConnectionCommand } from './commands/check-db-connection.command';
-import { UserController } from './userModule/user.controller';
-import { UserModule } from './userModule/user.module';
+import { UserModule } from './controller/userModule/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
