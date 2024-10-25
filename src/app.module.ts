@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DataBaseModule } from './infra/mongoose/database.module';
 import { CheckDbConnectionCommand } from './commands/check-db-connection.command';
 import { UserModule } from './controller/userModule/user.module';
+import { DepartmentModule } from './controller/departmentModule/department.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -12,6 +13,7 @@ import { UserModule } from './controller/userModule/user.module';
     }),
     DataBaseModule,
     UserModule,
+    DepartmentModule,
   ],
   controllers: [AppController],
   providers: [AppService, CheckDbConnectionCommand],

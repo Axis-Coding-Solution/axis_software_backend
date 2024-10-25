@@ -4,12 +4,9 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  ValidateNested,
-  isEnum,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-import { ACCOUNT_TYPE } from 'src/constants/accountConstants';
-import { AddressDto } from './addressDto';
+import { Role } from 'src/schemas/constants/accountConstants';
+import { AddressDto } from './address.dto';
 
 export class RegisterUserDto {
   @IsString()
@@ -35,9 +32,9 @@ export class RegisterUserDto {
   @IsString()
   phone?: string;
 
-  @IsEnum(ACCOUNT_TYPE)
+  @IsEnum(Role)
   @IsNotEmpty()
-  accountType: ACCOUNT_TYPE;
+  accountType: Role;
 
   @IsString({ each: true })
   @IsOptional()

@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ACCOUNT_TYPE } from 'src/constants/accountConstants';
+import { Role } from 'src/schemas/constants';
 
 @Schema({ timestamps: true })
 export class User {
@@ -20,11 +20,11 @@ export class User {
 
   @Prop({
     type: String,
-    enum: Object.keys(ACCOUNT_TYPE),
+    enum: Object.keys(Role),
     immutable: true,
     required: true,
   })
-  accountType?: ACCOUNT_TYPE;
+  role?: Role;
 
   @Prop({
     default: false,

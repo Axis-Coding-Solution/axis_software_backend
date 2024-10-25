@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import helmet from 'helmet';
 import * as compression from 'compression';
+import { AllExceptionsFilter } from './utils';
 const PORT = process.env.PORT || 4000;
 
 async function bootstrap() {
@@ -19,6 +20,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.useGlobalFilters(new AllExceptionsFilter());
   await app.listen(PORT, () => {
     console.log(`Application is running on ${PORT}`);
   });

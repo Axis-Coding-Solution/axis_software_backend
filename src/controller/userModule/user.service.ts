@@ -8,9 +8,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { USER_MODEL, UserDocument } from 'src/schemas/user-schema';
 import * as bcrypt from 'bcrypt';
-import { generateToken } from 'src/utils/generateToken';
-import { RegisterUserDto } from 'src/defination/dtos/user/registerUserDto';
-import { LoginUserDto } from 'src/defination/dtos/user/loginDto';
+import { RegisterUserDto } from 'src/defination/dtos/user/register-user.dto';
+import { LoginUserDto } from 'src/defination/dtos/user/login.dto';
+import { generateToken } from 'src/utils';
 
 @Injectable()
 export class UserService {
@@ -63,8 +63,8 @@ export class UserService {
     }
 
     try {
-      const { id } = findUser;
-      const payload = { id };
+      const { id, role } = findUser;
+      const payload = { id, role };
       const token = generateToken(payload);
       delete findUser.password;
 
