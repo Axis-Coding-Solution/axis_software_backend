@@ -13,7 +13,7 @@ import { LoginUserDto } from 'src/defination/dtos/user/login.dto';
 import { generateToken } from 'src/utils';
 
 @Injectable()
-export class UserService {
+export class AuthService {
   constructor(
     @InjectModel(USER_MODEL) private readonly userModel: Model<UserDocument>,
   ) {}

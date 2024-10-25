@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { DataBaseModule } from './infra/mongoose/database.module';
 import { CheckDbConnectionCommand } from './commands/check-db-connection.command';
-import { UserModule } from './controller/userModule/user.module';
+import { UserModule } from './controller/auth/auth.module';
 import { DepartmentModule } from './controller/departmentModule/department.module';
 @Module({
   imports: [

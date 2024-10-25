@@ -5,7 +5,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Role } from 'src/schemas/constants/accountConstants';
+import { Role } from 'src/schemas/constants/role-constants';
 import { AddressDto } from './address.dto';
 
 export class RegisterUserDto {
@@ -34,7 +34,7 @@ export class RegisterUserDto {
 
   @IsEnum(Role)
   @IsNotEmpty()
-  accountType: Role;
+  role: Role;
 
   @IsString({ each: true })
   @IsOptional()
