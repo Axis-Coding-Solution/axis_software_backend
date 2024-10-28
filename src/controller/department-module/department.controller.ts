@@ -14,8 +14,7 @@ import {
   editDepartmentDto,
 } from 'src/defination/dtos/department';
 import { successfulResponse } from 'src/utils';
-import { JwtAuthGuard } from 'src/middlewares/guards/jwt.guard';
-import { isAdminGuard } from 'src/middlewares/guards';
+import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guards';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('department')
