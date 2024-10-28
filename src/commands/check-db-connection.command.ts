@@ -12,7 +12,6 @@ export class CheckDbConnectionCommand extends CommandRunner {
   }
 
   async run() {
-    console.log('fffffffffffffffffffffffffffff');
     try {
       const isConnected = this.connection.readyState === 1;
       if (isConnected) {
