@@ -30,20 +30,14 @@ export class AuthService {
     const salt = bcrypt.genSaltSync(10);
     const passwordHash = await bcrypt.hash(registerUserDto.password, salt);
 
-    try {
-      const newUser = this.userModel.create({
-        ...registerUserDto,
-        password: passwordHash,
-      });
-      if (!newUser) {
-        throw new BadRequestException('User not created!');
-      }
-      return newUser;
-    } catch (error) {
-      if (error.name === 'ValidationError') {
-        throw new BadRequestException(error.errors);
-      }
+    const newUser = this.userModel.create({
+      ...registerUserDto,
+      password: passwordHash,
+    });
+    if (!newUser) {
+      throw new BadRequestException('User not created!');
     }
+    return newUser;
   }
 
   async login(loginUserDto: LoginUserDto) {
