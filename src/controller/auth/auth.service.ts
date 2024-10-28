@@ -10,12 +10,14 @@ import { USER_MODEL, UserDocument } from 'src/schemas/user-schema';
 import * as bcrypt from 'bcrypt';
 import { RegisterUserDto } from 'src/defination/dtos/user/register-user.dto';
 import { LoginUserDto } from 'src/defination/dtos/user/login.dto';
-import { generateToken } from 'src/utils';
+// import { generateToken } from 'src/utils';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(USER_MODEL) private readonly userModel: Model<UserDocument>,
+    private jwtService: JwtService,
   ) {}
   async register(registerUserDto: RegisterUserDto) {
     const userExist = await this.userModel.exists({
@@ -62,17 +64,22 @@ export class AuthService {
       throw new BadRequestException('Invalid credentials');
     }
 
-    try {
-      const { id, role } = findUser;
-      const payload = { id, role };
-      const token = generateToken(payload);
-      delete findUser.password;
+    const { id, role } = findUser;
+    const payload = { id, role };
+    console.log('🚀 ~ AuthService ~ login ~ id:', id);
+    const token = await this.generateToken(payload);
+    delete findUser.password;
 
-      return { findUser, token };
-    } catch (error) {
-      if (error.name === 'ValidationError') {
-        throw new BadRequestException(error);
-      }
-    }
+    return { findUser, token };
+  }
+
+  //? generate tokens
+  async generateToken(payload) {
+    const accessToken = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_KEY,
+      expiresIn: process.env.TOKEN_EXPIRE_IN,
+    });
+
+    return accessToken;
   }
 }
