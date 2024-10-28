@@ -6,7 +6,6 @@ import {
   IsString,
 } from 'class-validator';
 import { Role } from 'src/schemas/constants/role-constants';
-import { AddressDto } from './address.dto';
 
 export class RegisterUserDto {
   @IsString()
@@ -41,5 +40,5 @@ export class RegisterUserDto {
   social?: string[];
 
   @IsOptional()
-  address: AddressDto;
+  address: string;
 }

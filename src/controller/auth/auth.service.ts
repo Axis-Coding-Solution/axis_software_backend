@@ -8,10 +8,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { USER_MODEL, UserDocument } from 'src/schemas/user-schema';
 import * as bcrypt from 'bcrypt';
-import { RegisterUserDto } from 'src/defination/dtos/user/register-user.dto';
-import { LoginUserDto } from 'src/defination/dtos/user/login.dto';
-// import { generateToken } from 'src/utils';
 import { JwtService } from '@nestjs/jwt';
+import { LoginUserDto, RegisterUserDto } from 'src/defination/dtos/auth';
 
 @Injectable()
 export class AuthService {
