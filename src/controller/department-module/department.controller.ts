@@ -15,8 +15,9 @@ import {
 } from 'src/defination/dtos/department';
 import { successfulResponse } from 'src/utils';
 import { JwtAuthGuard } from 'src/middlewares/guards/jwt.guard';
+import { isAdminGuard } from 'src/middlewares/guards';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('department')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}

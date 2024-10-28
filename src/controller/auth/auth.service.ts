@@ -24,7 +24,7 @@ export class AuthService {
       email: registerUserDto.email,
     });
     if (userExist) {
-      throw new ConflictException('User already Exist');
+      throw new ConflictException('Email already Exist');
     }
 
     const salt = bcrypt.genSaltSync(10);
@@ -60,7 +60,6 @@ export class AuthService {
 
     const { id, role } = findUser;
     const payload = { id, role };
-    console.log('🚀 ~ AuthService ~ login ~ id:', id);
     const token = await this.generateToken(payload);
     delete findUser.password;
 

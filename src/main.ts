@@ -21,7 +21,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.useGlobalFilters(new AllExceptionsFilter());
+  // app.useGlobalFilters(new AllExceptionsFilter());
   //? swagger
   const config = new DocumentBuilder()
     .setTitle('Axis Software Api')
