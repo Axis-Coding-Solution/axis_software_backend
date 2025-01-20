@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { Department, DEPARTMENT_MODEL } from './department-schema';
+import { Department, DEPARTMENT_MODEL } from './department.schema';
 
 @Schema()
 export class Designation {
