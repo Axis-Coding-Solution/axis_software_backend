@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   DEPARTMENT_MODEL,
   DepartmentDocument,
@@ -13,7 +9,11 @@ import {
   createDepartmentDto,
   editDepartmentDto,
 } from 'src/defination/dtos/department';
-import { isValidMongoId } from 'src/utils';
+import {
+  badRequestException,
+  isValidMongoId,
+  notFoundException,
+} from 'src/utils';
 
 @Injectable()
 export class DepartmentService {
@@ -25,19 +25,19 @@ export class DepartmentService {
   async create(createDepartmentDto: createDepartmentDto) {
     const { departmentName } = createDepartmentDto;
     if (!departmentName) {
-      throw new BadRequestException('Department name is required');
+      throw badRequestException('Department name is required');
     }
 
     const departmentExists = await this.departmentModel.exists({
       departmentName,
     });
     if (departmentExists) {
-      throw new BadRequestException('Department already exists');
+      throw badRequestException('Department already exists');
     }
 
     const department = await this.departmentModel.create({ departmentName });
     if (!department) {
-      throw new BadRequestException('Department not created');
+      throw badRequestException('Department not created');
     }
 
     return department;
@@ -45,12 +45,12 @@ export class DepartmentService {
 
   async edit(editDepartmentDto: editDepartmentDto, id: string) {
     if (isValidMongoId(id) === false) {
-      throw new BadRequestException('Department id is not valid');
+      throw badRequestException('Department id is not valid');
     }
 
     const { departmentName } = editDepartmentDto;
     if (!departmentName) {
-      throw new BadRequestException('Department name is required');
+      throw badRequestException('Department name is required');
     }
 
     const editDepartment = await this.departmentModel.findByIdAndUpdate(
@@ -61,7 +61,7 @@ export class DepartmentService {
       { new: true },
     );
     if (!editDepartment) {
-      throw new NotFoundException('Department not updated');
+      throw notFoundException('Department not updated');
     }
 
     return editDepartment;
@@ -69,12 +69,12 @@ export class DepartmentService {
 
   async getSingle(id: string) {
     if (isValidMongoId(id) === false) {
-      throw new BadRequestException('Department id is not valid');
+      throw badRequestException('Department id is not valid');
     }
 
     const department = await this.departmentModel.findById(id);
     if (!department) {
-      throw new NotFoundException('Department not found');
+      throw notFoundException('Department not found');
     }
 
     return department;
@@ -83,7 +83,7 @@ export class DepartmentService {
   async getAll() {
     const departments = await this.departmentModel.find();
     if (departments.length === 0) {
-      throw new NotFoundException('Departments not found');
+      throw notFoundException('Departments not found');
     }
 
     return departments;
@@ -91,12 +91,12 @@ export class DepartmentService {
 
   async delete(id: string) {
     if (isValidMongoId(id) === false) {
-      throw new BadRequestException('Department id is not valid');
+      throw badRequestException('Department id is not valid');
     }
 
     const department = await this.departmentModel.findByIdAndDelete(id);
     if (!department) {
-      throw new NotFoundException('Department not found');
+      throw notFoundException('Department not found');
     }
 
     return department;

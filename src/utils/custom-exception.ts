@@ -3,6 +3,7 @@ import {
   ConflictException,
   ForbiddenException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 export const conflictException = (message: string, data: any = null) => {
@@ -31,6 +32,14 @@ export const notFoundException = (message: string, data: any = null) => {
 
 export const forbiddenException = (message: string, data: any = null) => {
   return new ForbiddenException({
+    success: false,
+    message,
+    data,
+  });
+};
+
+export const unauthorizedException = (message: string, data: any = null) => {
+  return new UnauthorizedException({
     success: false,
     message,
     data,
