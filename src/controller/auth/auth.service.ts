@@ -1,15 +1,15 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { USER_MODEL, UserDocument } from 'src/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto, RegisterUserDto } from 'src/defination/dtos/auth';
+import {
+  badRequestException,
+  conflictException,
+  notFoundException,
+} from 'src/utils';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +22,7 @@ export class AuthService {
       email: registerUserDto.email,
     });
     if (userExist) {
-      throw new ConflictException('Email already Exist');
+      throw conflictException('User already exist');
     }
 
     const salt = bcrypt.genSaltSync(10);
@@ -33,7 +33,7 @@ export class AuthService {
       password: passwordHash,
     });
     if (!newUser) {
-      throw new BadRequestException('User not created!');
+      throw badRequestException('User not created!');
     }
     return newUser;
   }
@@ -44,7 +44,7 @@ export class AuthService {
     });
 
     if (!findUser) {
-      throw new NotFoundException('User not found');
+      throw notFoundException('User not found');
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -53,7 +53,7 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new BadRequestException('Invalid credentials');
+      throw badRequestException('Invalid credentials');
     }
 
     const { id, role } = findUser;

@@ -6,10 +6,11 @@ const successfulResponse = (message: string, data = null) => {
   };
 };
 
-const invalidResponse = (message: string) => {
+const invalidResponse = (message: string, data = null) => {
   return {
     success: false,
     message,
+    data,
   };
 };
 
