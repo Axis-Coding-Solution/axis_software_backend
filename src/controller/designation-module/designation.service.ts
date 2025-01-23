@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
@@ -15,7 +11,11 @@ import {
   DepartmentDocument,
   DEPARTMENT_MODEL,
 } from 'src/schemas';
-import { isValidMongoId } from 'src/utils';
+import {
+  badRequestException,
+  isValidMongoId,
+  notFoundException,
+} from 'src/utils';
 
 @Injectable()
 export class DesignationService {
@@ -28,22 +28,20 @@ export class DesignationService {
   async create(createDesignationDto: createDesignationDto) {
     const { designationName, departmentId } = createDesignationDto;
     if (!(designationName || departmentId)) {
-      throw new BadRequestException(
-        'Designation name and Department is required',
-      );
+      throw badRequestException('Designation name and Department is required');
     }
 
     const designationExists = await this.designationModel.exists({
       designationName,
     });
     if (designationExists) {
-      throw new BadRequestException('Designation already exists');
+      throw badRequestException('Designation already exists');
     }
 
     const departmentExists = await this.departmentModel.findById(departmentId);
 
     if (!departmentExists) {
-      throw new BadRequestException('Department not found');
+      throw badRequestException('Department not found');
     }
 
     const designation = await this.designationModel.create({
@@ -51,7 +49,7 @@ export class DesignationService {
       departmentId,
     });
     if (!designation) {
-      throw new BadRequestException('Designation not created');
+      throw badRequestException('Designation not created');
     }
 
     return designation;
@@ -59,7 +57,7 @@ export class DesignationService {
 
   async edit(editDesignationDto: editDesignationDto, id: string) {
     if (isValidMongoId(id) === false) {
-      throw new BadRequestException('Designation id is not valid');
+      throw badRequestException('Designation id is not valid');
     }
 
     let { designationName, departmentId } = editDesignationDto;
@@ -69,7 +67,7 @@ export class DesignationService {
         designationName,
       });
       if (designationExists) {
-        throw new BadRequestException('Designation already exists');
+        throw badRequestException('Designation already exists');
       }
     }
 
@@ -78,7 +76,7 @@ export class DesignationService {
         await this.departmentModel.findById(departmentId);
 
       if (!departmentExists) {
-        throw new BadRequestException('Department not found');
+        throw badRequestException('Department not found');
       }
     }
 
@@ -91,7 +89,7 @@ export class DesignationService {
       { new: true },
     );
     if (!editDesignation) {
-      throw new NotFoundException('Designation not found');
+      throw notFoundException('Designation not found');
     }
 
     return editDesignation;
@@ -99,12 +97,12 @@ export class DesignationService {
 
   async getSingle(id: string) {
     if (isValidMongoId(id) === false) {
-      throw new BadRequestException('Designation id is not valid');
+      throw badRequestException('Designation id is not valid');
     }
 
     const designation = await this.designationModel.findById(id);
     if (!designation) {
-      throw new NotFoundException('Designation not found');
+      throw notFoundException('Designation not found');
     }
 
     return designation;
@@ -113,7 +111,7 @@ export class DesignationService {
   async getAll() {
     const designations = await this.designationModel.find();
     if (designations.length === 0) {
-      throw new NotFoundException('Designations not found');
+      throw notFoundException('Designations not found');
     }
 
     return designations;
@@ -121,12 +119,12 @@ export class DesignationService {
 
   async delete(id: string) {
     if (isValidMongoId(id) === false) {
-      throw new BadRequestException('Designation id is not valid');
+      throw badRequestException('Designation id is not valid');
     }
 
     const designation = await this.designationModel.findByIdAndDelete(id);
     if (!designation) {
-      throw new NotFoundException('Designation not found');
+      throw notFoundException('Designation not found');
     }
 
     return designation;
