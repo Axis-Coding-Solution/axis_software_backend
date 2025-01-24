@@ -8,4 +8,4 @@ export class Company {
 
 export type CompanyDocument = Company & Document;
 export const companySchema = SchemaFactory.createForClass(Company);
-export const Company_MODEL = Company.name;
+export const COMPANY_MODEL = Company.name;
