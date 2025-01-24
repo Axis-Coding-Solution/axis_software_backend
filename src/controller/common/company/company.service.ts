@@ -5,7 +5,7 @@ import {
   createCompanyDto,
   editCompanyDto,
 } from 'src/defination/dtos/common/company';
-import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/employees';
+import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/common';
 import {
   badRequestException,
   isValidMongoId,
