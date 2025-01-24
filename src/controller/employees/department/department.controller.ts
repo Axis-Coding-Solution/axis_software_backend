@@ -12,7 +12,7 @@ import { DepartmentService } from './department.service';
 import {
   createDepartmentDto,
   editDepartmentDto,
-} from 'src/defination/dtos/department';
+} from 'src/defination/dtos/employees/department';
 import { successfulResponse } from 'src/utils';
 import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guards';
 

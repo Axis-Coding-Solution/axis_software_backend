@@ -1,6 +1,6 @@
 import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 import { Types } from 'mongoose';
-import { Department } from 'src/schemas';
+import { Department } from 'src/schemas/employees';
 
 export class createDesignationDto {
   @IsString()

@@ -4,13 +4,13 @@ import { Model } from 'mongoose';
 import {
   createDesignationDto,
   editDesignationDto,
-} from 'src/defination/dtos/designation';
+} from 'src/defination/dtos/employees/designation';
 import {
   DesignationDocument,
   DESIGNATION_MODEL,
   DepartmentDocument,
   DEPARTMENT_MODEL,
-} from 'src/schemas';
+} from 'src/schemas/employees';
 import {
   badRequestException,
   isValidMongoId,
@@ -56,7 +56,7 @@ export class DesignationService {
   }
 
   async edit(editDesignationDto: editDesignationDto, id: string) {
-    if (isValidMongoId(id) === false) {
+    if (!isValidMongoId(id)) {
       throw badRequestException('Designation id is not valid');
     }
 
@@ -96,7 +96,7 @@ export class DesignationService {
   }
 
   async getSingle(id: string) {
-    if (isValidMongoId(id) === false) {
+    if (!isValidMongoId(id)) {
       throw badRequestException('Designation id is not valid');
     }
 
@@ -118,7 +118,7 @@ export class DesignationService {
   }
 
   async delete(id: string) {
-    if (isValidMongoId(id) === false) {
+    if (!isValidMongoId(id)) {
       throw badRequestException('Designation id is not valid');
     }
 

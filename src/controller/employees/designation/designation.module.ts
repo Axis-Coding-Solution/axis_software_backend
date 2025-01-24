@@ -7,7 +7,7 @@ import {
   departmentSchema,
   DESIGNATION_MODEL,
   designationSchema,
-} from 'src/schemas';
+} from 'src/schemas/employees';
 
 @Module({
   imports: [

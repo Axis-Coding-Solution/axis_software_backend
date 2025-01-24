@@ -13,7 +13,7 @@ import { successfulResponse } from 'src/utils';
 import {
   createDesignationDto,
   editDesignationDto,
-} from 'src/defination/dtos/designation';
+} from 'src/defination/dtos/employees/designation';
 import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guards';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)

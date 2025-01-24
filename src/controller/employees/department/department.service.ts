@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import {
   DEPARTMENT_MODEL,
   DepartmentDocument,
-} from 'src/schemas/department.schema';
+} from 'src/schemas/employees/department.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   createDepartmentDto,
   editDepartmentDto,
-} from 'src/defination/dtos/department';
+} from 'src/defination/dtos/employees/department';
 import {
   badRequestException,
   isValidMongoId,
@@ -44,7 +44,7 @@ export class DepartmentService {
   }
 
   async edit(editDepartmentDto: editDepartmentDto, id: string) {
-    if (isValidMongoId(id) === false) {
+    if (!isValidMongoId(id)) {
       throw badRequestException('Department id is not valid');
     }
 
@@ -68,7 +68,7 @@ export class DepartmentService {
   }
 
   async getSingle(id: string) {
-    if (isValidMongoId(id) === false) {
+    if (!isValidMongoId(id)) {
       throw badRequestException('Department id is not valid');
     }
 
@@ -90,7 +90,7 @@ export class DepartmentService {
   }
 
   async delete(id: string) {
-    if (isValidMongoId(id) === false) {
+    if (!isValidMongoId(id)) {
       throw badRequestException('Department id is not valid');
     }
 
