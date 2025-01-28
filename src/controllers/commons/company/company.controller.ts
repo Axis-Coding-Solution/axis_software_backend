@@ -23,7 +23,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UploadFileInterceptor } from 'src/middlewares';
-import { JwtAuthGuard } from 'src/middlewares/guards';
+import { JwtAuthGuard } from 'src/middlewares/guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('company')
@@ -43,16 +43,16 @@ export class CompanyController {
   //     'company',
   //   ),
   // )
-  @UseInterceptors(UploadFile)
+  // @UseInterceptors(UploadFile)
   async create(
     @Body() createCompanyDto: createCompanyDto,
-    @UploadFile({
-      model: this.companyModel,
-      type: 'single',
-      fieldName: 'profileImage',
-      subDirectory: 'company',
-    })
-    file: any,
+    // @UploadFile({
+    //   model: this.companyModel,
+    //   type: 'single',
+    //   fieldName: 'profileImage',
+    //   subDirectory: 'company',
+    // })
+    // file: any,
   ) {
     const company = await this.companyService.create(createCompanyDto);
     return successfulResponse('Company created successfully', company);

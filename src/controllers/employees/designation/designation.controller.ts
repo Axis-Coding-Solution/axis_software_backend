@@ -14,7 +14,7 @@ import {
   createDesignationDto,
   editDesignationDto,
 } from 'src/definitions/dtos/employees/designation';
-import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guards';
+import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('designation')
