@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Contact } from '../../enum';
+import { User, USER_MODEL } from '../user';
+import { Types } from 'mongoose';
 
 @Schema()
 export class Company {
@@ -24,8 +26,23 @@ export class Company {
   @Prop()
   website: String;
 
+  // @Prop()
+  // reviews: String;
+
+  @Prop({ type: Types.ObjectId, ref: USER_MODEL, required: true })
+  owner: string | Types.ObjectId | User;
+
   @Prop({ required: true })
   tags: String[];
+
+  @Prop({ required: true })
+  deals: String;
+
+  @Prop({ required: true })
+  industry: String;
+
+  // @Prop({ required: true })
+  // source: String;
 
   @Prop({
     type: String,
@@ -34,6 +51,12 @@ export class Company {
     required: true,
   })
   contact: Contact;
+
+  @Prop({ required: true })
+  currency: String;
+
+  @Prop({ required: true })
+  language: String;
 
   @Prop({ required: true })
   aboutCompany: String;

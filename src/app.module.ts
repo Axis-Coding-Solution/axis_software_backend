@@ -7,6 +7,7 @@ import { UserModule } from './controllers/auth/auth.module';
 import { DepartmentModule } from './controllers/employees/department/department.module';
 import { DesignationModule } from './controllers/employees/designation/designation.module';
 import { CheckDbConnectionCommand } from './command';
+import { CompanyModule } from './controllers/commons/company/company.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -16,6 +17,7 @@ import { CheckDbConnectionCommand } from './command';
     UserModule,
     DepartmentModule,
     DesignationModule,
+    CompanyModule,
   ],
   controllers: [AppController],
   providers: [AppService, CheckDbConnectionCommand],

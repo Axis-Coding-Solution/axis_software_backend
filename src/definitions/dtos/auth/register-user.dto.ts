@@ -1,4 +1,5 @@
 import {
+  IsEmail,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -17,6 +18,10 @@ export class RegisterUserDto {
   lastName?: string;
 
   @IsString()
+  @IsNotEmpty()
+  userName?: string;
+
+  @IsEmail()
   @IsNotEmpty()
   email: string;
 
@@ -39,6 +44,7 @@ export class RegisterUserDto {
   @IsOptional()
   social?: string[];
 
+  @IsString()
   @IsOptional()
-  address: string;
+  address?: string;
 }
