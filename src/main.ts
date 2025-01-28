@@ -4,7 +4,7 @@ import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AllExceptionsFilter, badRequestException } from './utils';
+import { AllExceptionsFilter, badRequestException } from './util';
 const PORT = process.env.PORT || 4000;
 
 async function bootstrap() {

@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { forbiddenException } from 'src/utils';
+import { forbiddenException } from 'src/util';
 
 @Injectable()
 export class isAdminGuard implements CanActivate {
