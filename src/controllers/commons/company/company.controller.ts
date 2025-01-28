@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
@@ -13,31 +14,46 @@ import {
   createCompanyDto,
   editCompanyDto,
 } from 'src/definitions/dtos/commons/company';
-import { successfulResponse } from 'src/util';
-import { UploadFileMiddleware } from 'src/middlewares';
-import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
+import { successfulResponse, UploadFile } from 'src/util';
+import {
+  Company,
+  COMPANY_MODEL,
+  CompanyDocument,
+} from 'src/schemas/commons/company';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { UploadFileInterceptor } from 'src/middlewares';
+import { JwtAuthGuard } from 'src/middlewares/guards';
 
+@UseGuards(JwtAuthGuard)
 @Controller('company')
 export class CompanyController {
   constructor(
     @InjectModel(COMPANY_MODEL)
-    private readonly companyService: CompanyService,
     private readonly companyModel: Model<CompanyDocument>,
-    private readonly UploadFileMiddleware: UploadFileMiddleware,
+    private readonly companyService: CompanyService,
   ) {}
 
   @Post()
   // @UseInterceptors(
-  //   UploadFileMiddleware(
+  //   createUploadFileInterceptor(
   //     this.companyModel,
   //     'single',
   //     'profileImage',
   //     'company',
   //   ),
   // )
-  async create(@Body() createCompanyDto: createCompanyDto) {
+  @UseInterceptors(UploadFile)
+  async create(
+    @Body() createCompanyDto: createCompanyDto,
+    @UploadFile({
+      model: this.companyModel,
+      type: 'single',
+      fieldName: 'profileImage',
+      subDirectory: 'company',
+    })
+    file: any,
+  ) {
     const company = await this.companyService.create(createCompanyDto);
     return successfulResponse('Company created successfully', company);
   }

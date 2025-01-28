@@ -4,7 +4,7 @@ import { CompanyController } from './company.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { COMPANY_MODEL, companySchema } from 'src/schemas/commons/company';
 import { USER_MODEL, userSchema } from 'src/schemas/commons/user';
-import { UploadFileMiddleware } from 'src/middlewares';
+import { UploadFileInterceptor } from 'src/middlewares';
 
 @Module({
   imports: [
@@ -14,6 +14,6 @@ import { UploadFileMiddleware } from 'src/middlewares';
     ]),
   ],
   controllers: [CompanyController],
-  providers: [CompanyService, UploadFileMiddleware],
+  providers: [CompanyService],
 })
 export class CompanyModule {}
