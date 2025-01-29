@@ -1,18 +1,13 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+// upload-file.decorator.ts
+import { applyDecorators, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadFileInterceptor } from 'src/middlewares';
 
-export const UploadFile = createParamDecorator(
-  (
-    data: { model: any; type: string; fieldName: string; subDirectory: string },
-    ctx: ExecutionContext,
-  ) => {
-    const request = ctx.switchToHttp().getRequest();
-    const interceptor = new UploadFileInterceptor(
-      data.model,
-      data.type,
-      data.fieldName,
-      data.subDirectory,
-    );
-    return interceptor.intercept(ctx, null);
-  },
-);
+export function UploadFile(fieldName: string, subDirectory: string) {
+  return applyDecorators(
+    UseInterceptors(
+      FileInterceptor(fieldName),
+      new UploadFileInterceptor(undefined, 'single', fieldName, subDirectory),
+    ),
+  );
+}

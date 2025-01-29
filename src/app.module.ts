@@ -8,6 +8,7 @@ import { DepartmentModule } from './controllers/employees/department/department.
 import { DesignationModule } from './controllers/employees/designation/designation.module';
 import { CheckDbConnectionCommand } from './command';
 import { CompanyModule } from './controllers/commons/company/company.module';
+import { UploadFileInterceptor } from './middlewares';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,6 +21,13 @@ import { CompanyModule } from './controllers/commons/company/company.module';
     CompanyModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CheckDbConnectionCommand],
+  providers: [
+    AppService,
+    CheckDbConnectionCommand,
+    // {
+    //   provide: 'APP_INTERCEPTOR',
+    //   useClass: UploadFileInterceptor,
+    // },
+  ],
 })
 export class AppModule {}

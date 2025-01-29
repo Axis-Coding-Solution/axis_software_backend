@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -30,30 +31,16 @@ import { JwtAuthGuard } from 'src/middlewares/guard';
 export class CompanyController {
   constructor(
     @InjectModel(COMPANY_MODEL)
-    private readonly companyModel: Model<CompanyDocument>,
     private readonly companyService: CompanyService,
   ) {}
 
   @Post()
-  // @UseInterceptors(
-  //   createUploadFileInterceptor(
-  //     this.companyModel,
-  //     'single',
-  //     'profileImage',
-  //     'company',
-  //   ),
-  // )
-  // @UseInterceptors(UploadFile)
+  @UploadFile('profileImage', 'company')
   async create(
     @Body() createCompanyDto: createCompanyDto,
-    // @UploadFile({
-    //   model: this.companyModel,
-    //   type: 'single',
-    //   fieldName: 'profileImage',
-    //   subDirectory: 'company',
-    // })
-    // file: any,
+    @UploadedFile() file: Express.Multer.File,
   ) {
+    console.log('🚀 ~ CompanyController ~ file:', file);
     const company = await this.companyService.create(createCompanyDto);
     return successfulResponse('Company created successfully', company);
   }

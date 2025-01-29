@@ -11,14 +11,24 @@ import * as fs from 'fs';
 import * as multer from 'multer';
 import { Observable } from 'rxjs';
 import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
+
+type UploadType = 'single' | 'array' | 'fields';
+
+interface UploadField {
+  name: string;
+  maxCount?: number;
+}
 
 @Injectable()
 export class UploadFileInterceptor implements NestInterceptor {
   constructor(
-    private readonly model: Model<any>,
-    private readonly type: string,
-    private readonly name: string,
-    private readonly subDirectory: string,
+    @InjectModel(USER_MODEL) private readonly userModel: Model<UserDocument>,
+    private type: UploadType,
+    private name: string | UploadField[],
+    private subDirectory: string,
+    private maxCount?: number,
   ) {}
 
   async intercept(
@@ -28,17 +38,18 @@ export class UploadFileInterceptor implements NestInterceptor {
     const ctx = context.switchToHttp();
     const req = ctx.getRequest();
     const res = ctx.getResponse();
+    console.log('🚀 ~ UploadFileInterceptor ~ USER_MODEL:', this.userModel);
 
     try {
       const { id } = req.user;
-      console.log('cccccccccccccc', this.model);
+      console.log('🚀 ~ UploadFileInterceptor ~ id:', id);
+      const user = await this.userModel.findOne({ _id: id });
 
-      const user = await this.model.findById(id);
-      if (!user || !user.username) {
+      if (!user || !user.userName) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
-      const authenticUsername = user.username.replace(/[^a-zA-Z0-9]/g, '');
+      const authenticUsername = user.userName.replace(/[^a-zA-Z0-9]/g, '');
       const targetDirectory = path.join(
         process.cwd(),
         'uploads',
@@ -69,15 +80,55 @@ export class UploadFileInterceptor implements NestInterceptor {
       const upload = multer({ storage });
 
       await new Promise<void>((resolve, reject) => {
-        upload[this.type](this.name)(req, res, (err: any) => {
-          if (err) {
-            reject(
-              new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR),
+        switch (this.type) {
+          case 'single':
+            upload.single(this.name as string)(req, res, (err: any) => {
+              err
+                ? reject(
+                    new HttpException(
+                      err.message,
+                      HttpStatus.INTERNAL_SERVER_ERROR,
+                    ),
+                  )
+                : resolve();
+            });
+            break;
+
+          case 'array':
+            upload.array(this.name as string, this.maxCount || 10)(
+              req,
+              res,
+              (err: any) => {
+                err
+                  ? reject(
+                      new HttpException(
+                        err.message,
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                      ),
+                    )
+                  : resolve();
+              },
             );
-          } else {
-            resolve();
-          }
-        });
+            break;
+
+          case 'fields':
+            upload.fields(this.name as UploadField[])(req, res, (err: any) => {
+              err
+                ? reject(
+                    new HttpException(
+                      err.message,
+                      HttpStatus.INTERNAL_SERVER_ERROR,
+                    ),
+                  )
+                : resolve();
+            });
+            break;
+
+          default:
+            reject(
+              new HttpException('Invalid upload type', HttpStatus.BAD_REQUEST),
+            );
+        }
       });
 
       return next.handle();
