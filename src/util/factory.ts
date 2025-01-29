@@ -7,7 +7,7 @@ export function UploadFile(fieldName: string, subDirectory: string) {
   return applyDecorators(
     UseInterceptors(
       FileInterceptor(fieldName),
-      new UploadFileInterceptor(undefined, 'single', fieldName, subDirectory),
+      // new UploadFileInterceptor(undefined, 'single', fieldName, subDirectory),
     ),
   );
 }

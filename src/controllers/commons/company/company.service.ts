@@ -19,21 +19,22 @@ export class CompanyService {
     private readonly companyModel: Model<CompanyDocument>,
   ) {}
 
-  async create(createCompanyDto: createCompanyDto) {
-    const { companyName } = createCompanyDto;
-    const companyExists = await this.companyModel.exists({
-      companyName,
-    });
-    if (companyExists) {
-      throw badRequestException('Company already exists');
-    }
-
-    const company = await this.companyModel.create(createCompanyDto);
-    if (!company) {
-      throw badRequestException('Company not created');
-    }
-
-    return company;
+  async create() {
+    // console.log("🚀 ~ CompanyService ~ create ~ createCompanyDto:", createCompanyDto)
+    // const { companyName } = createCompanyDto;
+    // console.log('🚀 ~ CompanyService ~ create ~ companyName:', companyName);
+    // const companyExists = await this.companyModel.exists({
+    //   companyName,
+    // });
+    // if (companyExists) {
+    //   throw badRequestException('Company already exists');
+    // }
+    // const company = await this.companyModel.create(createCompanyDto);
+    // if (!company) {
+    //   throw badRequestException('Company not created');
+    // }
+    // console.log('i am here');
+    // return company;
   }
 
   async edit(editCompanyDto: editCompanyDto, id: string) {

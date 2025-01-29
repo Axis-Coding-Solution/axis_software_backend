@@ -15,16 +15,13 @@ import {
   createCompanyDto,
   editCompanyDto,
 } from 'src/definitions/dtos/commons/company';
-import { successfulResponse, UploadFile } from 'src/util';
-import {
-  Company,
-  COMPANY_MODEL,
-  CompanyDocument,
-} from 'src/schemas/commons/company';
+import { successfulResponse } from 'src/util';
+import { COMPANY_MODEL } from 'src/schemas/commons/company';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { UploadFileInterceptor } from 'src/middlewares';
 import { JwtAuthGuard } from 'src/middlewares/guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { storage } from 'src/middlewares';
+import { SERVER_PATH } from 'src/config';
 
 @UseGuards(JwtAuthGuard)
 @Controller('company')
@@ -35,13 +32,17 @@ export class CompanyController {
   ) {}
 
   @Post()
-  @UploadFile('profileImage', 'company')
+  @UseInterceptors(FileInterceptor('profileImage'))
   async create(
     @Body() createCompanyDto: createCompanyDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() profileImage: Express.Multer.File,
   ) {
-    console.log('🚀 ~ CompanyController ~ file:', file);
-    const company = await this.companyService.create(createCompanyDto);
+    if (profileImage) {
+      createCompanyDto.profileImage = `${process.env.LOCAL_BACKEND_URL}/uploads/images/${profileImage.filename}`;
+      // console.log('🚀 ~ CompanyController ~ file:', profileImage.filename);
+    }
+    const company = await this.companyService.create();
+    console.log('🚀 ~ CompanyController ~ company:', company);
     return successfulResponse('Company created successfully', company);
   }
 
