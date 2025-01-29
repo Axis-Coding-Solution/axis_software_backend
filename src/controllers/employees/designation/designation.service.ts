@@ -29,9 +29,6 @@ export class DesignationService {
   ) {}
   async create(createDesignationDto: createDesignationDto) {
     const { designationName, departmentId } = createDesignationDto;
-    if (!(designationName || departmentId)) {
-      throw badRequestException('Designation name and Department is required');
-    }
 
     const designationExists = await this.designationModel.exists({
       designationName,
@@ -41,7 +38,6 @@ export class DesignationService {
     }
 
     const departmentExists = await this.departmentModel.findById(departmentId);
-
     if (!departmentExists) {
       throw badRequestException('Department not found');
     }
@@ -102,7 +98,9 @@ export class DesignationService {
       throw badRequestException('Designation id is not valid');
     }
 
-    const designation = await this.designationModel.findById(id);
+    const designation = (await this.designationModel.findById(id)).populate(
+      'departmentId',
+    );
     if (!designation) {
       throw notFoundException('Designation not found');
     }
@@ -111,7 +109,9 @@ export class DesignationService {
   }
 
   async getAll() {
-    const designations = await this.designationModel.find();
+    const designations = await this.designationModel
+      .find()
+      .populate('departmentId');
     if (designations.length === 0) {
       throw notFoundException('Designations not found');
     }
