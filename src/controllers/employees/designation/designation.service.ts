@@ -98,9 +98,9 @@ export class DesignationService {
       throw badRequestException('Designation id is not valid');
     }
 
-    const designation = (await this.designationModel.findById(id)).populate(
-      'departmentId',
-    );
+    const designation = await this.designationModel
+      .findById(id)
+      .populate('departmentId');
     if (!designation) {
       throw notFoundException('Designation not found');
     }
