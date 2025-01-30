@@ -14,15 +14,15 @@ import { diskStorage } from 'multer';
       { name: COMPANY_MODEL, schema: companySchema },
       { name: USER_MODEL, schema: userSchema },
     ]),
-    MulterModule.register({
-      storage: diskStorage({
-        destination: './uploads/images',
-        filename: (req, file, cb) => {
-          const filename = `${Date.now()}-${file.originalname}`;
-          cb(null, filename);
-        },
-      }),
-    }),
+    // MulterModule.register({
+    //   storage: diskStorage({
+    //     destination: './uploads/images',
+    //     filename: (req, file, cb) => {
+    //       const filename = `${Date.now()}-${file.originalname}`;
+    //       cb(null, filename);
+    //     },
+    //   }),
+    // }),
   ],
   controllers: [CompanyController],
   providers: [

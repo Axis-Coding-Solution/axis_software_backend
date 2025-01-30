@@ -26,7 +26,11 @@ export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('profileImage'))
+  @UseInterceptors(
+    FileInterceptor('profileImage', {
+      storage: storage,
+    }),
+  )
   async create(
     @Body() createCompanyDto: createCompanyDto,
     @UploadedFile() profileImage: Express.Multer.File,
@@ -39,7 +43,11 @@ export class CompanyController {
   }
 
   @Put(':id')
-  @UseInterceptors(FileInterceptor('profileImage'))
+  @UseInterceptors(
+    FileInterceptor('profileImage', {
+      storage: storage,
+    }),
+  )
   async update(
     @Param('id') id: string,
     @Body() editCompanyDto: editCompanyDto,

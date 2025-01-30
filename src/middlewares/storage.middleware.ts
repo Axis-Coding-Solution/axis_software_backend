@@ -1,14 +1,14 @@
 import { diskStorage } from 'multer';
-import path from 'path';
+import * as path from 'path';
 
 export const storage = diskStorage({
   destination: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
-      cb(null, path.resolve('./uploads/images'));
+      cb(null, path.resolve(`${process.cwd()}/uploads/images`));
     } else if (file.mimetype.startsWith('video/')) {
-      cb(null, path.resolve('./uploads/videos'));
+      cb(null, path.resolve(`${process.cwd()}/uploads/videos`));
     } else {
-      cb(null, path.resolve('./uploads/files'));
+      cb(null, path.resolve(`${process.cwd()}/uploads/files`));
     }
   },
   filename: (req, file, cb) => {
