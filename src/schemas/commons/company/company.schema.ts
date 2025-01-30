@@ -24,7 +24,7 @@ export class Company {
   fax: String;
 
   @Prop()
-  website: String;
+  website?: String;
 
   // @Prop()
   // reviews: String;

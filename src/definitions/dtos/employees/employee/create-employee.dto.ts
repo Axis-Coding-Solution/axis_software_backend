@@ -29,11 +29,11 @@ export class createEmployeeDto {
   email: string;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   password: string;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   confirmPassword: string;
 
   @IsDate()
@@ -42,7 +42,7 @@ export class createEmployeeDto {
 
   @IsString()
   @IsOptional()
-  phone: string;
+  phone?: string;
 
   @IsNotEmpty()
   @IsMongoId({ message: 'Company id is not valid' })

@@ -14,7 +14,7 @@ export class Employee {
   firstName: String;
 
   @Prop()
-  lastName: String;
+  lastName?: String;
 
   @Prop({ required: true })
   userName: String;
@@ -22,10 +22,10 @@ export class Employee {
   @Prop({ required: true })
   email: String;
 
-  @Prop()
+  @Prop({ required: true })
   password: String;
 
-  @Prop()
+  @Prop({ required: true })
   confirmPassword: String;
 
   @Prop({ required: true })
