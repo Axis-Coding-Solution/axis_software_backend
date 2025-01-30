@@ -18,6 +18,7 @@ export class CompanyService {
   constructor(
     @InjectModel(COMPANY_MODEL)
     private readonly companyModel: Model<CompanyDocument>,
+
     @InjectModel(USER_MODEL)
     private readonly userModel: Model<UserDocument>,
   ) {}
