@@ -1,6 +1,6 @@
 ## Architecture
 
-                    > #### The Product Contain *Featured Based Architecture*
+                    > #### The Product Contains *Feature-Based Architecture*
 
 - parent folder with sub folder will contain 's' in names at the end
 
