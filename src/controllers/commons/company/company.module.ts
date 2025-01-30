@@ -4,9 +4,6 @@ import { CompanyController } from './company.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { COMPANY_MODEL, companySchema } from 'src/schemas/commons/company';
 import { USER_MODEL, userSchema } from 'src/schemas/commons/user';
-import { UserModule } from 'src/controllers/auth/auth.module';
-import { MulterModule } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 
 @Module({
   imports: [
