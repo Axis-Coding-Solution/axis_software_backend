@@ -6,6 +6,7 @@ import {
   editCompanyDto,
 } from 'src/definitions/dtos/commons/company';
 import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
+import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import {
   badRequestException,
   isValidMongoId,
@@ -17,24 +18,30 @@ export class CompanyService {
   constructor(
     @InjectModel(COMPANY_MODEL)
     private readonly companyModel: Model<CompanyDocument>,
+    @InjectModel(USER_MODEL)
+    private readonly userModel: Model<UserDocument>,
   ) {}
 
-  async create() {
-    // console.log("🚀 ~ CompanyService ~ create ~ createCompanyDto:", createCompanyDto)
-    // const { companyName } = createCompanyDto;
-    // console.log('🚀 ~ CompanyService ~ create ~ companyName:', companyName);
-    // const companyExists = await this.companyModel.exists({
-    //   companyName,
-    // });
-    // if (companyExists) {
-    //   throw badRequestException('Company already exists');
-    // }
-    // const company = await this.companyModel.create(createCompanyDto);
-    // if (!company) {
-    //   throw badRequestException('Company not created');
-    // }
-    // console.log('i am here');
-    // return company;
+  async create(createCompanyDto: createCompanyDto) {
+    const { companyName, owner } = createCompanyDto;
+    const companyExists = await this.companyModel.exists({
+      companyName,
+    });
+    if (companyExists) {
+      throw badRequestException('Company already exists');
+    }
+
+    const findOwner = await this.userModel.findById(owner);
+    if (!findOwner) {
+      throw badRequestException('Owner not found');
+    }
+
+    const company = await this.companyModel.create(createCompanyDto);
+    if (!company) {
+      throw badRequestException('Company not created');
+    }
+
+    return company;
   }
 
   async edit(editCompanyDto: editCompanyDto, id: string) {
@@ -42,12 +49,17 @@ export class CompanyService {
       throw badRequestException('Company id is not valid');
     }
 
-    const { companyName } = editCompanyDto;
+    const { companyName, owner } = editCompanyDto;
     const companyExists = await this.companyModel.exists({
       companyName,
     });
     if (companyExists) {
       throw badRequestException('Company already exists');
+    }
+
+    const findOwner = await this.userModel.findById(owner);
+    if (!findOwner) {
+      throw badRequestException('Owner not found');
     }
 
     const editCompany = await this.companyModel.findByIdAndUpdate(
@@ -58,7 +70,7 @@ export class CompanyService {
       { new: true },
     );
     if (!editCompany) {
-      throw notFoundException('Company not updated');
+      throw notFoundException('Company not found');
     }
 
     return editCompany;

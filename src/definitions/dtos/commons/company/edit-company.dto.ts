@@ -3,8 +3,6 @@ import { Types } from 'mongoose';
 import { Company } from 'src/schemas/commons/company';
 
 export class editCompanyDto {
-  @IsString()
-  @IsNotEmpty()
   profileImage: String;
 
   @IsString()

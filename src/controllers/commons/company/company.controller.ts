@@ -16,20 +16,14 @@ import {
   editCompanyDto,
 } from 'src/definitions/dtos/commons/company';
 import { successfulResponse } from 'src/util';
-import { COMPANY_MODEL } from 'src/schemas/commons/company';
-import { InjectModel } from '@nestjs/mongoose';
 import { JwtAuthGuard } from 'src/middlewares/guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/middlewares';
-import { SERVER_PATH } from 'src/config';
 
 @UseGuards(JwtAuthGuard)
 @Controller('company')
 export class CompanyController {
-  constructor(
-    @InjectModel(COMPANY_MODEL)
-    private readonly companyService: CompanyService,
-  ) {}
+  constructor(private readonly companyService: CompanyService) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('profileImage'))
@@ -39,18 +33,21 @@ export class CompanyController {
   ) {
     if (profileImage) {
       createCompanyDto.profileImage = `${process.env.LOCAL_BACKEND_URL}/uploads/images/${profileImage.filename}`;
-      // console.log('🚀 ~ CompanyController ~ file:', profileImage.filename);
     }
-    const company = await this.companyService.create();
-    console.log('🚀 ~ CompanyController ~ company:', company);
+    const company = await this.companyService.create(createCompanyDto);
     return successfulResponse('Company created successfully', company);
   }
 
   @Put(':id')
+  @UseInterceptors(FileInterceptor('profileImage'))
   async update(
     @Param('id') id: string,
     @Body() editCompanyDto: editCompanyDto,
+    @UploadedFile() profileImage: Express.Multer.File,
   ) {
+    if (profileImage) {
+      editCompanyDto.profileImage = `${process.env.LOCAL_BACKEND_URL}/uploads/images/${profileImage.filename}`;
+    }
     const editCompany = await this.companyService.edit(editCompanyDto, id);
 
     return successfulResponse('Company edited successfully', editCompany);
