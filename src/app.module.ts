@@ -10,6 +10,7 @@ import { CheckDbConnectionCommand } from './command';
 import { CompanyModule } from './controllers/commons/company/company.module';
 import { UploadFileInterceptor } from './middlewares';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { EmployeeModule } from './controllers/employees/employee/employee.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,6 +21,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     DepartmentModule,
     DesignationModule,
     CompanyModule,
+    EmployeeModule,
     ServeStaticModule.forRoot({
       rootPath: `${process.cwd()}/uploads`,
       serveRoot: '/uploads',

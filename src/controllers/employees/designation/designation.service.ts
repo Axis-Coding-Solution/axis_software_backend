@@ -24,6 +24,7 @@ export class DesignationService {
   constructor(
     @InjectModel(DESIGNATION_MODEL)
     private readonly designationModel: Model<DesignationDocument>,
+
     @InjectModel(DEPARTMENT_MODEL)
     private readonly departmentModel: Model<DepartmentDocument>,
   ) {}
