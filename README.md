@@ -51,4 +51,4 @@
 
 4. Remove all unnecessary consoles and commented code after testing.
 
-5. Name of API function should be same in controller and service file of every module for better readability and maintainability.
+5. Name of API function and service function should be same in every module for better readability and maintainability.
