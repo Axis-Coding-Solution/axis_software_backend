@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AllExceptionsFilter } from './utils';
+import { AllExceptionsFilter, badRequestException } from './util';
 const PORT = process.env.PORT || 4000;
 
 async function bootstrap() {
@@ -18,7 +18,15 @@ async function bootstrap() {
   app.setGlobalPrefix('v1/api');
   app.useGlobalPipes(
     new ValidationPipe({
-      transform: true,
+      exceptionFactory: (errors) => {
+        const result = errors.map((error) => ({
+          property: error.property,
+          message: error.constraints[Object.keys(error.constraints)[0]],
+        }));
+        return badRequestException(
+          result.map((r) => `${r.message}`).join(', '),
+        );
+      },
     }),
   );
   // app.useGlobalFilters(new AllExceptionsFilter());
