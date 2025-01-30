@@ -1,6 +1,6 @@
 ## Architecture
 
-                    > #### The Product Contains *Feature-Based Architecture*
+> #### The Product Contains _Feature-Based Architecture_
 
 - parent folder with sub folder will contain 's' in names at the end
 
@@ -12,7 +12,7 @@
 
 ## Roles
 
-                    > #### The Product contain these roles
+> #### The Product contain these roles
 
 - admin
 - user
@@ -21,7 +21,7 @@
 
 ### Credentials (for development)
 
-                    > #### credentials of every role for development and testing
+> #### credentials of every role for development and testing
 
 1. admin
 
