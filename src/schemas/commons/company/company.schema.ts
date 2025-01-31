@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Contact } from '../../enum';
 import { User, USER_MODEL } from '../user';
 import { Types } from 'mongoose';
+import { Contact } from 'src/schemas/enums/common';
 
 @Schema()
 export class Company {
@@ -29,7 +29,7 @@ export class Company {
   // @Prop()
   // reviews: String;
 
-  @Prop({ type: Types.ObjectId, ref: USER_MODEL, required: true })
+  @Prop({ type: Types.ObjectId, ref: 'user', required: true })
   owner: string | Types.ObjectId | User;
 
   @Prop({ required: true })

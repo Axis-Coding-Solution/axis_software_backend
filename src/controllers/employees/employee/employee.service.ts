@@ -3,11 +3,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   createEmployeeDto,
-  EditEmployeeDto,
+  editEmployeeDto,
 } from 'src/definitions/dtos/employees/employee';
-import { COMPANY_MODEL } from 'src/schemas/commons/company';
-import { DEPARTMENT_MODEL } from 'src/schemas/employees/department';
-import { DESIGNATION_MODEL } from 'src/schemas/employees/designation';
+import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
+import {
+  DEPARTMENT_MODEL,
+  DepartmentDocument,
+} from 'src/schemas/employees/department';
+import {
+  DESIGNATION_MODEL,
+  DesignationDocument,
+} from 'src/schemas/employees/designation';
 import {
   EMPLOYEE_MODEL,
   EmployeeDocument,
@@ -19,6 +25,7 @@ import {
   notFoundException,
 } from 'src/util';
 import * as bcrypt from 'bcrypt';
+import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 
 @Injectable()
 export class EmployeeService {
@@ -27,13 +34,16 @@ export class EmployeeService {
     private readonly employeeModel: Model<EmployeeDocument>,
 
     @InjectModel(COMPANY_MODEL)
-    private readonly companyModel: Model<EmployeeDocument>,
+    private readonly companyModel: Model<CompanyDocument>,
 
     @InjectModel(DEPARTMENT_MODEL)
-    private readonly departmentModel: Model<EmployeeDocument>,
+    private readonly departmentModel: Model<DepartmentDocument>,
 
     @InjectModel(DESIGNATION_MODEL)
-    private readonly designationModel: Model<EmployeeDocument>,
+    private readonly designationModel: Model<DesignationDocument>,
+
+    @InjectModel(USER_MODEL)
+    private readonly userModel: Model<UserDocument>,
   ) {}
 
   async create(createEmployeeDto: createEmployeeDto) {
@@ -47,20 +57,18 @@ export class EmployeeService {
     } = createEmployeeDto;
 
     let passwordExistInDto = false;
-    // if (password && confirmPassword && password !== confirmPassword) {
-    //   throw badRequestException('Password and confirm password does not match');
-    // }
+
     if (password && confirmPassword) {
       passwordExistInDto = true;
     }
 
     if (passwordExistInDto) {
       if (password !== confirmPassword) {
+        passwordExistInDto = false;
         throw badRequestException(
           'Password and confirm password does not match',
         );
       }
-      passwordExistInDto = false;
     }
 
     let passwordHash = null;
@@ -75,22 +83,24 @@ export class EmployeeService {
     }
 
     if (companyId) {
-      const companyExist = await this.companyModel.exists({ companyId });
+      const companyExist = await this.companyModel.exists({ _id: companyId });
       if (!companyExist) {
-        throw badRequestException('Company not found');
+        throw notFoundException('Company not found');
       }
     }
 
-    const departmentExist = await this.departmentModel.exists({ departmentId });
+    const departmentExist = await this.departmentModel.exists({
+      _id: departmentId,
+    });
     if (!departmentExist) {
-      throw badRequestException('Department not found');
+      throw notFoundException('Department not found');
     }
 
     const designationExist = await this.designationModel.exists({
-      designationId,
+      _id: designationId,
     });
     if (!designationExist) {
-      throw badRequestException('Designation not found');
+      throw notFoundException('Designation not found');
     }
 
     const employee = await this.employeeModel.create({
@@ -101,10 +111,23 @@ export class EmployeeService {
       throw badRequestException('Employee not created');
     }
 
+    const makeUserOfEmployee = await this.userModel.create({
+      userName: employee.userName,
+      email: employee.email,
+      password: passwordHash,
+      role: 'employee',
+      employeeId: employee._id,
+    });
+    console.log('eeeeeeeeeeeeeeeeeeeeeeeeee', makeUserOfEmployee);
+    if (!makeUserOfEmployee) {
+      throw badRequestException('User not created');
+    }
+
     return employee;
   }
 
-  async edit(editEmployeeDto: EditEmployeeDto, id: string) {
+  async edit(editEmployeeDto: editEmployeeDto, id: string) {
+    console.log("🚀 ~ EmployeeService ~ edit ~ editEmployeeDto:", editEmployeeDto)
     const {
       password,
       confirmPassword,
@@ -113,8 +136,25 @@ export class EmployeeService {
       departmentId,
       designationId,
     } = editEmployeeDto;
-    if (password && confirmPassword && password !== confirmPassword) {
-      throw badRequestException('Password and confirm password does not match');
+    let passwordExistInDto = false;
+
+    if (password && confirmPassword) {
+      passwordExistInDto = true;
+    }
+
+    if (passwordExistInDto) {
+      if (password !== confirmPassword) {
+        passwordExistInDto = false;
+        throw badRequestException(
+          'Password and confirm password does not match',
+        );
+      }
+    }
+
+    let passwordHash = null;
+    if (passwordExistInDto) {
+      const salt = bcrypt.genSaltSync(10);
+      passwordHash = await bcrypt.hash(password, salt);
     }
 
     const employeeExist = await this.employeeModel.exists({ userName });
@@ -123,27 +163,27 @@ export class EmployeeService {
     }
 
     if (companyId) {
-      const companyExist = await this.companyModel.exists({ companyId });
+      const companyExist = await this.companyModel.exists({ _id: companyId });
       if (!companyExist) {
-        throw badRequestException('Company not found');
+        throw notFoundException('Company not found');
       }
     }
 
     if (departmentId) {
       const departmentExist = await this.departmentModel.exists({
-        departmentId,
+        _id: departmentId,
       });
       if (!departmentExist) {
-        throw badRequestException('Department not found');
+        throw notFoundException('Department not found');
       }
     }
 
     if (designationId) {
       const designationExist = await this.designationModel.exists({
-        designationId,
+        _id: designationId,
       });
       if (!designationExist) {
-        throw badRequestException('Designation not found');
+        throw notFoundException('Designation not found');
       }
     }
 

@@ -7,8 +7,12 @@ import {
   DEPARTMENT_MODEL,
   departmentSchema,
 } from 'src/schemas/employees/department';
-import { DESIGNATION_MODEL } from 'src/schemas/employees/designation';
+import {
+  DESIGNATION_MODEL,
+  designationSchema,
+} from 'src/schemas/employees/designation';
 import { EMPLOYEE_MODEL, employeeSchema } from 'src/schemas/employees/employee';
+import { USER_MODEL, userSchema } from 'src/schemas/commons/user';
 
 @Module({
   imports: [
@@ -16,7 +20,8 @@ import { EMPLOYEE_MODEL, employeeSchema } from 'src/schemas/employees/employee';
       { name: EMPLOYEE_MODEL, schema: employeeSchema },
       { name: COMPANY_MODEL, schema: companySchema },
       { name: DEPARTMENT_MODEL, schema: departmentSchema },
-      { name: DESIGNATION_MODEL, schema: companySchema },
+      { name: DESIGNATION_MODEL, schema: designationSchema },
+      { name: USER_MODEL, schema: userSchema },
     ]),
   ],
   controllers: [EmployeeController],
