@@ -63,7 +63,7 @@ export class Company {
   aboutCompany: String;
 
   //* address
-  @Prop()
+  @Prop({ required: true })
   primaryAddress: String;
 
   @Prop()
