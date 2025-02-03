@@ -5,6 +5,7 @@ import { Contact } from 'src/schemas/enums/common';
 
 @Schema()
 export class Company {
+  //* basic info
   @Prop({ required: true })
   profileImage: String;
 
@@ -60,6 +61,39 @@ export class Company {
 
   @Prop({ required: true })
   aboutCompany: String;
+
+  //* address
+  @Prop()
+  primaryAddress: String;
+
+  @Prop()
+  secondaryAddress: String;
+
+  @Prop()
+  state: String;
+
+  @Prop()
+  country: String;
+
+  @Prop()
+  zipCode: String;
+
+  //* social profile
+
+  @Prop()
+  facebook: String;
+
+  @Prop()
+  instagram: String;
+
+  @Prop()
+  linkedin: String;
+
+  @Prop()
+  twitter: String;
+
+  @Prop()
+  youtube: String;
 }
 
 export type CompanyDocument = Company & Document;
