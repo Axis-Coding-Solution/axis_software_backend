@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { DepartmentService } from './department.service';
@@ -47,8 +48,16 @@ export class DepartmentController {
   }
 
   @Get()
-  async getAll() {
-    const departments = await this.departmentService.getAll();
+  async getAll(
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+    @Query('search') search: string,
+  ) {
+    const departments = await this.departmentService.getAll(
+      page,
+      limit,
+      search,
+    );
     return successfulResponse('Departments found successfully', departments);
   }
 

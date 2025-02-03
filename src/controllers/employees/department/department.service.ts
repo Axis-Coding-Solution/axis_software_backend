@@ -11,6 +11,7 @@ import {
 } from 'src/definitions/dtos/employees/department';
 import {
   badRequestException,
+  getPagination,
   isValidMongoId,
   notFoundException,
 } from 'src/util';
@@ -80,13 +81,28 @@ export class DepartmentService {
     return department;
   }
 
-  async getAll() {
-    const departments = await this.departmentModel.find().sort('-createdAt');
-    if (departments.length === 0) {
+  async getAll(page: string, limit: string, search: string) {
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
+      await getPagination(page, limit, this.departmentModel, search, null);
+
+    // const departments = await this.departmentModel
+    //   .find()
+    //   .sort('-createdAt')
+    //   .skip(skip)
+    //   .limit(limitNumber);
+    if (items.length === 0) {
       throw notFoundException('Departments not found');
     }
 
-    return departments;
+    return {
+      data: items,
+      pagination: {
+        totalItems: totalItems,
+        totalPages: totalPages,
+        itemsPerPage: itemsPerPage,
+        currentPage: currentPage,
+      },
+    };
   }
 
   async delete(id: string) {
