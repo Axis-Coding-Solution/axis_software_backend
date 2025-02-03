@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { User, USER_MODEL } from '../user';
+import { User } from '../user';
 import { Types } from 'mongoose';
 import { Contact } from 'src/schemas/enums/common';
 
@@ -68,6 +68,9 @@ export class Company {
 
   @Prop()
   secondaryAddress: String;
+
+  @Prop()
+  city: String;
 
   @Prop()
   state: String;

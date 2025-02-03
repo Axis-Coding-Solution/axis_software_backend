@@ -73,6 +73,10 @@ export class editCompanyDto {
 
   @IsString()
   @IsOptional()
+  city: String;
+
+  @IsString()
+  @IsOptional()
   state: String;
 
   @IsString()
