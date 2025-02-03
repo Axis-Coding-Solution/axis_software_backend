@@ -64,7 +64,7 @@ export class createCompanyDto {
 
   //* address
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   primaryAddress: String;
 
   @IsString()
