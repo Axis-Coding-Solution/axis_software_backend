@@ -91,7 +91,7 @@ export class CompanyService {
   }
 
   async getAll() {
-    const company = await this.companyModel.find();
+    const company = await this.companyModel.find().sort('-createdAt');
     if (company.length === 0) {
       throw notFoundException('Company not found');
     }

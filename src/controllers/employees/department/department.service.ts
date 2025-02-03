@@ -81,7 +81,7 @@ export class DepartmentService {
   }
 
   async getAll() {
-    const departments = await this.departmentModel.find();
+    const departments = await this.departmentModel.find().sort('-createdAt');
     if (departments.length === 0) {
       throw notFoundException('Departments not found');
     }

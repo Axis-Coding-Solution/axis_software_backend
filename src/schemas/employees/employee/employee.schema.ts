@@ -33,7 +33,7 @@ import {
   experienceInformationSchema,
 } from './experience-information.schema';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Employee {
   @Prop({ required: true })
   profileImage: String;

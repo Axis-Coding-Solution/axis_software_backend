@@ -211,7 +211,7 @@ export class EmployeeService {
   }
 
   async getAll() {
-    const employees = await this.employeeModel.find();
+    const employees = await this.employeeModel.find().sort('-createdAt');
     if (employees.length === 0) {
       throw notFoundException('Employees not found');
     }

@@ -3,7 +3,7 @@ import { User, USER_MODEL } from '../user';
 import { Types } from 'mongoose';
 import { Contact } from 'src/schemas/enums/common';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Company {
   //* basic info
   @Prop({ required: true })

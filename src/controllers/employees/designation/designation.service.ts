@@ -112,6 +112,7 @@ export class DesignationService {
   async getAll() {
     const designations = await this.designationModel
       .find()
+      .sort('-createdAt')
       .populate('departmentId');
     if (designations.length === 0) {
       throw notFoundException('Designations not found');
