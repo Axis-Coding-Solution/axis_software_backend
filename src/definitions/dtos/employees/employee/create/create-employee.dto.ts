@@ -19,11 +19,11 @@ import { Gender } from 'src/schemas/enums/common';
 import { PersonalInformationDto } from './personal-information.dto';
 import { EmergencyContactDto } from './emergency-contact.dto';
 import { BankInformationDto } from './bank-information.dto';
-import { familyInformationDto } from './family-information.dto';
-import { educationInformationDto } from './education-information.dto';
+import { FamilyInformationDto } from './family-information.dto';
+import { EducationInformationDto } from './education-information.dto';
 import { ExperienceInformationDto } from './experience-information.dto';
 
-export class createEmployeeDto {
+export class CreateEmployeeDto {
   profileImage: string;
 
   @IsString()
@@ -123,13 +123,13 @@ export class createEmployeeDto {
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => familyInformationDto)
-  familyInformation?: familyInformationDto;
+  @Type(() => FamilyInformationDto)
+  familyInformation?: FamilyInformationDto;
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => educationInformationDto)
-  educationInformation?: educationInformationDto;
+  @Type(() => EducationInformationDto)
+  educationInformation?: EducationInformationDto;
 
   @IsOptional()
   @ValidateNested()

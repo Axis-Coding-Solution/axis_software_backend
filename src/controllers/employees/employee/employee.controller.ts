@@ -12,13 +12,11 @@ import {
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
-import {
-  createEmployeeDto,
-  editEmployeeDto,
-} from 'src/definitions/dtos/employees/employee';
 import { successfulResponse } from 'src/util';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/middlewares';
+import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';
+import { EditEmployeeDto } from 'src/definitions/dtos/employees/employee/edit';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('employee')
@@ -32,7 +30,7 @@ export class EmployeeController {
     }),
   )
   async create(
-    @Body() createEmployeeDto: createEmployeeDto,
+    @Body() createEmployeeDto: CreateEmployeeDto,
     @UploadedFile() profileImage: Express.Multer.File,
   ) {
     if (profileImage) {
@@ -51,7 +49,7 @@ export class EmployeeController {
   )
   async edit(
     @Param('id') id: string,
-    @Body() editEmployeeDto: editEmployeeDto,
+    @Body() editEmployeeDto: EditEmployeeDto,
     @UploadedFile() profileImage: Express.Multer.File,
   ) {
     if (profileImage) {

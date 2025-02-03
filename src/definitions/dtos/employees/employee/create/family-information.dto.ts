@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 
-export class familyInformationDto {
+export class FamilyInformationDto {
   @IsString()
   @IsNotEmpty()
   name: string;

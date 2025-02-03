@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  createEmployeeDto,
-  editEmployeeDto,
-} from 'src/definitions/dtos/employees/employee';
 import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
 import {
   DEPARTMENT_MODEL,
@@ -26,6 +22,8 @@ import {
 } from 'src/util';
 import * as bcrypt from 'bcrypt';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
+import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';
+import { EditEmployeeDto } from 'src/definitions/dtos/employees/employee/edit';
 
 @Injectable()
 export class EmployeeService {
@@ -46,7 +44,7 @@ export class EmployeeService {
     private readonly userModel: Model<UserDocument>,
   ) {}
 
-  async create(createEmployeeDto: createEmployeeDto) {
+  async create(createEmployeeDto: CreateEmployeeDto) {
     const {
       password,
       confirmPassword,
@@ -118,7 +116,6 @@ export class EmployeeService {
       role: 'employee',
       employeeId: employee._id,
     });
-    console.log('eeeeeeeeeeeeeeeeeeeeeeeeee', makeUserOfEmployee);
     if (!makeUserOfEmployee) {
       throw badRequestException('User not created');
     }
@@ -126,8 +123,7 @@ export class EmployeeService {
     return employee;
   }
 
-  async edit(editEmployeeDto: editEmployeeDto, id: string) {
-    console.log("🚀 ~ EmployeeService ~ edit ~ editEmployeeDto:", editEmployeeDto)
+  async edit(editEmployeeDto: EditEmployeeDto, id: string) {
     const {
       password,
       confirmPassword,

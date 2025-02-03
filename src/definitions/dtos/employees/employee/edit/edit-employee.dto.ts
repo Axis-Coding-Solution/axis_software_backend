@@ -15,14 +15,14 @@ import { Role } from 'src/schemas/constants';
 import { Department } from 'src/schemas/employees/department';
 import { Designation } from 'src/schemas/employees/designation';
 import { Gender } from 'src/schemas/enums/common';
-import { PersonalInformationDto } from './personal-information.dto';
-import { EmergencyContactDto } from './emergency-contact.dto';
-import { BankInformationDto } from './bank-information.dto';
-import { familyInformationDto } from './family-information.dto';
-import { educationInformationDto } from './education-information.dto';
-import { ExperienceInformationDto } from './experience-information.dto';
+import { EditBankInformationDto } from './bank-information.dto';
+import { EditEducationInformationDto } from './education-information.dto';
+import { EditEmergencyContactDto } from './emergency-contact.dto';
+import { EditExperienceInformationDto } from './experience-information.dto';
+import { EditFamilyInformationDto } from './family-information.dto';
+import { EditPersonalInformationDto } from './personal-information.dto';
 
-export class editEmployeeDto {
+export class EditEmployeeDto {
   profileImage: string;
 
   @IsString()
@@ -90,6 +90,7 @@ export class editEmployeeDto {
   gender: Gender;
 
   @IsMongoId({ message: 'reportsTo id is not valid' })
+  @IsOptional()
   reportsTo: string | Types.ObjectId;
 
   @IsString()
@@ -106,31 +107,31 @@ export class editEmployeeDto {
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => PersonalInformationDto)
-  personalInformation?: PersonalInformationDto;
+  @Type(() => EditPersonalInformationDto)
+  personalInformation?: EditPersonalInformationDto;
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => EmergencyContactDto)
-  emergencyContact?: EmergencyContactDto;
+  @Type(() => EditEmergencyContactDto)
+  emergencyContact?: EditEmergencyContactDto;
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => BankInformationDto)
-  bankInformation?: BankInformationDto;
+  @Type(() => EditBankInformationDto)
+  bankInformation?: EditBankInformationDto;
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => familyInformationDto)
-  familyInformation?: familyInformationDto;
+  @Type(() => EditFamilyInformationDto)
+  familyInformation?: EditFamilyInformationDto;
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => educationInformationDto)
-  educationInformation?: educationInformationDto;
+  @Type(() => EditEducationInformationDto)
+  educationInformation?: EditEducationInformationDto;
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => ExperienceInformationDto)
-  experienceInformation?: ExperienceInformationDto;
+  @Type(() => EditExperienceInformationDto)
+  experienceInformation?: EditExperienceInformationDto;
 }

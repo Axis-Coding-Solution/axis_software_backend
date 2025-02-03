@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsDate, IsOptional, IsString } from 'class-validator';
 
-export class educationInformationDto {
+export class EducationInformationDto {
   @IsString()
   @IsOptional()
   institution?: string;
