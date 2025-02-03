@@ -12,7 +12,7 @@ export const getPagination = async (
   const skip = (pageNumber - 1) * limitNumber;
 
   let filters = {};
-  if (search) {
+  if (search && searchField !== null) {
     filters = {
       [searchField]: { $regex: search, $options: 'i' },
     };

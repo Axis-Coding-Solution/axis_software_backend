@@ -83,13 +83,14 @@ export class DepartmentService {
 
   async getAll(page: string, limit: string, search: string) {
     const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getPagination(page, limit, this.departmentModel, search, null);
+      await getPagination(
+        page,
+        limit,
+        this.departmentModel,
+        search,
+        'departmentName',
+      );
 
-    // const departments = await this.departmentModel
-    //   .find()
-    //   .sort('-createdAt')
-    //   .skip(skip)
-    //   .limit(limitNumber);
     if (items.length === 0) {
       throw notFoundException('Departments not found');
     }
