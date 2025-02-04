@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -67,8 +68,12 @@ export class EmployeeController {
   }
 
   @Get()
-  async getAll() {
-    const employees = await this.employeeService.getAll();
+  async getAll(
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+    @Query('search') search: string,
+  ) {
+    const employees = await this.employeeService.getAll(page, limit, search);
     return successfulResponse('Employees found successfully', employees);
   }
 

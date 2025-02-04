@@ -25,7 +25,7 @@ export const getPagination = async (
       .skip(skip)
       .limit(limitNumber)
       .exec(),
-    modelName.countDocuments().exec(),
+    modelName.countDocuments(filters).exec(),
   ]);
   const totalPages = Math.ceil(totalItems / limitNumber);
 

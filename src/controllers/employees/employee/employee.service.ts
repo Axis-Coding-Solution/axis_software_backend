@@ -17,6 +17,7 @@ import {
 import {
   badRequestException,
   conflictException,
+  getPagination,
   isValidMongoId,
   notFoundException,
 } from 'src/util';
@@ -210,13 +211,23 @@ export class EmployeeService {
     return employee;
   }
 
-  async getAll() {
-    const employees = await this.employeeModel.find().sort('-createdAt');
-    if (employees.length === 0) {
-      throw notFoundException('Employees not found');
+  async getAll(page: string, limit: string, search: string) {
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
+      await getPagination(page, limit, this.employeeModel, search, 'userName');
+
+    if (items.length === 0) {
+      throw notFoundException('Departments not found');
     }
 
-    return employees;
+    return {
+      data: items,
+      pagination: {
+        totalItems: totalItems,
+        totalPages: totalPages,
+        itemsPerPage: itemsPerPage,
+        currentPage: currentPage,
+      },
+    };
   }
 
   async delete(id: string) {

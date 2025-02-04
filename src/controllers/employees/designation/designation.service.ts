@@ -15,6 +15,7 @@ import {
 } from 'src/schemas/employees/designation';
 import {
   badRequestException,
+  getPagination,
   isValidMongoId,
   notFoundException,
 } from 'src/util';
@@ -109,16 +110,29 @@ export class DesignationService {
     return designation;
   }
 
-  async getAll() {
-    const designations = await this.designationModel
-      .find()
-      .sort('-createdAt')
-      .populate('departmentId');
-    if (designations.length === 0) {
-      throw notFoundException('Designations not found');
+  async getAll(page: string, limit: string, search: string) {
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
+      await getPagination(
+        page,
+        limit,
+        this.designationModel,
+        search,
+        'designationName',
+      );
+
+    if (items.length === 0) {
+      throw notFoundException('Departments not found');
     }
 
-    return designations;
+    return {
+      data: items,
+      pagination: {
+        totalItems: totalItems,
+        totalPages: totalPages,
+        itemsPerPage: itemsPerPage,
+        currentPage: currentPage,
+      },
+    };
   }
 
   async delete(id: string) {

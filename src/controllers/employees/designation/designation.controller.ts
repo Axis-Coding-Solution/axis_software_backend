@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { DesignationService } from './designation.service';
@@ -51,8 +52,16 @@ export class DesignationController {
   }
 
   @Get()
-  async getAll() {
-    const designations = await this.designationService.getAll();
+  async getAll(
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+    @Query('search') search: string,
+  ) {
+    const designations = await this.designationService.getAll(
+      page,
+      limit,
+      search,
+    );
     return successfulResponse('Designations found successfully', designations);
   }
 
