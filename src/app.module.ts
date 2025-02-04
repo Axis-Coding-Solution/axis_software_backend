@@ -12,6 +12,7 @@ import { UploadFileInterceptor } from './middlewares';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { EmployeeModule } from './controllers/employees/employee/employee.module';
 import { UserModule } from './controllers/user/user.module';
+import { HolidayModule } from './controllers/employees/holiday/holiday.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,6 +25,7 @@ import { UserModule } from './controllers/user/user.module';
     CompanyModule,
     EmployeeModule,
     UserModule,
+    HolidayModule,
     ServeStaticModule.forRoot({
       rootPath: `${process.cwd()}/uploads`,
       serveRoot: '/uploads',
