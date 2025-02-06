@@ -13,6 +13,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { EmployeeModule } from './controllers/employees/employee/employee.module';
 import { UserModule } from './controllers/user/user.module';
 import { HolidayModule } from './controllers/employees/holiday/holiday.module';
+import { TeamModule } from './controllers/employees/team/team.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,6 +27,7 @@ import { HolidayModule } from './controllers/employees/holiday/holiday.module';
     EmployeeModule,
     UserModule,
     HolidayModule,
+    TeamModule,
     ServeStaticModule.forRoot({
       rootPath: `${process.cwd()}/uploads`,
       serveRoot: '/uploads',

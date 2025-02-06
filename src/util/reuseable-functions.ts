@@ -6,6 +6,7 @@ export const getPagination = async (
   modelName: Model<any>,
   search: string,
   searchField: string,
+  populate: string = '',
 ) => {
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
@@ -24,6 +25,8 @@ export const getPagination = async (
       .sort('-createdAt')
       .skip(skip)
       .limit(limitNumber)
+      .populate(populate)
+      .lean()
       .exec(),
     modelName.countDocuments(filters).exec(),
   ]);
