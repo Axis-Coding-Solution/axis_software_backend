@@ -9,6 +9,7 @@ import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import {
   badRequestException,
+  getPagination,
   isValidMongoId,
   notFoundException,
 } from 'src/util';
@@ -18,6 +19,7 @@ export class CompanyService {
   constructor(
     @InjectModel(COMPANY_MODEL)
     private readonly companyModel: Model<CompanyDocument>,
+
     @InjectModel(USER_MODEL)
     private readonly userModel: Model<UserDocument>,
   ) {}
@@ -89,13 +91,29 @@ export class CompanyService {
     return company;
   }
 
-  async getAll() {
-    const company = await this.companyModel.find();
-    if (company.length === 0) {
-      throw notFoundException('Company not found');
+  async getAll(page: string, limit: string, search: string) {
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
+      await getPagination(
+        page,
+        limit,
+        this.companyModel,
+        search,
+        'companyName',
+      );
+
+    if (items.length === 0) {
+      throw notFoundException('Departments not found');
     }
 
-    return company;
+    return {
+      data: items,
+      pagination: {
+        totalItems: totalItems,
+        totalPages: totalPages,
+        itemsPerPage: itemsPerPage,
+        currentPage: currentPage,
+      },
+    };
   }
 
   async delete(id: string) {

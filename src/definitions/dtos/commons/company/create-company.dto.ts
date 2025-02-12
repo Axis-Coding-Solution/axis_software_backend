@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 import { Company } from 'src/schemas/commons/company';
 
 export class createCompanyDto {
+  //* basic info
   profileImage: String;
 
   @IsString()
@@ -60,4 +61,50 @@ export class createCompanyDto {
   @IsString()
   @IsNotEmpty()
   aboutCompany: String;
+
+  //* address
+  @IsString()
+  @IsNotEmpty()
+  primaryAddress: String;
+
+  @IsString()
+  @IsOptional()
+  secondaryAddress: String;
+
+  @IsString()
+  @IsOptional()
+  city: String;
+
+  @IsString()
+  @IsOptional()
+  state: String;
+
+  @IsString()
+  @IsOptional()
+  country: String;
+
+  @IsString()
+  @IsOptional()
+  zipCode: String;
+
+  //* social profile
+  @IsString()
+  @IsOptional()
+  facebook: String;
+
+  @IsString()
+  @IsOptional()
+  instagram: String;
+
+  @IsString()
+  @IsOptional()
+  linkedin: String;
+
+  @IsString()
+  @IsOptional()
+  twitter: String;
+
+  @IsString()
+  @IsOptional()
+  youtube: String;
 }

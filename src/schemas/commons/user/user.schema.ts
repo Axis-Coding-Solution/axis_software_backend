@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 import { Role } from 'src/schemas/constants';
+import { Employee, EMPLOYEE_MODEL } from 'src/schemas/employees/employee';
 
 @Schema({ timestamps: true })
 export class User {
@@ -9,7 +11,7 @@ export class User {
   @Prop()
   lastName: String;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   userName: String;
 
   @Prop({ required: true })
@@ -36,6 +38,9 @@ export class User {
 
   @Prop()
   address?: String;
+
+  @Prop({ type: Types.ObjectId, ref: EMPLOYEE_MODEL })
+  employeeId: string | Types.ObjectId | Employee;
 }
 
 export type UserDocument = User & Document;

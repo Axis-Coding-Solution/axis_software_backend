@@ -22,4 +22,4 @@ import { USER_MODEL, userSchema } from 'src/schemas/commons/user';
   providers: [AuthService, JwtStrategy],
   exports: [MongooseModule, JwtModule],
 })
-export class UserModule {}
+export class AuthModule {}

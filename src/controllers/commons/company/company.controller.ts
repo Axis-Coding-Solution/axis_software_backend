@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -68,8 +69,12 @@ export class CompanyController {
   }
 
   @Get()
-  async getAll() {
-    const designations = await this.companyService.getAll();
+  async getAll(
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+    @Query('search') search: string,
+  ) {
+    const designations = await this.companyService.getAll(page, limit, search);
     return successfulResponse('Company found successfully', designations);
   }
 

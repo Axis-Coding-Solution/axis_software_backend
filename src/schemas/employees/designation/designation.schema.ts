@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { Department, DEPARTMENT_MODEL } from '../department/department.schema';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Designation {
   @Prop({ required: true })
   designationName: String;
