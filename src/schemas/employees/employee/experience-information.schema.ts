@@ -3,13 +3,13 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 @Schema()
 export class ExperienceInformation {
   @Prop()
-  companyName?: string;
+  companyName?: String;
 
   @Prop()
-  location?: string;
+  location?: String;
 
   @Prop()
-  designation?: string;
+  designation?: String;
 
   @Prop()
   startDate?: Date;

@@ -66,10 +66,10 @@ export class Employee {
   companyId: String;
 
   @Prop({ type: Types.ObjectId, ref: DEPARTMENT_MODEL, required: true })
-  departmentId: string | Types.ObjectId | Department;
+  departmentId: String | Types.ObjectId | Department;
 
   @Prop({ type: Types.ObjectId, ref: DESIGNATION_MODEL, required: true })
-  designationId: string | Types.ObjectId | Designation;
+  designationId: String | Types.ObjectId | Designation;
 
   @Prop({
     type: String,
@@ -94,7 +94,7 @@ export class Employee {
   gender: Gender;
 
   @Prop({ type: Types.ObjectId, ref: 'employee' })
-  reportsTo: string | Types.ObjectId | Employee;
+  reportsTo: String | Types.ObjectId | Employee;
 
   @Prop({ required: true })
   state: String;

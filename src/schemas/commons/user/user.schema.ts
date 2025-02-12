@@ -18,7 +18,7 @@ export class User {
   email: String;
 
   @Prop({ required: true })
-  password: string;
+  password: String;
 
   @Prop()
   age?: Number;
@@ -40,7 +40,7 @@ export class User {
   address?: String;
 
   @Prop({ type: Types.ObjectId, ref: EMPLOYEE_MODEL })
-  employeeId: string | Types.ObjectId | Employee;
+  employeeId: String | Types.ObjectId | Employee;
 }
 
 export type UserDocument = User & Document;

@@ -14,7 +14,7 @@ import { Currency } from '../enums/common';
 @Schema({ timestamps: true })
 export class Project {
   @Prop({ required: true })
-  projectName: string;
+  projectName: String;
 
   @Prop({
     type: String,
@@ -25,7 +25,7 @@ export class Project {
   projectType: ProjectType;
 
   @Prop({ type: [Types.ObjectId], ref: USER_MODEL, required: true })
-  clientId: string[] | Types.ObjectId[] | User[];
+  clientId: String[] | Types.ObjectId[] | User[];
 
   @Prop({ required: true })
   startDate: Date;
@@ -60,16 +60,16 @@ export class Project {
   priority: Priority;
 
   @Prop({ type: Types.ObjectId, ref: USER_MODEL, required: true })
-  projectLeader: string | Types.ObjectId | User;
+  projectLeader: String | Types.ObjectId | User;
 
   @Prop({ type: Types.ObjectId, ref: TEAM_MODEL, required: true })
-  teamId: string | Types.ObjectId | Team;
+  teamId: String | Types.ObjectId | Team;
 
   @Prop({ required: true })
-  description: string;
+  description: String;
 
   @Prop()
-  files: string[];
+  files: String[];
 
   @Prop({
     type: String,
@@ -95,7 +95,7 @@ export class Project {
   communicationChannels: communicationChannels;
 
   @Prop({ type: [Types.ObjectId], ref: USER_MODEL, required: true })
-  Stakeholders: string[] | Types.ObjectId[] | User[];
+  Stakeholders: String[] | Types.ObjectId[] | User[];
 }
 
 export type ProjectDocument = Project & Document;
