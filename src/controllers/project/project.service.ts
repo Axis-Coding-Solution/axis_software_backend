@@ -13,7 +13,7 @@ import {
   isValidMongoId,
   notFoundException,
 } from 'src/utils';
-import { deleteHelper } from 'src/utils/helper';
+import { deleteHelper, getSingleHelper } from 'src/utils/helper';
 
 @Injectable()
 export class ProjectService {
@@ -187,14 +187,7 @@ export class ProjectService {
   }
 
   async getSingle(id: string): Promise<any> {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('project id is not valid');
-    }
-
-    const project = await this.projectModel.findById(id).lean();
-    if (!project) {
-      throw notFoundException('project not found');
-    }
+    const project = await getSingleHelper(id, PROJECT_MODEL, this.projectModel);
 
     return project;
   }
@@ -226,22 +219,12 @@ export class ProjectService {
   }
 
   async delete(id: string) {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('project id is not valid');
-    }
-
-    const project = await this.projectModel.findByIdAndDelete(id);
-    if (!project) {
-      throw notFoundException('project not found');
-    }
+    const { project } = await deleteHelper(
+      id,
+      PROJECT_MODEL,
+      this.projectModel,
+    );
 
     return project;
-    // const { project } = await deleteHelper(
-    //   id,
-    //   PROJECT_MODEL,
-    //   this.projectModel,
-    // );
-
-    // return project;
   }
 }

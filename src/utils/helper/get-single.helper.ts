@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { badRequestException } from '../custom-exception';
+import { badRequestException, notFoundException } from '../custom-exception';
 import { isValidMongoId } from '../is-valid-mongoId';
 
 export const getSingleHelper = async (
@@ -11,9 +11,9 @@ export const getSingleHelper = async (
     throw badRequestException('id is not valid');
   }
 
-  const singleDocument = modelName.findById(id);
+  const singleDocument = await modelName.findById(id).lean();
   if (!singleDocument) {
-    throw badRequestException(`${MODEL} not found`);
+    throw notFoundException(`${MODEL} not found`);
   }
 
   return singleDocument;

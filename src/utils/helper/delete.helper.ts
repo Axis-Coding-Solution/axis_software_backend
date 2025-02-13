@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { badRequestException } from '../custom-exception';
+import { badRequestException, notFoundException } from '../custom-exception';
 import { isValidMongoId } from '../is-valid-mongoId';
 
 export const deleteHelper = async (
@@ -7,14 +7,13 @@ export const deleteHelper = async (
   MODEL: string,
   modelName: Model<any>,
 ) => {
-  console.log("🚀 ~ MODEL:", MODEL)
   if (!isValidMongoId(id)) {
     throw badRequestException('id is not valid');
   }
 
-  const deleteDocument = modelName.findByIdAndDelete(id);
+  const deleteDocument = await modelName.findByIdAndDelete(id);
   if (!deleteDocument) {
-    throw badRequestException(`${MODEL} not found`);
+    throw notFoundException(`${MODEL} not found`);
   }
 
   return deleteDocument;

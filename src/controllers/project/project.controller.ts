@@ -39,7 +39,7 @@ export class ProjectController {
     }
 
     const employee = await this.projectService.create(createProjectDto);
-    return successfulResponse('Employee created successfully', employee);
+    return successfulResponse('Project created successfully', employee);
   }
 
   @Put(':id')
@@ -61,13 +61,13 @@ export class ProjectController {
     }
 
     const employee = await this.projectService.edit(editProjectDto, id);
-    return successfulResponse('Employee created successfully', employee);
+    return successfulResponse('Project edited successfully', employee);
   }
 
   @Get(':id')
   async get(@Param('id') id: string) {
-    const team = await this.projectService.getSingle(id);
-    return successfulResponse('team found successfully', team);
+    const project = await this.projectService.getSingle(id);
+    return successfulResponse('project found successfully', project);
   }
 
   @Get()
@@ -76,13 +76,13 @@ export class ProjectController {
     @Query('limit') limit: string,
     @Query('search') search: string,
   ) {
-    const teams = await this.projectService.getAll(page, limit, search);
-    return successfulResponse('teams found successfully', teams);
+    const projects = await this.projectService.getAll(page, limit, search);
+    return successfulResponse('projects found successfully', projects);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    const team = await this.projectService.delete(id);
-    return successfulResponse('team deleted successfully', team);
+    const project = await this.projectService.delete(id);
+    return successfulResponse('project deleted successfully', project);
   }
 }
