@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
-import { notFoundException } from 'src/util';
+import { notFoundException } from 'src/utils';
 
 @Injectable()
 export class UserService {

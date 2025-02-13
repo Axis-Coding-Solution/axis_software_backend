@@ -20,7 +20,7 @@ import {
   getPagination,
   isValidMongoId,
   notFoundException,
-} from 'src/util';
+} from 'src/utils';
 import * as bcrypt from 'bcrypt';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';

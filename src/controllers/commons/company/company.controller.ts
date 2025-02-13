@@ -16,7 +16,7 @@ import {
   createCompanyDto,
   editCompanyDto,
 } from 'src/definitions/dtos/commons/company';
-import { successfulResponse } from 'src/util';
+import { successfulResponse } from 'src/utils';
 import { JwtAuthGuard } from 'src/middlewares/guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/middlewares';

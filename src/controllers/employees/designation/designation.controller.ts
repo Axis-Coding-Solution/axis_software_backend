@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { DesignationService } from './designation.service';
-import { successfulResponse } from 'src/util';
+import { successfulResponse } from 'src/utils';
 import {
   createDesignationDto,
   editDesignationDto,

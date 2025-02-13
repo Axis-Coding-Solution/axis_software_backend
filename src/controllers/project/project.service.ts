@@ -12,7 +12,8 @@ import {
   getPagination,
   isValidMongoId,
   notFoundException,
-} from 'src/util';
+} from 'src/utils';
+import { deleteHelper } from 'src/utils/helper';
 
 @Injectable()
 export class ProjectService {
@@ -235,5 +236,12 @@ export class ProjectService {
     }
 
     return project;
+    // const { project } = await deleteHelper(
+    //   id,
+    //   PROJECT_MODEL,
+    //   this.projectModel,
+    // );
+
+    // return project;
   }
 }

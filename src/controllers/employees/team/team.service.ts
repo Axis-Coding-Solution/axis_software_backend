@@ -14,7 +14,7 @@ import {
   getPagination,
   isValidMongoId,
   notFoundException,
-} from 'src/util';
+} from 'src/utils';
 
 @Injectable()
 export class TeamService {

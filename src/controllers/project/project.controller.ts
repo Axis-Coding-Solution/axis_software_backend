@@ -14,7 +14,7 @@ import { ProjectService } from './project.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/middlewares';
 import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-project.dto';
-import { successfulResponse } from 'src/util';
+import { successfulResponse } from 'src/utils';
 import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.dto';
 
 @Controller('project')
