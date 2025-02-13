@@ -41,7 +41,7 @@ export class CreateProjectDto {
   @IsDate()
   @Type(() => Date)
   @IsOptional()
-  endDate: Date;
+  endDate?: Date;
 
   @IsNumber()
   @Type(() => Number)
@@ -54,7 +54,7 @@ export class CreateProjectDto {
 
   @IsEnum(RateType)
   @IsNotEmpty()
-  rateType: String;
+  rateType?: String;
 
   @IsEnum(Priority)
   @IsNotEmpty()
@@ -76,31 +76,31 @@ export class CreateProjectDto {
 
   @IsString({ each: true })
   @IsOptional()
-  files: String[];
+  files?: String[];
 
   @IsEnum(ProjectStatus)
   @IsOptional()
-  projectStatus: String;
+  projectStatus?: String;
 
   @IsString({ each: true })
   @IsOptional()
-  tags: String[];
+  tags?: String[];
 
   @IsString({ each: true })
   @IsOptional()
-  technologyStack: String[];
+  technologyStack?: String[];
 
   @IsString({ each: true })
   @IsOptional()
-  repositories: String[];
+  repositories?: String[];
 
   @IsEnum(communicationChannels)
   @IsString({ each: true })
   @IsOptional()
-  communicationChannels: communicationChannels[];
+  communicationChannels?: communicationChannels[];
 
   @IsMongoId({ each: true })
   @IsString({ each: true })
   @IsOptional()
-  Stakeholders: String[] | Types.ObjectId[] | User[];
+  Stakeholders?: String[] | Types.ObjectId[] | User[];
 }

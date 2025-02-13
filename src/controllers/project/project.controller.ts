@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   UploadedFiles,
   UseInterceptors,
@@ -14,6 +15,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/middlewares';
 import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-project.dto';
 import { successfulResponse } from 'src/util';
+import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.dto';
 
 @Controller('project')
 export class ProjectController {
@@ -37,6 +39,28 @@ export class ProjectController {
     }
 
     const employee = await this.projectService.create(createProjectDto);
+    return successfulResponse('Employee created successfully', employee);
+  }
+
+  @Put(':id')
+  @UseInterceptors(
+    FilesInterceptor('files', 10, {
+      storage: storage,
+    }),
+  )
+  async edit(
+    @Param('id') id: string,
+    @Body() editProjectDto: EditProjectDto,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ) {
+    if (files && files.length > 0) {
+      editProjectDto.files = files.map(
+        (file) =>
+          `${process.env.LOCAL_BACKEND_URL}/uploads/images/${file.filename}`,
+      );
+    }
+
+    const employee = await this.projectService.edit(editProjectDto, id);
     return successfulResponse('Employee created successfully', employee);
   }
 

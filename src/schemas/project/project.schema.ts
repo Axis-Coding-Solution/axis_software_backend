@@ -31,7 +31,7 @@ export class Project {
   startDate: Date;
 
   @Prop()
-  endDate: Date;
+  endDate?: Date;
 
   @Prop({ required: true })
   rate: Number;
@@ -69,33 +69,33 @@ export class Project {
   description: String;
 
   @Prop()
-  files: [String];
+  files?: [String];
 
   @Prop({
     type: String,
     enum: ProjectStatus,
     immutable: true,
   })
-  projectStatus: ProjectStatus;
+  projectStatus?: ProjectStatus;
 
   @Prop()
-  tags: String[];
+  tags?: String[];
 
   @Prop()
-  technologyStack: String[];
+  technologyStack?: String[];
 
   @Prop()
-  repositories: String[];
+  repositories?: String[];
 
   @Prop({
     type: [String],
     enum: communicationChannels,
     immutable: false,
   })
-  communicationChannels: communicationChannels[];
+  communicationChannels?: communicationChannels[];
 
   @Prop({ type: [Types.ObjectId], ref: USER_MODEL })
-  Stakeholders: String[] | Types.ObjectId[] | User[];
+  Stakeholders?: String[] | Types.ObjectId[] | User[];
 }
 
 export type ProjectDocument = Project & Document;
