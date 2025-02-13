@@ -2,8 +2,8 @@ export enum RateType {
   hourly = 'hourly',
   daily = 'daily',
   weekly = 'weekly',
-  monthly = 'weekly',
-  yearly = 'weekly',
+  monthly = 'monthly',
+  yearly = 'yearly',
   fixed = 'fixed',
 }
 
@@ -29,7 +29,7 @@ export enum communicationChannels {
   zoom = 'zoom',
   microsoftTeams = 'microsoftTeams',
   googleMeet = 'googleMeet',
-  other = 'other',
+  others = 'others',
 }
 
 export enum ProjectType {
@@ -40,5 +40,5 @@ export enum ProjectType {
   ai = 'ai',
   devops = 'devops',
   desktop = 'desktop',
-  other = 'other',
+  others = 'others',
 }

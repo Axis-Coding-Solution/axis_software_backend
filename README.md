@@ -52,3 +52,5 @@
 4. Remove all unnecessary consoles and commented code after testing.
 
 5. Name of API function and service function should be same in every module for better readability and maintainability.
+
+6. If there is any mongodId you have to add a check and search it in db.

@@ -62,14 +62,14 @@ export class Project {
   @Prop({ type: Types.ObjectId, ref: USER_MODEL, required: true })
   projectLeader: String | Types.ObjectId | User;
 
-  @Prop({ type: Types.ObjectId, ref: TEAM_MODEL, required: true })
-  teamId: String | Types.ObjectId | Team;
+  @Prop({ type: [Types.ObjectId], ref: TEAM_MODEL, required: true })
+  teamId: String[] | Types.ObjectId[] | Team[];
 
   @Prop({ required: true })
   description: String;
 
   @Prop()
-  files: String[];
+  files: [String];
 
   @Prop({
     type: String,
@@ -88,13 +88,13 @@ export class Project {
   repositories: String[];
 
   @Prop({
-    type: String,
+    type: [String],
     enum: communicationChannels,
     immutable: false,
   })
-  communicationChannels: communicationChannels;
+  communicationChannels: communicationChannels[];
 
-  @Prop({ type: [Types.ObjectId], ref: USER_MODEL, required: true })
+  @Prop({ type: [Types.ObjectId], ref: USER_MODEL })
   Stakeholders: String[] | Types.ObjectId[] | User[];
 }
 
