@@ -1,9 +1,9 @@
 import { Model } from 'mongoose';
 /**
- * @param page page no
- * @param limit limit no
+ * @param page page no comes form query
+ * @param limit limit no comes form query
  * @param modelName model to query with
- * @param search i don't know what is this for
+ * @param search search come from user
  * @param searchField field to search
  * @param populate fields to populate
  */
