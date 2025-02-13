@@ -20,81 +20,82 @@ import {
 export class EditProjectDto {
   @IsString()
   @IsOptional()
-  projectName: String;
+  projectName?: String;
 
   @IsEnum(ProjectType)
   @IsOptional()
-  projectType: String;
+  projectType?: String;
 
   @IsMongoId()
   @IsString()
   @IsOptional()
-  clientId: String | Types.ObjectId | User;
+  clientId?: String | Types.ObjectId | User;
 
   @IsDate()
   @IsOptional()
   @Type(() => Date)
-  startDate: Date;
+  startDate?: Date;
 
   @IsDate()
   @Type(() => Date)
   @IsOptional()
-  endDate: Date;
+  endDate?: Date;
 
   @IsNumber()
+  @Type(() => Number)
   @IsOptional()
-  rate: number;
+  rate?: number;
 
   @IsEnum(Currency)
   @IsOptional()
-  currency: String;
+  currency?: String;
 
   @IsEnum(RateType)
   @IsOptional()
-  rateType: String;
+  rateType?: String;
 
   @IsEnum(Priority)
   @IsOptional()
-  priority: String;
+  priority?: String;
 
   @IsMongoId()
   @IsString()
   @IsOptional()
-  projectLeader: String | Types.ObjectId | User;
+  projectLeader?: String | Types.ObjectId | User;
 
   @IsMongoId({ each: true })
   @IsString({ each: true })
   @IsOptional()
-  teamId: String | Types.ObjectId | User[];
+  teamId?: String[] | Types.ObjectId[] | User[];
 
   @IsString()
   @IsOptional()
-  description: String;
+  description?: String;
 
-  files: String[];
+  files?: String[];
 
   @IsEnum(ProjectStatus)
   @IsOptional()
-  projectStatus: String;
+  projectStatus?: String;
 
   @IsString({ each: true })
   @IsOptional()
-  tags: String[];
+  tags?: String[];
 
   @IsString({ each: true })
   @IsOptional()
-  technologyStack: String[];
+  technologyStack?: String[];
 
   @IsString({ each: true })
   @IsOptional()
-  repositories: String[];
+  repositories?: String[];
 
   @IsString({ each: true })
   @IsOptional()
-  communicationChannels: String[];
+  communicationChannels?: String[];
 
   @IsMongoId({ each: true })
   @IsString({ each: true })
   @IsOptional()
-  Stakeholders: String[] | Types.ObjectId[] | User[];
+  Stakeholders?: String[] | Types.ObjectId[] | User[];
 }

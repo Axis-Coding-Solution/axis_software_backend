@@ -1,5 +1,12 @@
 import { Model } from 'mongoose';
-
+/**
+ * @param page page no
+ * @param limit limit no
+ * @param modelName model to query with
+ * @param search i don't know what is this for
+ * @param searchField field to search
+ * @param populate fields to populate
+ */
 export const getPagination = async (
   page: string,
   limit: string,
