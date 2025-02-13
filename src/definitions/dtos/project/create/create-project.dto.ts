@@ -76,7 +76,7 @@ export class CreateProjectDto {
 
   @IsString({ each: true })
   @IsOptional()
-  files: String;
+  files: String[];
 
   @IsEnum(ProjectStatus)
   @IsOptional()
