@@ -10,7 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/middlewares';
 import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-project.dto';
 import { successfulResponse } from 'src/util';
@@ -21,7 +21,7 @@ export class ProjectController {
 
   @Post()
   @UseInterceptors(
-    FileInterceptor('files', {
+    FilesInterceptor('files', 10, {
       storage: storage,
     }),
   )
@@ -29,8 +29,11 @@ export class ProjectController {
     @Body() createProjectDto: CreateProjectDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    if (files) {
-      createProjectDto.files = `${process.env.LOCAL_BACKEND_URL}/uploads/images/${files[0].filename}`;
+    if (files && files.length > 0) {
+      createProjectDto.files = files.map(
+        (file) =>
+          `${process.env.LOCAL_BACKEND_URL}/uploads/images/${file.filename}`,
+      );
     }
 
     const employee = await this.projectService.create(createProjectDto);
