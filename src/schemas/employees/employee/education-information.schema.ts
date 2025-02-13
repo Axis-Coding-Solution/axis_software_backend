@@ -3,19 +3,19 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 @Schema()
 export class EducationInformation {
   @Prop()
-  institution?: string;
+  institution?: String;
 
   @Prop()
-  startDate?: string;
+  startDate?: String;
 
   @Prop()
   endDate?: Date;
 
   @Prop()
-  degree?: string;
+  degree?: String;
 
   @Prop()
-  grade?: string;
+  grade?: String;
 }
 
 export const educationInformationSchema =

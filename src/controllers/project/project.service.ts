@@ -1,0 +1,143 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-project.dto';
+import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
+import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
+import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
+import {
+  badRequestException,
+  getPagination,
+  isValidMongoId,
+  notFoundException,
+} from 'src/util';
+
+@Injectable()
+export class ProjectService {
+  constructor(
+    @InjectModel(PROJECT_MODEL)
+    private readonly projectModel: Model<ProjectDocument>,
+
+    @InjectModel(USER_MODEL)
+    private readonly userModel: Model<UserDocument>,
+
+    @InjectModel(TEAM_MODEL)
+    private readonly teamModel: Model<TeamDocument>,
+  ) {}
+
+  async create(createProjectDto: CreateProjectDto) {
+    const { clientId, projectLeader, teamId, Stakeholders } = createProjectDto;
+
+    const [
+      isClientExists,
+      isProjectLeaderExists,
+      isTeamExists,
+      isStakeHoldersExists,
+    ] = await Promise.all([
+      clientId ? this.userModel.findById(clientId).lean() : null,
+      projectLeader ? this.userModel.findById(projectLeader).lean() : null,
+      teamId.length > 0
+        ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean()
+        : [],
+      Stakeholders.length > 0
+        ? this.userModel.find({ _id: { $in: Stakeholders } }, '_id').lean()
+        : [],
+    ]);
+
+    if (!isClientExists) {
+      throw badRequestException('Client not found');
+    }
+
+    if (!isProjectLeaderExists) {
+      throw badRequestException('Project Leader not found');
+    }
+
+    //* team members
+    const validTeamIds = isTeamExists.map((member: any) =>
+      member._id.toString(),
+    );
+
+    const missingTeamMembers = teamId?.filter(
+      (teamId: any) => !validTeamIds?.includes(teamId?.toString()),
+    );
+    if (missingTeamMembers?.length > 0) {
+      throw notFoundException(
+        `Some team members not found: ${missingTeamMembers?.join(', ')}`,
+      );
+    }
+
+    //* stakeholders
+    const validStakeholderIds = isStakeHoldersExists?.map((member: any) =>
+      member._id.toString(),
+    );
+
+    const missingStakeholders = Stakeholders?.filter(
+      (stakeholder: any) =>
+        !validStakeholderIds?.includes(stakeholder.toString()),
+    );
+    if (missingStakeholders?.length > 0) {
+      throw notFoundException(
+        `Some stakeholders not found: ${missingStakeholders?.join(', ')}`,
+      );
+    }
+
+    const project = await this.projectModel.create(createProjectDto);
+    if (!project) {
+      throw badRequestException('Project not created');
+    }
+
+    return project;
+  }
+
+  async getSingle(id: string): Promise<any> {
+    if (!isValidMongoId(id)) {
+      throw badRequestException('project id is not valid');
+    }
+
+    const project = await this.projectModel.findById(id).lean();
+    if (!project) {
+      throw notFoundException('project not found');
+    }
+
+    return project;
+  }
+
+  async getAll(page: string, limit: string, search: string) {
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
+      await getPagination(
+        page,
+        limit,
+        this.projectModel,
+        search,
+        'projectName',
+        'clientId projectLeader teamId Stakeholders',
+      );
+
+    if (items.length === 0) {
+      throw notFoundException('Departments not found');
+    }
+
+    return {
+      data: items,
+      pagination: {
+        totalItems: totalItems,
+        totalPages: totalPages,
+        itemsPerPage: itemsPerPage,
+        currentPage: currentPage,
+      },
+    };
+  }
+
+  async delete(id: string) {
+    if (!isValidMongoId(id)) {
+      throw badRequestException('project id is not valid');
+    }
+
+    const project = await this.projectModel.findByIdAndDelete(id);
+    if (!project) {
+      throw notFoundException('project not found');
+    }
+
+    return project;
+  }
+}

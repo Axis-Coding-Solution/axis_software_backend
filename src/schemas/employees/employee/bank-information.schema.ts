@@ -3,19 +3,19 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 @Schema()
 export class bankInformation {
   @Prop()
-  bankName?: string;
+  bankName?: String;
 
   @Prop()
-  branchName?: string;
+  branchName?: String;
 
   @Prop()
-  bankAccountNumber?: string;
+  bankAccountNumber?: String;
 
   @Prop()
-  ifscCode?: string;
+  ifscCode?: String;
 
   @Prop()
-  panNumber?: string;
+  panNumber?: String;
 }
 
 export const bankInformationSchema =

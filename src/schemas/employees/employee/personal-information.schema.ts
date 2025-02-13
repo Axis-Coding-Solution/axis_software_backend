@@ -4,19 +4,19 @@ import { MaritalStatus } from 'src/schemas/enums/employee';
 @Schema()
 export class PersonalInformation {
   @Prop()
-  passportNo?: string;
+  passportNo?: String;
 
   @Prop()
-  passportExpDate?: string;
+  passportExpDate?: String;
 
   @Prop()
-  tel?: string;
+  tel?: String;
 
   @Prop({ required: true })
-  nationality: string;
+  nationality: String;
 
   @Prop()
-  religion?: string;
+  religion?: String;
 
   @Prop({
     type: String,
@@ -27,10 +27,10 @@ export class PersonalInformation {
   maritalStatus: MaritalStatus;
 
   @Prop({ default: false })
-  employmentOfSpouse?: string;
+  employmentOfSpouse?: String;
 
   @Prop()
-  noOfChildren?: string;
+  noOfChildren?: String;
 }
 
 export const personalInformationSchema =

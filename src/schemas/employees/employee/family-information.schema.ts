@@ -3,16 +3,16 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 @Schema()
 export class FamilyInformation {
   @Prop({ required: true })
-  name: string;
+  name: String;
 
   @Prop({ required: true })
-  relationship: string;
+  relationship: String;
 
   @Prop({ required: true })
   dateOfBirth: Date;
 
   @Prop({ required: true })
-  phone: string;
+  phone: String;
 }
 
 export const familyInformationSchema =
