@@ -103,6 +103,7 @@ export class ProjectService {
 
     return project;
   }
+
   async edit(editProjectDto: EditProjectDto, id: string) {
     const { projectName, clientId, projectLeader, teamId, Stakeholders } =
       editProjectDto;
