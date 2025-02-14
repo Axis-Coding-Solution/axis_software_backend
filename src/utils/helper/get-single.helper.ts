@@ -1,7 +1,12 @@
 import { Model } from 'mongoose';
 import { badRequestException, notFoundException } from '../custom-exception';
 import { isValidMongoId } from '../is-valid-mongoId';
-
+/**
+ * @param id id comes from frontend
+ * @param MODEL model name to generate dynamic message
+ * @param modelName model to query with
+ * @returns single document from db
+ */
 export const getSingleHelper = async (
   id: string,
   MODEL: string,

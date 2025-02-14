@@ -15,10 +15,10 @@ import {
 } from 'src/schemas/employees/designation';
 import {
   badRequestException,
-  getPagination,
   isValidMongoId,
   notFoundException,
 } from 'src/utils';
+import { getPagination } from 'src/utils/helper';
 
 @Injectable()
 export class DesignationService {

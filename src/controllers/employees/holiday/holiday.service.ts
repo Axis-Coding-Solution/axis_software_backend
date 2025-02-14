@@ -9,10 +9,10 @@ import { HOLIDAY_MODEL, HolidayDocument } from 'src/schemas/employees/holiday';
 import {
   badRequestException,
   conflictException,
-  getPagination,
   isValidMongoId,
   notFoundException,
 } from 'src/utils';
+import { getPagination } from 'src/utils/helper';
 
 @Injectable()
 export class HolidayService {

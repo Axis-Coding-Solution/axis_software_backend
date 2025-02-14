@@ -17,7 +17,6 @@ import {
 import {
   badRequestException,
   conflictException,
-  getPagination,
   isValidMongoId,
   notFoundException,
 } from 'src/utils';
@@ -25,6 +24,7 @@ import * as bcrypt from 'bcrypt';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';
 import { EditEmployeeDto } from 'src/definitions/dtos/employees/employee/edit';
+import { getPagination } from 'src/utils/helper';
 
 @Injectable()
 export class EmployeeService {

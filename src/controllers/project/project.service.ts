@@ -9,11 +9,9 @@ import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
 import {
   badRequestException,
   conflictException,
-  getPagination,
-  isValidMongoId,
   notFoundException,
 } from 'src/utils';
-import { deleteHelper, getSingleHelper } from 'src/utils/helper';
+import { deleteHelper, getPagination, getSingleHelper } from 'src/utils/helper';
 
 @Injectable()
 export class ProjectService {
@@ -220,11 +218,7 @@ export class ProjectService {
   }
 
   async delete(id: string) {
-    const { project } = await deleteHelper(
-      id,
-      PROJECT_MODEL,
-      this.projectModel,
-    );
+    const project = await deleteHelper(id, PROJECT_MODEL, this.projectModel);
 
     return project;
   }
