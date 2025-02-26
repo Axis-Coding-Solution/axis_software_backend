@@ -11,8 +11,8 @@ export const getPagination = async (
   page: string,
   limit: string,
   modelName: Model<any>,
-  search: string,
-  searchField: string,
+  search: string = null,
+  searchField: string = null,
   populate: string = '',
 ) => {
   const pageNumber = parseInt(page) || 1;
