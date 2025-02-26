@@ -9,10 +9,10 @@ import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import {
   badRequestException,
-  getPagination,
   isValidMongoId,
   notFoundException,
-} from 'src/util';
+} from 'src/utils';
+import { getPagination } from 'src/utils/helper';
 
 @Injectable()
 export class CompanyService {

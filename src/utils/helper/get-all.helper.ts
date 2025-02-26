@@ -1,11 +1,18 @@
 import { Model } from 'mongoose';
-
+/**
+ * @param page page no comes form query
+ * @param limit limit no comes form query
+ * @param modelName model to query with
+ * @param search search come from user
+ * @param searchField field to search
+ * @param populate fields to populate
+ */
 export const getPagination = async (
   page: string,
   limit: string,
   modelName: Model<any>,
-  search: string,
-  searchField: string,
+  search: string = null,
+  searchField: string = null,
   populate: string = '',
 ) => {
   const pageNumber = parseInt(page) || 1;

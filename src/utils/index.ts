@@ -3,4 +3,3 @@ export * from './response';
 export * from './is-valid-mongoId';
 export * from './custom-exception';
 export * from './factory';
-export * from './reuseable-functions';

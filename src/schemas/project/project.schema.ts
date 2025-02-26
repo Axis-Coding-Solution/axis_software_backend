@@ -14,7 +14,7 @@ import { Currency } from '../enums/common';
 @Schema({ timestamps: true })
 export class Project {
   @Prop({ required: true })
-  projectName: string;
+  projectName: String;
 
   @Prop({
     type: String,
@@ -25,13 +25,13 @@ export class Project {
   projectType: ProjectType;
 
   @Prop({ type: [Types.ObjectId], ref: USER_MODEL, required: true })
-  clientId: string[] | Types.ObjectId[] | User[];
+  clientId: String[] | Types.ObjectId[] | User[];
 
   @Prop({ required: true })
   startDate: Date;
 
   @Prop()
-  endDate: Date;
+  endDate?: Date;
 
   @Prop({ required: true })
   rate: Number;
@@ -60,42 +60,42 @@ export class Project {
   priority: Priority;
 
   @Prop({ type: Types.ObjectId, ref: USER_MODEL, required: true })
-  projectLeader: string | Types.ObjectId | User;
+  projectLeader: String | Types.ObjectId | User;
 
-  @Prop({ type: Types.ObjectId, ref: TEAM_MODEL, required: true })
-  teamId: string | Types.ObjectId | Team;
+  @Prop({ type: [Types.ObjectId], ref: TEAM_MODEL, required: true })
+  teamId: String[] | Types.ObjectId[] | Team[];
 
   @Prop({ required: true })
-  description: string;
+  description: String;
 
   @Prop()
-  files: string[];
+  files?: [String];
 
   @Prop({
     type: String,
     enum: ProjectStatus,
     immutable: true,
   })
-  projectStatus: ProjectStatus;
+  projectStatus?: ProjectStatus;
 
   @Prop()
-  tags: String[];
+  tags?: String[];
 
   @Prop()
-  technologyStack: String[];
+  technologyStack?: String[];
 
   @Prop()
-  repositories: String[];
+  repositories?: String[];
 
   @Prop({
-    type: String,
+    type: [String],
     enum: communicationChannels,
     immutable: false,
   })
-  communicationChannels: communicationChannels;
+  communicationChannels?: communicationChannels[];
 
-  @Prop({ type: [Types.ObjectId], ref: USER_MODEL, required: true })
-  Stakeholders: string[] | Types.ObjectId[] | User[];
+  @Prop({ type: [Types.ObjectId], ref: USER_MODEL })
+  Stakeholders?: String[] | Types.ObjectId[] | User[];
 }
 
 export type ProjectDocument = Project & Document;

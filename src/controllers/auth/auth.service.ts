@@ -8,7 +8,7 @@ import {
   badRequestException,
   conflictException,
   notFoundException,
-} from 'src/util';
+} from 'src/utils';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 
 @Injectable()

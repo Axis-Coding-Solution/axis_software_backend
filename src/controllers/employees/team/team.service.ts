@@ -11,10 +11,10 @@ import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
 import {
   badRequestException,
   conflictException,
-  getPagination,
   isValidMongoId,
   notFoundException,
-} from 'src/util';
+} from 'src/utils';
+import { getPagination } from 'src/utils/helper';
 
 @Injectable()
 export class TeamService {

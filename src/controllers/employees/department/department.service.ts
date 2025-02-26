@@ -11,10 +11,10 @@ import {
 } from 'src/definitions/dtos/employees/department';
 import {
   badRequestException,
-  getPagination,
   isValidMongoId,
   notFoundException,
-} from 'src/util';
+} from 'src/utils';
+import { getPagination } from 'src/utils/helper';
 
 @Injectable()
 export class DepartmentService {

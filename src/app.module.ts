@@ -14,6 +14,8 @@ import { EmployeeModule } from './controllers/employees/employee/employee.module
 import { UserModule } from './controllers/user/user.module';
 import { HolidayModule } from './controllers/employees/holiday/holiday.module';
 import { TeamModule } from './controllers/employees/team/team.module';
+import { ProjectModule } from './controllers/project/project.module';
+import { TimesheetModule } from './controllers/employees/timesheet/timesheet.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +30,8 @@ import { TeamModule } from './controllers/employees/team/team.module';
     UserModule,
     HolidayModule,
     TeamModule,
+    ProjectModule,
+    TimesheetModule,
     ServeStaticModule.forRoot({
       rootPath: `${process.cwd()}/uploads`,
       serveRoot: '/uploads',

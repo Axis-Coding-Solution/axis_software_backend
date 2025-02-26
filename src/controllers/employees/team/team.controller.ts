@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
-import { successfulResponse } from 'src/util';
+import { successfulResponse } from 'src/utils';
 import {
   CreateTeamDto,
   EditTeamDto,

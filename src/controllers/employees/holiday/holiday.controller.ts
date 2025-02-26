@@ -15,7 +15,7 @@ import {
   CreateHolidayDto,
   EditHolidayDto,
 } from 'src/definitions/dtos/employees/holiday';
-import { successfulResponse } from 'src/util';
+import { successfulResponse } from 'src/utils';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('holiday')
