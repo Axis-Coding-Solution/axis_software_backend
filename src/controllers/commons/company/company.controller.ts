@@ -12,14 +12,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
-import {
-  createCompanyDto,
-  editCompanyDto,
-} from 'src/definitions/dtos/commons/company';
+import { createCompanyDto, editCompanyDto } from 'src/definitions/dtos/commons/company';
 import { successfulResponse } from 'src/utils';
 import { JwtAuthGuard } from 'src/middlewares/guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/middlewares';
+import { FileValidationPipe } from 'src/pipes/file';
 
 @UseGuards(JwtAuthGuard)
 @Controller('company')
@@ -34,7 +32,8 @@ export class CompanyController {
   )
   async create(
     @Body() createCompanyDto: createCompanyDto,
-    @UploadedFile() profileImage: Express.Multer.File,
+    @UploadedFile(new FileValidationPipe(true))
+    profileImage: Express.Multer.File,
   ) {
     if (profileImage) {
       createCompanyDto.profileImage = `${process.env.LOCAL_BACKEND_URL}/uploads/images/${profileImage.filename}`;
@@ -52,7 +51,7 @@ export class CompanyController {
   async update(
     @Param('id') id: string,
     @Body() editCompanyDto: editCompanyDto,
-    @UploadedFile() profileImage: Express.Multer.File,
+    @UploadedFile(new FileValidationPipe(false)) profileImage: Express.Multer.File,
   ) {
     if (profileImage) {
       editCompanyDto.profileImage = `${process.env.LOCAL_BACKEND_URL}/uploads/images/${profileImage.filename}`;

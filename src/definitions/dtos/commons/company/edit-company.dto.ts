@@ -5,13 +5,6 @@ import { IsFile } from 'src/validator';
 
 export class editCompanyDto {
   //* basic info
-  @IsFile(
-    { mime: ['image/jpg', 'image/png', 'image/jpeg'] },
-    {
-      message: 'Profile image either not received or valid',
-    },
-  )
-  @IsOptional()
   profileImage?: String;
 
   @IsString()

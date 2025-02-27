@@ -53,4 +53,4 @@
 
 5. Name of API function and service function should be same in every module for better readability and maintainability.
 
-6. If there is any mongodId you have to add a check and search it in db.
+6. If there is any mongodId you have to add a check and search it in db and validate it as well.
