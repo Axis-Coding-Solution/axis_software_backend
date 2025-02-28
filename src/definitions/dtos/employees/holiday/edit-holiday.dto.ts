@@ -4,7 +4,7 @@ import { IsDate, IsOptional, IsString } from 'class-validator';
 export class EditHolidayDto {
   @IsString()
   @IsOptional()
-  holidayName?: string;
+  holidayName?: String;
 
   @IsDate()
   @IsOptional()

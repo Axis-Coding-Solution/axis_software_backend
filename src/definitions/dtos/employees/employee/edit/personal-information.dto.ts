@@ -4,23 +4,23 @@ import { MaritalStatus } from 'src/schemas/enums/employee';
 export class EditPersonalInformationDto {
   @IsString()
   @IsOptional()
-  passportNo?: string;
+  passportNo?: String;
 
   @IsString()
   @IsOptional()
-  passportExpDate?: string;
+  passportExpDate?: String;
 
   @IsString()
   @IsOptional()
-  tel?: string;
+  tel?: String;
 
   @IsString()
   @IsOptional()
-  nationality: string;
+  nationality: String;
 
   @IsString()
   @IsOptional()
-  religion?: string;
+  religion?: String;
 
   @IsEnum(MaritalStatus)
   @IsOptional()
@@ -28,9 +28,9 @@ export class EditPersonalInformationDto {
 
   @IsString()
   @IsOptional()
-  employmentOfSpouse?: string;
+  employmentOfSpouse?: String;
 
   @IsString()
   @IsOptional()
-  noOfChildren?: string;
+  noOfChildren?: String;
 }

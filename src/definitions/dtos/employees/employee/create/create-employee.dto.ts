@@ -24,33 +24,33 @@ import { EducationInformationDto } from './education-information.dto';
 import { ExperienceInformationDto } from './experience-information.dto';
 
 export class CreateEmployeeDto {
-  profileImage: string;
+  profileImage: String;
 
   @IsString()
   @IsNotEmpty()
-  firstName: string;
+  firstName: String;
 
   @IsString()
   @IsNotEmpty()
-  lastName: string;
+  lastName: String;
 
   @IsString()
   @IsNotEmpty()
-  userName: string;
+  userName: String;
 
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email: String;
 
   @ValidateIf((dto) => dto !== undefined)
   @IsString()
   @IsNotEmpty()
-  password: string;
+  password: String;
 
   @ValidateIf((dto) => dto !== undefined)
   @IsString()
   @IsNotEmpty()
-  confirmPassword: string;
+  confirmPassword: String;
 
   @IsNotEmpty()
   @Type(() => Date)
@@ -59,19 +59,19 @@ export class CreateEmployeeDto {
 
   @IsString()
   @IsOptional()
-  phone?: string;
+  phone?: String;
 
   @IsNotEmpty()
   @IsMongoId({ message: 'Company id is not valid' })
-  companyId: string | Types.ObjectId | Company;
+  companyId: String | Types.ObjectId | Company;
 
   @IsNotEmpty()
   @IsMongoId({ message: 'Department id is not valid' })
-  departmentId: string | Types.ObjectId | Department;
+  departmentId: String | Types.ObjectId | Department;
 
   @IsNotEmpty()
   @IsMongoId({ message: 'Designation id is not valid' })
-  designationId: string | Types.ObjectId | Designation;
+  designationId: String | Types.ObjectId | Designation;
 
   @IsEnum(Role)
   @IsOptional()
@@ -84,7 +84,7 @@ export class CreateEmployeeDto {
 
   @IsString()
   @IsNotEmpty()
-  address: string;
+  address: String;
 
   @IsEnum(Gender)
   @IsNotEmpty()
@@ -92,19 +92,19 @@ export class CreateEmployeeDto {
 
   @IsMongoId({ message: 'reportsTo id is not valid' })
   @IsOptional()
-  reportsTo: string | Types.ObjectId;
+  reportsTo: String | Types.ObjectId;
 
   @IsString()
   @IsNotEmpty()
-  state: string;
+  state: String;
 
   @IsString()
   @IsNotEmpty()
-  country: string;
+  country: String;
 
   @IsString()
   @IsOptional()
-  pinCode?: string;
+  pinCode?: String;
 
   @IsOptional()
   @ValidateNested()

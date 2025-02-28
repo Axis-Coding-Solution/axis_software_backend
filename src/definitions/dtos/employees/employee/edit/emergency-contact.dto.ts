@@ -3,17 +3,17 @@ import { IsOptional, IsString } from 'class-validator';
 export class EditEmergencyContactDto {
   @IsString()
   @IsOptional()
-  name: string;
+  name: String;
 
   @IsString()
   @IsOptional()
-  relationship: string;
+  relationship: String;
 
   @IsString()
   @IsOptional()
-  phone1: string;
+  phone1: String;
 
   @IsString()
   @IsOptional()
-  phone2?: string;
+  phone2?: String;
 }

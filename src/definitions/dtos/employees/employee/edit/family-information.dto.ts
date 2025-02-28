@@ -4,11 +4,11 @@ import { IsDate, IsOptional, IsString } from 'class-validator';
 export class EditFamilyInformationDto {
   @IsString()
   @IsOptional()
-  name: string;
+  name: String;
 
   @IsString()
   @IsOptional()
-  relationship: string;
+  relationship: String;
 
   @IsDate()
   @IsOptional()
@@ -17,5 +17,5 @@ export class EditFamilyInformationDto {
 
   @IsString()
   @IsOptional()
-  phone: string;
+  phone: String;
 }
