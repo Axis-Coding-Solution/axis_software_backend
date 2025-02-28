@@ -16,6 +16,7 @@ import { HolidayModule } from './controllers/employees/holiday/holiday.module';
 import { TeamModule } from './controllers/employees/team/team.module';
 import { ProjectModule } from './controllers/project/project.module';
 import { TimesheetModule } from './controllers/employees/timesheet/timesheet.module';
+import { AppConfigService } from './config';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,6 +42,7 @@ import { TimesheetModule } from './controllers/employees/timesheet/timesheet.mod
   providers: [
     AppService,
     CheckDbConnectionCommand,
+    AppConfigService,
     // {
     //   provide: 'APP_INTERCEPTOR',
     //   useClass: UploadFileInterceptor,

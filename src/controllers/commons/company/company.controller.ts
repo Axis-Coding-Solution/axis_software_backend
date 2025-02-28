@@ -17,12 +17,15 @@ import { successfulResponse } from 'src/utils';
 import { JwtAuthGuard } from 'src/middlewares/guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/middlewares';
+import { AppConfigService } from 'src/config';
 import { FileValidationPipe } from 'src/pipes/file';
-
 @UseGuards(JwtAuthGuard)
 @Controller('company')
 export class CompanyController {
-  constructor(private readonly companyService: CompanyService) {}
+  constructor(
+    private readonly companyService: CompanyService,
+    private readonly appConfigService: AppConfigService,
+  ) {}
 
   @Post()
   @UseInterceptors(
@@ -36,7 +39,7 @@ export class CompanyController {
     profileImage: Express.Multer.File,
   ) {
     if (profileImage) {
-      createCompanyDto.profileImage = `${process.env.LOCAL_BACKEND_URL}/uploads/images/${profileImage.filename}`;
+      createCompanyDto.profileImage = `${this.appConfigService.serverPath}/uploads/images/${profileImage.filename}`;
     }
     const company = await this.companyService.create(createCompanyDto);
     return successfulResponse('Company created successfully', company);
@@ -54,7 +57,7 @@ export class CompanyController {
     @UploadedFile(new FileValidationPipe(false)) profileImage: Express.Multer.File,
   ) {
     if (profileImage) {
-      editCompanyDto.profileImage = `${process.env.LOCAL_BACKEND_URL}/uploads/images/${profileImage.filename}`;
+      editCompanyDto.profileImage = `${this.appConfigService.serverPath}/uploads/images/${profileImage.filename}`;
     }
     const editCompany = await this.companyService.edit(editCompanyDto, id);
 
