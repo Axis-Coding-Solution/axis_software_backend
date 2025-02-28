@@ -1,17 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  createCompanyDto,
-  editCompanyDto,
-} from 'src/definitions/dtos/commons/company';
+import { createCompanyDto, editCompanyDto } from 'src/definitions/dtos/commons/company';
 import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
-import {
-  badRequestException,
-  isValidMongoId,
-  notFoundException,
-} from 'src/utils';
+import { badRequestException, isValidMongoId, notFoundException } from 'src/utils';
 import { getPagination } from 'src/utils/helper';
 
 @Injectable()
@@ -92,14 +85,14 @@ export class CompanyService {
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getPagination(
-        page,
-        limit,
-        this.companyModel,
-        search,
-        'companyName',
-      );
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getPagination(
+      page,
+      limit,
+      this.companyModel,
+      search,
+      'companyName',
+      'owner',
+    );
 
     if (items.length === 0) {
       throw notFoundException('Departments not found');

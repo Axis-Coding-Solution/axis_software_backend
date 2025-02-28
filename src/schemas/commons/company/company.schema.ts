@@ -30,7 +30,7 @@ export class Company {
   // @Prop()
   // reviews: String;
 
-  @Prop({ type: Types.ObjectId, ref: 'user', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   owner: String | Types.ObjectId | User;
 
   @Prop({ required: true })
