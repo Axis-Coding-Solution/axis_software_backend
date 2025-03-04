@@ -13,7 +13,6 @@ import { AppConfigService } from 'src/config';
       { name: COMPANY_MODEL, schema: companySchema },
       { name: USER_MODEL, schema: userSchema },
     ]),
-    ConfigModule.forRoot(),
   ],
   controllers: [CompanyController],
   providers: [
