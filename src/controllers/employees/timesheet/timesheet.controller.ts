@@ -3,6 +3,7 @@ import { TimesheetService } from './timesheet.service';
 import { successfulResponse } from 'src/utils';
 import { createTimesheetDto } from 'src/definitions/dtos/employees/timesheet/create-timesheet.dto';
 import { editTimesheetDto } from 'src/definitions/dtos/employees/timesheet/edit-timesheet.dto';
+import { Types } from 'mongoose';
 
 @Controller('timesheet')
 export class TimesheetController {
@@ -15,14 +16,14 @@ export class TimesheetController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() editTimesheetDto: editTimesheetDto) {
+  async update(@Param('id') id: Types.ObjectId, @Body() editTimesheetDto: editTimesheetDto) {
     const editTimesheet = await this.timesheetService.edit(editTimesheetDto, id);
 
     return successfulResponse('timesheet edited successfully', editTimesheet);
   }
 
   @Get(':id')
-  async get(@Param('id') id: string) {
+  async get(@Param('id') id: Types.ObjectId) {
     const timesheet = await this.timesheetService.getSingle(id);
     return successfulResponse('timesheet found successfully', timesheet);
   }
@@ -38,7 +39,7 @@ export class TimesheetController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: Types.ObjectId) {
     const timesheet = await this.timesheetService.delete(id);
     return successfulResponse('timesheet deleted successfully', timesheet);
   }

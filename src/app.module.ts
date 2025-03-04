@@ -16,6 +16,7 @@ import { HolidayModule } from './controllers/employees/holiday/holiday.module';
 import { TeamModule } from './controllers/employees/team/team.module';
 import { ProjectModule } from './controllers/project/project.module';
 import { TimesheetModule } from './controllers/employees/timesheet/timesheet.module';
+import { OvertimeModule } from './controllers/employees/overtime/overtime.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,6 +37,7 @@ import { TimesheetModule } from './controllers/employees/timesheet/timesheet.mod
       rootPath: `${process.cwd()}/uploads`,
       serveRoot: '/uploads',
     }),
+    OvertimeModule,
   ],
   controllers: [AppController],
   providers: [

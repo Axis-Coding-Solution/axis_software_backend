@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { createCompanyDto, editCompanyDto } from 'src/definitions/dtos/commons/company';
 import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
@@ -39,7 +39,7 @@ export class CompanyService {
     return company;
   }
 
-  async edit(editCompanyDto: editCompanyDto, id: string) {
+  async edit(editCompanyDto: editCompanyDto, id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Company id is not valid');
     }
@@ -71,7 +71,7 @@ export class CompanyService {
     return editCompany;
   }
 
-  async getSingle(id: string) {
+  async getSingle(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Company id is not valid');
     }
@@ -109,7 +109,7 @@ export class CompanyService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Company id is not valid');
     }

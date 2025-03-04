@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-project.dto';
 import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.dto';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
@@ -185,7 +185,7 @@ export class ProjectService {
     return project;
   }
 
-  async getSingle(id: string): Promise<any> {
+  async getSingle(id: Types.ObjectId): Promise<any> {
     const project = await getSingleHelper(id, PROJECT_MODEL, this.projectModel);
 
     return project;
@@ -217,7 +217,7 @@ export class ProjectService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: Types.ObjectId) {
     const project = await deleteHelper(id, PROJECT_MODEL, this.projectModel);
 
     return project;

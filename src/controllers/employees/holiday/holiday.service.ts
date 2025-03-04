@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   CreateHolidayDto,
   EditHolidayDto,
@@ -46,7 +46,7 @@ export class HolidayService {
     return holiday;
   }
 
-  async edit(editHolidayDto: EditHolidayDto, id: string) {
+  async edit(editHolidayDto: EditHolidayDto, id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Holiday id is not valid');
     }
@@ -80,7 +80,7 @@ export class HolidayService {
     return editHoliday;
   }
 
-  async getSingle(id: string) {
+  async getSingle(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Holiday id is not valid');
     }
@@ -118,7 +118,7 @@ export class HolidayService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Holiday id is not valid');
     }

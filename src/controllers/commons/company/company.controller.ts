@@ -19,6 +19,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/middlewares';
 import { AppConfigService } from 'src/config';
 import { FileValidationPipe } from 'src/pipes/file';
+import { Types } from 'mongoose';
 @UseGuards(JwtAuthGuard)
 @Controller('company')
 export class CompanyController {
@@ -52,7 +53,7 @@ export class CompanyController {
     }),
   )
   async update(
-    @Param('id') id: string,
+    @Param('id') id: Types.ObjectId,
     @Body() editCompanyDto: editCompanyDto,
     @UploadedFile(new FileValidationPipe(false)) profileImage: Express.Multer.File,
   ) {
@@ -65,7 +66,7 @@ export class CompanyController {
   }
 
   @Get(':id')
-  async get(@Param('id') id: string) {
+  async get(@Param('id') id: Types.ObjectId) {
     const company = await this.companyService.getSingle(id);
     return successfulResponse('Company found successfully', company);
   }
@@ -81,7 +82,7 @@ export class CompanyController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: Types.ObjectId) {
     const company = await this.companyService.delete(id);
     return successfulResponse('Company deleted successfully', company);
   }

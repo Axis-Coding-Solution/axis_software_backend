@@ -18,6 +18,7 @@ import { successfulResponse } from 'src/utils';
 import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.dto';
 import { AppConfigService } from 'src/config';
 import { FileValidationPipe } from 'src/pipes/file';
+import { Types } from 'mongoose';
 
 @Controller('project')
 export class ProjectController {
@@ -68,7 +69,7 @@ export class ProjectController {
   }
 
   @Get(':id')
-  async get(@Param('id') id: string) {
+  async get(@Param('id') id: Types.ObjectId) {
     const project = await this.projectService.getSingle(id);
     return successfulResponse('project found successfully', project);
   }
@@ -84,7 +85,7 @@ export class ProjectController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: Types.ObjectId) {
     const project = await this.projectService.delete(id);
     return successfulResponse('project deleted successfully', project);
   }

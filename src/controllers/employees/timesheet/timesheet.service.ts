@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { createTimesheetDto } from 'src/definitions/dtos/employees/timesheet/create-timesheet.dto';
 import { editTimesheetDto } from 'src/definitions/dtos/employees/timesheet/edit-timesheet.dto';
 import { TIMESHEET_MODEL, TimesheetDocument } from 'src/schemas/employees/timesheet';
@@ -41,7 +41,7 @@ export class TimesheetService {
     return timesheet;
   }
 
-  async edit(editTimesheetDto: editTimesheetDto, id: string) {
+  async edit(editTimesheetDto: editTimesheetDto, id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('timesheet id is not valid');
     }
@@ -69,7 +69,7 @@ export class TimesheetService {
     return editTimesheet;
   }
 
-  async getSingle(id: string): Promise<any> {
+  async getSingle(id: Types.ObjectId): Promise<any> {
     const timesheet = await getSingleHelper(id, TIMESHEET_MODEL, this.timesheetModel);
 
     return timesheet;
@@ -100,7 +100,7 @@ export class TimesheetService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: Types.ObjectId) {
     const timesheet = await deleteHelper(id, TIMESHEET_MODEL, this.timesheetModel);
 
     return timesheet;

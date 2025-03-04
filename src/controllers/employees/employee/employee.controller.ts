@@ -20,6 +20,7 @@ import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/creat
 import { EditEmployeeDto } from 'src/definitions/dtos/employees/employee/edit';
 import { FileValidationPipe } from 'src/pipes/file';
 import { AppConfigService } from 'src/config';
+import { Types } from 'mongoose';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('employee')
@@ -67,7 +68,7 @@ export class EmployeeController {
   }
 
   @Get(':id')
-  async getSingle(@Param('id') id: string) {
+  async getSingle(@Param('id') id: Types.ObjectId) {
     const employee = await this.employeeService.getSingle(id);
     return successfulResponse('Employee found successfully', employee);
   }
@@ -83,7 +84,7 @@ export class EmployeeController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: Types.ObjectId) {
     const employee = await this.employeeService.delete(id);
     return successfulResponse('Employee deleted successfully', employee);
   }
