@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
 import {
   DEPARTMENT_MODEL,
@@ -198,7 +198,7 @@ export class EmployeeService {
     return employee;
   }
 
-  async getSingle(id: string) {
+  async getSingle(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Employee id is not valid');
     }
@@ -230,7 +230,7 @@ export class EmployeeService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Employee id is not valid');
     }

@@ -1,11 +1,13 @@
 import { Model } from 'mongoose';
+import { notFoundException } from '../custom-exception';
 /**
- * @param page page no comes form query
- * @param limit limit no comes form query
- * @param modelName model to query with
- * @param search search come from user
- * @param searchField field to search
- * @param populate fields to populate
+ * @param {Number} page page no comes form query
+ * @param {Number} limit limit no comes form query
+ * @param {String} modelName model to query with
+ * @param {String} search search come from user
+ * @param {String} searchField field to search
+ * @param {String} populate fields to populate
+ * @returns {Object} items, totalItems, totalPages, itemsPerPage, currentPage
  */
 export const getPagination = async (
   page: string,
@@ -37,6 +39,10 @@ export const getPagination = async (
       .exec(),
     modelName.countDocuments(filters).exec(),
   ]);
+  if (items.length === 0) {
+    throw notFoundException(`${modelName.modelName} not found`);
+  }
+
   const totalPages = Math.ceil(totalItems / limitNumber);
 
   return {

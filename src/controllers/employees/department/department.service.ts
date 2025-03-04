@@ -4,7 +4,7 @@ import {
   DepartmentDocument,
 } from 'src/schemas/employees/department/department.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   createDepartmentDto,
   editDepartmentDto,
@@ -44,7 +44,7 @@ export class DepartmentService {
     return department;
   }
 
-  async edit(editDepartmentDto: editDepartmentDto, id: string) {
+  async edit(editDepartmentDto: editDepartmentDto, id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Department id is not valid');
     }
@@ -68,7 +68,7 @@ export class DepartmentService {
     return editDepartment;
   }
 
-  async getSingle(id: string) {
+  async getSingle(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Department id is not valid');
     }
@@ -106,7 +106,7 @@ export class DepartmentService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Department id is not valid');
     }
