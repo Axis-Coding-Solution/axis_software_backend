@@ -5,6 +5,7 @@ import { PROJECT_MODEL, projectSchema } from 'src/schemas/project';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TEAM_MODEL, teamSchema } from 'src/schemas/employees/team';
 import { USER_MODEL, userSchema } from 'src/schemas/commons/user';
+import { AppConfigService } from 'src/config';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { USER_MODEL, userSchema } from 'src/schemas/commons/user';
     ]),
   ],
   controllers: [ProjectController],
-  providers: [ProjectService],
+  providers: [ProjectService, AppConfigService],
 })
 export class ProjectModule {}

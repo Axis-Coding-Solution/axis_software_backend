@@ -35,7 +35,7 @@ export class CompanyController {
   )
   async create(
     @Body() createCompanyDto: createCompanyDto,
-    @UploadedFile(new FileValidationPipe(true))
+    @UploadedFile(new FileValidationPipe(true, 'Profile image'))
     profileImage: Express.Multer.File,
   ) {
     if (profileImage) {

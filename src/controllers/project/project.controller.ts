@@ -16,10 +16,15 @@ import { storage } from 'src/middlewares';
 import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-project.dto';
 import { successfulResponse } from 'src/utils';
 import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.dto';
+import { AppConfigService } from 'src/config';
+import { FileValidationPipe } from 'src/pipes/file';
 
 @Controller('project')
 export class ProjectController {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(
+    private readonly projectService: ProjectService,
+    private readonly appConfigService: AppConfigService,
+  ) {}
 
   @Post()
   @UseInterceptors(
@@ -29,12 +34,11 @@ export class ProjectController {
   )
   async create(
     @Body() createProjectDto: CreateProjectDto,
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFiles(new FileValidationPipe(false)) files: Array<Express.Multer.File>,
   ) {
     if (files && files.length > 0) {
       createProjectDto.files = files.map(
-        (file) =>
-          `${process.env.LOCAL_BACKEND_URL}/uploads/images/${file.filename}`,
+        (file) => `${this.appConfigService.serverPath}/uploads/images/${file.filename}`,
       );
     }
 
@@ -51,12 +55,11 @@ export class ProjectController {
   async edit(
     @Param('id') id: string,
     @Body() editProjectDto: EditProjectDto,
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFiles(new FileValidationPipe(false)) files: Array<Express.Multer.File>,
   ) {
     if (files && files.length > 0) {
       editProjectDto.files = files.map(
-        (file) =>
-          `${process.env.LOCAL_BACKEND_URL}/uploads/images/${file.filename}`,
+        (file) => `${this.appConfigService.serverPath}/uploads/images/${file.filename}`,
       );
     }
 

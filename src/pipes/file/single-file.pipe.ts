@@ -4,11 +4,14 @@ import { badRequestException } from 'src/utils';
 
 /** 
   Pipe for validate file. This will validate file's type and size
-  @param fileIsRequired pass true if file is required else false
+  @param {String} fileIsRequired pass true if file is required else false
 */
 @Injectable()
 export class FileValidationPipe implements PipeTransform {
-  constructor(private readonly fileIsRequired: boolean = true) {}
+  constructor(
+    private readonly fileIsRequired: boolean = true,
+    private readonly fileName: string = null,
+  ) {}
 
   transform(value: any) {
     return new ParseFilePipeBuilder()
@@ -24,7 +27,7 @@ export class FileValidationPipe implements PipeTransform {
           let message = 'Invalid file. Only JPG, JPEG, and PNG files under 5MB are allowed';
 
           if (error === 'File is required') {
-            message = 'Profile image is required';
+            message = `${this.fileName} is required`;
           }
 
           throw badRequestException(message);
