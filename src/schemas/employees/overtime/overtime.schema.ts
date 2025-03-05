@@ -20,7 +20,6 @@ export class Overtime {
   @Prop({
     type: String,
     enum: Object.keys(Status),
-    immutable: true,
     default: Status.pending,
   })
   status: Status;

@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Req } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { ApproveOvertimeDto } from 'src/definitions/dtos/employees/overtime/approve-overtime.dto';
 import { CreateOvertimeDto } from 'src/definitions/dtos/employees/overtime/create-overtime.dto';
 import { EditOvertimeDto } from 'src/definitions/dtos/employees/overtime/edit-overtime.dto';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
@@ -70,6 +71,22 @@ export class OvertimeService {
 
   async delete(id: Types.ObjectId) {
     const overtime = await deleteHelper(id, OVERTIME_MODEL, this.overtimeModel);
+
+    return overtime;
+  }
+
+  async approval(
+    approveOvertimeDto: ApproveOvertimeDto,
+    currentUser: Types.ObjectId,
+    id: Types.ObjectId,
+  ) {
+    const { status } = approveOvertimeDto;
+    const overtime = editHelper(
+      id,
+      { status, approvedBy: currentUser },
+      OVERTIME_MODEL,
+      this.overtimeModel,
+    );
 
     return overtime;
   }
