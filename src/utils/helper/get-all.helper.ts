@@ -9,7 +9,7 @@ import { notFoundException } from '../custom-exception';
  * @param {String} populate fields to populate
  * @returns {Object} items, totalItems, totalPages, itemsPerPage, currentPage
  */
-export const getPagination = async (
+export const getAllHelper = async (
   page: string,
   limit: string,
   modelName: Model<any>,

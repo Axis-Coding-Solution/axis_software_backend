@@ -25,6 +25,7 @@ import { ApproveOvertimeDto } from 'src/definitions/dtos/employees/overtime/appr
 @Controller('overtime')
 export class OvertimeController {
   constructor(private readonly overtimeService: OvertimeService) {}
+
   @Post()
   async create(@Body() createOvertimeDto: CreateOvertimeDto) {
     const overtime = await this.overtimeService.create(createOvertimeDto);

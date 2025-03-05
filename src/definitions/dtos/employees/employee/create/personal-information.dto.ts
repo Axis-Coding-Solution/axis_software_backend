@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { MaritalStatus } from 'src/schemas/enums/employee';
+import { MaritalStatus } from 'src/schemas/enums/employees/employee/marital-status.enum';
 
 export class PersonalInformationDto {
   @IsString()

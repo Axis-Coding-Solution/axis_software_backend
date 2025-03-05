@@ -5,7 +5,7 @@ import { createCompanyDto, editCompanyDto } from 'src/definitions/dtos/commons/c
 import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { badRequestException, isValidMongoId, notFoundException } from 'src/utils';
-import { getPagination } from 'src/utils/helper';
+import { getAllHelper } from 'src/utils/helper';
 
 @Injectable()
 export class CompanyService {
@@ -85,7 +85,7 @@ export class CompanyService {
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getPagination(
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
       page,
       limit,
       this.companyModel,

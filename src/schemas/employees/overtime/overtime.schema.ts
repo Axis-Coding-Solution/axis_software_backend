@@ -24,7 +24,7 @@ export class Overtime {
   })
   status: Status;
 
-  @Prop({ type: Types.ObjectId, ref: EMPLOYEE_MODEL })
+  @Prop({ type: Types.ObjectId, ref: EMPLOYEE_MODEL, default: null })
   approvedBy: String | Types.ObjectId | Employee;
 }
 

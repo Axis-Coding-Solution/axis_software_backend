@@ -24,7 +24,7 @@ import * as bcrypt from 'bcrypt';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';
 import { EditEmployeeDto } from 'src/definitions/dtos/employees/employee/edit';
-import { getPagination } from 'src/utils/helper';
+import { getAllHelper } from 'src/utils/helper';
 
 @Injectable()
 export class EmployeeService {
@@ -213,7 +213,7 @@ export class EmployeeService {
 
   async getAll(page: string, limit: string, search: string) {
     const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getPagination(page, limit, this.employeeModel, search, 'userName');
+      await getAllHelper(page, limit, this.employeeModel, search, 'userName');
 
     if (items.length === 0) {
       throw notFoundException('Departments not found');
