@@ -12,7 +12,7 @@ import {
   isValidMongoId,
   notFoundException,
 } from 'src/utils';
-import { getPagination } from 'src/utils/helper';
+import { getAllHelper } from 'src/utils/helper';
 
 @Injectable()
 export class HolidayService {
@@ -95,7 +95,7 @@ export class HolidayService {
 
   async getAll(page: string, limit: string, search: string) {
     const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getPagination(
+      await getAllHelper(
         page,
         limit,
         this.holidayModel,

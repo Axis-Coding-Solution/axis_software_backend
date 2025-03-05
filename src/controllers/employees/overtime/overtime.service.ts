@@ -10,7 +10,7 @@ import {
   createHelper,
   deleteHelper,
   editHelper,
-  getPagination,
+  getAllHelper,
   getSingleHelper,
 } from 'src/utils/helper';
 
@@ -49,7 +49,7 @@ export class OvertimeService {
   }
 
   async getAll(page: string, limit: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getPagination(
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
       page,
       limit,
       this.overtimeModel,

@@ -11,7 +11,7 @@ import {
   isValidMongoId,
   notFoundException,
 } from 'src/utils';
-import { deleteHelper, getPagination, getSingleHelper } from 'src/utils/helper';
+import { deleteHelper, getAllHelper, getSingleHelper } from 'src/utils/helper';
 
 @Injectable()
 export class TimesheetService {
@@ -76,7 +76,7 @@ export class TimesheetService {
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getPagination(
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
       page,
       limit,
       this.timesheetModel,
