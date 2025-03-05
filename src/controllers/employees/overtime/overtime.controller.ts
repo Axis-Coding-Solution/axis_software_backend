@@ -1,11 +1,27 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { OvertimeService } from './overtime.service';
 import { CreateOvertimeDto } from 'src/definitions/dtos/employees/overtime/create-overtime.dto';
 import { successfulResponse } from 'src/utils';
 import { OVERTIME_MODEL } from 'src/schemas/employees/overtime';
 import { Types } from 'mongoose';
 import { EditOvertimeDto } from 'src/definitions/dtos/employees/overtime/edit-overtime.dto';
+import { JwtAuthGuard } from 'src/middlewares/guard';
+import { User } from 'src/decorator';
+import { ApproveOvertimeDto } from 'src/definitions/dtos/employees/overtime/approve-overtime.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('overtime')
 export class OvertimeController {
   constructor(private readonly overtimeService: OvertimeService) {}
@@ -37,5 +53,15 @@ export class OvertimeController {
   async delete(@Param('id') id: Types.ObjectId) {
     const overtime = await this.overtimeService.delete(id);
     return successfulResponse(`${OVERTIME_MODEL} deleted successfully`, overtime);
+  }
+
+  @Patch(':id')
+  async approval(
+    @Body() approveOvertimeDto: ApproveOvertimeDto,
+    @User() currentUser: Types.ObjectId,
+    @Param('id') id: Types.ObjectId,
+  ) {
+    const overtime = await this.overtimeService.approval(approveOvertimeDto, currentUser, id);
+    return successfulResponse(`${OVERTIME_MODEL} approved successfully`, overtime);
   }
 }

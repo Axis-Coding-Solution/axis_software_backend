@@ -8,6 +8,7 @@ import {
   Put,
   Query,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
@@ -19,7 +20,9 @@ import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.d
 import { AppConfigService } from 'src/config';
 import { FileValidationPipe } from 'src/pipes/file';
 import { Types } from 'mongoose';
+import { JwtAuthGuard } from 'src/middlewares/guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('project')
 export class ProjectController {
   constructor(
