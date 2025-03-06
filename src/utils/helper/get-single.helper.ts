@@ -7,7 +7,11 @@ import { isValidMongoId } from '../is-valid-mongoId';
  * @param {String} modelName model to query with
  * @returns {Object} single document from db
  */
-export const getSingleHelper = async (id: Types.ObjectId, MODEL: string, modelName: Model<any>) => {
+export const getSingleHelper = async <T>(
+  id: Types.ObjectId,
+  MODEL: string,
+  modelName: Model<any>,
+) => {
   if (!isValidMongoId(id)) {
     throw badRequestException('Id is not valid');
   }
@@ -17,5 +21,5 @@ export const getSingleHelper = async (id: Types.ObjectId, MODEL: string, modelNa
     throw notFoundException(`${MODEL} not found`);
   }
 
-  return singleDocument;
+  return singleDocument as T;
 };

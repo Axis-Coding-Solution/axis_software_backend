@@ -4,6 +4,9 @@ import { Model, Types } from 'mongoose';
 import { ApproveLeaveDto } from 'src/definitions/dtos/employees/leave/approve-leave.dto';
 import { CreateLeaveDto } from 'src/definitions/dtos/employees/leave/create-leave.dto';
 import { EditLeaveDto } from 'src/definitions/dtos/employees/leave/edit-leave.dto';
+import { FindUser } from 'src/interface';
+import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
+import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { LEAVE_MODEL, LeaveDocument } from 'src/schemas/employees/leave';
 import { badRequestException, notFoundException } from 'src/utils';
 import { createHelper, deleteHelper, editHelper, getSingleHelper } from 'src/utils/helper';
@@ -13,9 +16,23 @@ export class LeaveService {
   constructor(
     @InjectModel(LEAVE_MODEL)
     private readonly leaveModel: Model<LeaveDocument>,
+
+    @InjectModel(EMPLOYEE_MODEL)
+    private readonly employeeModel: Model<EmployeeDocument>,
+
+    @InjectModel(USER_MODEL)
+    private readonly userModel: Model<UserDocument>,
   ) {}
 
-  async create(createLeaveDto: CreateLeaveDto) {
+  async create(createLeaveDto: CreateLeaveDto, currentUser: Types.ObjectId) {
+    const findCurrentUser = currentUser
+      ? await getSingleHelper<FindUser>(currentUser, USER_MODEL, this.userModel)
+      : null;
+
+    const employeeId = findCurrentUser?.employeeId;
+    employeeId ? await getSingleHelper(employeeId, EMPLOYEE_MODEL, this.employeeModel) : null;
+    createLeaveDto.employeeId = employeeId;
+
     const { from, to } = createLeaveDto;
     if (from > to) {
       throw badRequestException('From date should be less than to date');
@@ -35,12 +52,14 @@ export class LeaveService {
 
   async edit(editLeaveDto: EditLeaveDto, id: Types.ObjectId) {
     const { from, to } = editLeaveDto;
-    if (from > to || from === to) {
-      throw badRequestException('From date should be less than to date');
-    }
+    if (from && to) {
+      if (from > to || from === to) {
+        throw badRequestException('From date should be less than to date');
+      }
 
-    const noOfDays = (to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24);
-    editLeaveDto.noOfDays = noOfDays;
+      const noOfDays = Math.ceil((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+      editLeaveDto.noOfDays = noOfDays;
+    }
 
     const editLeave = await editHelper(id, editLeaveDto, LEAVE_MODEL, this.leaveModel);
 
@@ -56,7 +75,7 @@ export class LeaveService {
   async getAll(
     page: string,
     limit: string,
-    search?: string,
+    employee?: string,
     leaveType?: string,
     status?: string,
     from?: string,
@@ -70,14 +89,35 @@ export class LeaveService {
     const toDate = new Date(to);
 
     let filters = {};
-    // search ? (filters['reason'] = { $regex: search, $options: 'i' }) : null;
+    const populateOptions = {
+      path: 'employeeId',
+      select: 'profileImage firstName lastName',
+    };
+    // employee ? (filters['reason'] = { $regex: employee, $options: 'i' }) : null;
+    employee
+      ? (filters = {
+          $lookup: {
+            from: EMPLOYEE_MODEL,
+            localField: 'employeeId',
+            foreignField: '_id',
+            as: 'employeeId',
+          },
+        })
+      : null;
     leaveType ? (filters['leaveType'] = leaveType) : null;
     status ? (filters['status'] = status) : null;
     from ? (filters['from'] = { $gte: fromDate }) : null;
     to ? (filters['to'] = { $lte: toDate }) : null;
 
     const [items, totalItems] = await Promise.all([
-      this.leaveModel.find(filters).sort('-createdAt').skip(skip).limit(limitNumber).lean().exec(),
+      this.leaveModel
+        .find(filters)
+        .sort('-createdAt')
+        .skip(skip)
+        .limit(limitNumber)
+        .populate('employeeId', 'profileImage firstName lastName')
+        .lean()
+        .exec(),
       this.leaveModel.countDocuments(filters).exec(),
     ]);
     if (items.length === 0) {

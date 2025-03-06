@@ -26,8 +26,8 @@ export class LeaveController {
   constructor(private readonly leaveService: LeaveService) {}
 
   @Post()
-  async create(@Body() createLeaveDto: CreateLeaveDto) {
-    const leave = await this.leaveService.create(createLeaveDto);
+  async create(@Body() createLeaveDto: CreateLeaveDto, @User() currentUser: Types.ObjectId) {
+    const leave = await this.leaveService.create(createLeaveDto, currentUser);
     return successfulResponse(`${LEAVE_MODEL} created successfully`, leave);
   }
 
@@ -47,13 +47,21 @@ export class LeaveController {
   async getAll(
     @Query('page') page: string,
     @Query('limit') limit: string,
-    @Query('search') search: string,
+    @Query('employee') employee: string,
     @Query('leaveType') leaveType: string,
     @Query('status') status: string,
     @Query('from') from: string,
     @Query('to') to: string,
   ) {
-    const leave = await this.leaveService.getAll(search, page, limit, leaveType, status, from, to);
+    const leave = await this.leaveService.getAll(
+      employee,
+      page,
+      limit,
+      leaveType,
+      status,
+      from,
+      to,
+    );
     return successfulResponse(`${LEAVE_MODEL} found successfully`, leave);
   }
 
