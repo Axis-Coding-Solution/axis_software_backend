@@ -6,25 +6,25 @@ import { Department } from 'src/schemas/employees/department';
 export class CreateTeamDto {
   @IsString()
   @IsNotEmpty()
-  teamName: string;
+  teamName: String;
 
   @IsString()
   @IsMongoId()
   @IsOptional()
-  teamLeader?: string | Types.ObjectId | User;
+  teamLeader?: String | Types.ObjectId | User;
 
   @IsString()
   @IsMongoId()
   @IsOptional()
-  teamManager?: string | Types.ObjectId | User;
+  teamManager?: String | Types.ObjectId | User;
 
   @IsString({ each: true })
   @IsMongoId({ each: true })
   @IsOptional()
-  teamMembers?: string[] | Types.ObjectId[] | User[];
+  teamMembers?: String[] | Types.ObjectId[] | User[];
 
   @IsString()
   @IsMongoId()
   @IsOptional()
-  department?: string | Types.ObjectId | Department;
+  department?: String | Types.ObjectId | Department;
 }

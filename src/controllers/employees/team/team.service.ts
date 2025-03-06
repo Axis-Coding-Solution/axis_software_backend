@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   CreateTeamDto,
   EditTeamDto,
@@ -11,10 +11,10 @@ import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
 import {
   badRequestException,
   conflictException,
-  getPagination,
   isValidMongoId,
   notFoundException,
-} from 'src/util';
+} from 'src/utils';
+import { getAllHelper } from 'src/utils/helper';
 
 @Injectable()
 export class TeamService {
@@ -158,7 +158,7 @@ export class TeamService {
     return team;
   }
 
-  async getSingle(id: string): Promise<any> {
+  async getSingle(id: Types.ObjectId): Promise<any> {
     if (!isValidMongoId(id)) {
       throw badRequestException('team id is not valid');
     }
@@ -173,7 +173,7 @@ export class TeamService {
 
   async getAll(page: string, limit: string, search: string) {
     const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getPagination(
+      await getAllHelper(
         page,
         limit,
         this.teamModel,
@@ -197,7 +197,7 @@ export class TeamService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('team id is not valid');
     }

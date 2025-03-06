@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   createDesignationDto,
   editDesignationDto,
@@ -15,10 +15,10 @@ import {
 } from 'src/schemas/employees/designation';
 import {
   badRequestException,
-  getPagination,
   isValidMongoId,
   notFoundException,
-} from 'src/util';
+} from 'src/utils';
+import { getAllHelper } from 'src/utils/helper';
 
 @Injectable()
 export class DesignationService {
@@ -55,7 +55,7 @@ export class DesignationService {
     return designation;
   }
 
-  async edit(editDesignationDto: editDesignationDto, id: string) {
+  async edit(editDesignationDto: editDesignationDto, id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Designation id is not valid');
     }
@@ -95,7 +95,7 @@ export class DesignationService {
     return editDesignation;
   }
 
-  async getSingle(id: string) {
+  async getSingle(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Designation id is not valid');
     }
@@ -112,7 +112,7 @@ export class DesignationService {
 
   async getAll(page: string, limit: string, search: string) {
     const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getPagination(
+      await getAllHelper(
         page,
         limit,
         this.designationModel,
@@ -135,7 +135,7 @@ export class DesignationService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Designation id is not valid');
     }

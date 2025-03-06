@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
 import {
   DEPARTMENT_MODEL,
@@ -17,14 +17,14 @@ import {
 import {
   badRequestException,
   conflictException,
-  getPagination,
   isValidMongoId,
   notFoundException,
-} from 'src/util';
+} from 'src/utils';
 import * as bcrypt from 'bcrypt';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';
 import { EditEmployeeDto } from 'src/definitions/dtos/employees/employee/edit';
+import { getAllHelper } from 'src/utils/helper';
 
 @Injectable()
 export class EmployeeService {
@@ -198,7 +198,7 @@ export class EmployeeService {
     return employee;
   }
 
-  async getSingle(id: string) {
+  async getSingle(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Employee id is not valid');
     }
@@ -213,7 +213,7 @@ export class EmployeeService {
 
   async getAll(page: string, limit: string, search: string) {
     const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getPagination(page, limit, this.employeeModel, search, 'userName');
+      await getAllHelper(page, limit, this.employeeModel, search, 'userName');
 
     if (items.length === 0) {
       throw notFoundException('Departments not found');
@@ -230,7 +230,7 @@ export class EmployeeService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Employee id is not valid');
     }

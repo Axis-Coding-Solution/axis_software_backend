@@ -4,11 +4,11 @@ import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 export class FamilyInformationDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name: String;
 
   @IsString()
   @IsNotEmpty()
-  relationship: string;
+  relationship: String;
 
   @IsDate()
   @IsNotEmpty()
@@ -17,5 +17,5 @@ export class FamilyInformationDto {
 
   @IsString()
   @IsNotEmpty()
-  phone: string;
+  phone: String;
 }

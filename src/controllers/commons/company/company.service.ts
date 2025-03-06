@@ -1,18 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import {
-  createCompanyDto,
-  editCompanyDto,
-} from 'src/definitions/dtos/commons/company';
+import { Model, Types } from 'mongoose';
+import { createCompanyDto, editCompanyDto } from 'src/definitions/dtos/commons/company';
 import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
-import {
-  badRequestException,
-  getPagination,
-  isValidMongoId,
-  notFoundException,
-} from 'src/util';
+import { badRequestException, isValidMongoId, notFoundException } from 'src/utils';
+import { getAllHelper } from 'src/utils/helper';
 
 @Injectable()
 export class CompanyService {
@@ -46,7 +39,7 @@ export class CompanyService {
     return company;
   }
 
-  async edit(editCompanyDto: editCompanyDto, id: string) {
+  async edit(editCompanyDto: editCompanyDto, id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Company id is not valid');
     }
@@ -78,7 +71,7 @@ export class CompanyService {
     return editCompany;
   }
 
-  async getSingle(id: string) {
+  async getSingle(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Company id is not valid');
     }
@@ -92,14 +85,14 @@ export class CompanyService {
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getPagination(
-        page,
-        limit,
-        this.companyModel,
-        search,
-        'companyName',
-      );
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
+      page,
+      limit,
+      this.companyModel,
+      search,
+      'companyName',
+      'owner',
+    );
 
     if (items.length === 0) {
       throw notFoundException('Departments not found');
@@ -116,7 +109,7 @@ export class CompanyService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
       throw badRequestException('Company id is not valid');
     }

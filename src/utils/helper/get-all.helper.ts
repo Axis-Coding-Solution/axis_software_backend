@@ -1,18 +1,20 @@
 import { Model } from 'mongoose';
+import { notFoundException } from '../custom-exception';
 /**
- * @param page page no
- * @param limit limit no
- * @param modelName model to query with
- * @param search i don't know what is this for
- * @param searchField field to search
- * @param populate fields to populate
+ * @param {Number} page page no comes form query
+ * @param {Number} limit limit no comes form query
+ * @param {String} modelName model to query with
+ * @param {String} search search come from user
+ * @param {String} searchField field to search
+ * @param {String} populate fields to populate
+ * @returns {Object} items, totalItems, totalPages, itemsPerPage, currentPage
  */
-export const getPagination = async (
+export const getAllHelper = async (
   page: string,
   limit: string,
   modelName: Model<any>,
-  search: string,
-  searchField: string,
+  search: string = null,
+  searchField: string = null,
   populate: string = '',
 ) => {
   const pageNumber = parseInt(page) || 1;
@@ -37,6 +39,10 @@ export const getPagination = async (
       .exec(),
     modelName.countDocuments(filters).exec(),
   ]);
+  if (items.length === 0) {
+    throw notFoundException(`${modelName.modelName} not found`);
+  }
+
   const totalPages = Math.ceil(totalItems / limitNumber);
 
   return {

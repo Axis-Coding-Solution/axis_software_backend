@@ -11,11 +11,12 @@ import {
 } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
-import { successfulResponse } from 'src/util';
+import { successfulResponse } from 'src/utils';
 import {
   CreateTeamDto,
   EditTeamDto,
 } from 'src/definitions/dtos/employees/team';
+import { Types } from 'mongoose';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('team')
@@ -36,7 +37,7 @@ export class TeamController {
   }
 
   @Get(':id')
-  async get(@Param('id') id: string) {
+  async get(@Param('id') id: Types.ObjectId) {
     const team = await this.teamService.getSingle(id);
     return successfulResponse('team found successfully', team);
   }
@@ -52,7 +53,7 @@ export class TeamController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: Types.ObjectId) {
     const team = await this.teamService.delete(id);
     return successfulResponse('team deleted successfully', team);
   }

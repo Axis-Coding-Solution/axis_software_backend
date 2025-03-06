@@ -1,6 +1,7 @@
-import { IsNotEmpty, IsMongoId, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsMongoId, IsOptional, IsString, IsUrl } from 'class-validator';
 import { Types } from 'mongoose';
 import { Company } from 'src/schemas/commons/company';
+import { IsFile } from 'src/validator';
 
 export class createCompanyDto {
   //* basic info

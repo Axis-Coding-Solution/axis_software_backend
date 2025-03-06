@@ -4,7 +4,7 @@ import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 export class CreateHolidayDto {
   @IsString()
   @IsNotEmpty()
-  holidayName: string;
+  holidayName: String;
 
   @IsDate()
   @IsNotEmpty()

@@ -14,8 +14,9 @@ import {
   createDepartmentDto,
   editDepartmentDto,
 } from 'src/definitions/dtos/employees/department';
-import { successfulResponse } from 'src/util';
+import { successfulResponse } from 'src/utils';
 import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
+import { Types } from 'mongoose';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('department')
@@ -30,7 +31,7 @@ export class DepartmentController {
 
   @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id') id: Types.ObjectId,
     @Body() editDepartmentDto: editDepartmentDto,
   ) {
     const editDepartment = await this.departmentService.edit(
@@ -42,7 +43,7 @@ export class DepartmentController {
   }
 
   @Get(':id')
-  async get(@Param('id') id: string) {
+  async get(@Param('id') id: Types.ObjectId) {
     const department = await this.departmentService.getSingle(id);
     return successfulResponse('Department found successfully', department);
   }
@@ -62,7 +63,7 @@ export class DepartmentController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: Types.ObjectId) {
     const department = await this.departmentService.delete(id);
     return successfulResponse('Department deleted successfully', department);
   }

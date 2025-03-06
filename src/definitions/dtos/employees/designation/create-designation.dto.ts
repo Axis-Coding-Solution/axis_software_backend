@@ -5,9 +5,9 @@ import { Department } from 'src/schemas/employees/department';
 export class createDesignationDto {
   @IsString()
   @IsNotEmpty()
-  designationName: string;
+  designationName: String;
 
   @IsNotEmpty()
   @IsMongoId({ message: 'Department id is not valid' })
-  departmentId: string | Types.ObjectId | Department;
+  departmentId: String | Types.ObjectId | Department;
 }

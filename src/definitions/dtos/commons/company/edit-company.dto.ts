@@ -1,110 +1,124 @@
 import { IsNotEmpty, IsMongoId, IsOptional, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 import { Company } from 'src/schemas/commons/company';
+import { IsFile } from 'src/validator';
 
 export class editCompanyDto {
   //* basic info
-  profileImage: String;
+  profileImage?: String;
 
   @IsString()
   @IsNotEmpty()
-  companyName: String;
+  @IsOptional()
+  companyName?: String;
 
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
   email: String;
 
   @IsString()
   @IsNotEmpty()
-  phoneNumber1: String;
+  @IsOptional()
+  phoneNumber1?: String;
 
   @IsString()
   @IsNotEmpty()
-  phoneNumber2: String;
+  @IsOptional()
+  phoneNumber2?: String;
 
   @IsString()
   @IsNotEmpty()
-  fax: String;
+  @IsOptional()
+  fax?: String;
 
   @IsString()
   @IsOptional()
-  website: String;
+  website?: String;
 
   @IsNotEmpty()
   @IsMongoId({ message: 'Owner id is not valid' })
-  owner: string | Types.ObjectId | Company;
+  @IsOptional()
+  owner?: string | Types.ObjectId | Company;
 
   @IsString({ each: true })
   @IsNotEmpty()
-  tags: String[];
+  @IsOptional()
+  tags?: String[];
 
   @IsString()
   @IsNotEmpty()
-  deals: String;
+  @IsOptional()
+  deals?: String;
 
   @IsString()
   @IsNotEmpty()
-  industry: String;
+  @IsOptional()
+  industry?: String;
 
   @IsString()
   @IsNotEmpty()
-  contact: String;
+  @IsOptional()
+  contact?: String;
 
   @IsString()
   @IsNotEmpty()
-  currency: String;
+  @IsOptional()
+  currency?: String;
 
   @IsString()
   @IsNotEmpty()
-  language: String;
+  @IsOptional()
+  language?: String;
 
   @IsString()
   @IsNotEmpty()
-  aboutCompany: String;
+  @IsOptional()
+  aboutCompany?: String;
 
   //* address
   @IsString()
   @IsOptional()
-  primaryAddress: String;
+  primaryAddress?: String;
 
   @IsString()
   @IsOptional()
-  secondaryAddress: String;
+  secondaryAddress?: String;
 
   @IsString()
   @IsOptional()
-  city: String;
+  city?: String;
 
   @IsString()
   @IsOptional()
-  state: String;
+  state?: String;
 
   @IsString()
   @IsOptional()
-  country: String;
+  country?: String;
 
   @IsString()
   @IsOptional()
-  zipCode: String;
+  zipCode?: String;
 
   //* social profile
   @IsString()
   @IsOptional()
-  facebook: String;
+  facebook?: String;
 
   @IsString()
   @IsOptional()
-  instagram: String;
+  instagram?: String;
 
   @IsString()
   @IsOptional()
-  linkedin: String;
+  linkedin?: String;
 
   @IsString()
   @IsOptional()
-  twitter: String;
+  twitter?: String;
 
   @IsString()
   @IsOptional()
-  youtube: String;
+  youtube?: String;
 }

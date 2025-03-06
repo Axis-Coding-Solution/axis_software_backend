@@ -23,33 +23,33 @@ import { EditFamilyInformationDto } from './family-information.dto';
 import { EditPersonalInformationDto } from './personal-information.dto';
 
 export class EditEmployeeDto {
-  profileImage: string;
+  profileImage: String;
 
   @IsString()
   @IsOptional()
-  firstName: string;
+  firstName: String;
 
   @IsString()
   @IsOptional()
-  lastName: string;
+  lastName: String;
 
   @IsString()
   @IsOptional()
-  userName: string;
+  userName: String;
 
   @IsEmail()
   @IsOptional()
-  email: string;
+  email: String;
 
   @ValidateIf((dto) => dto !== undefined)
   @IsString()
   @IsOptional()
-  password: string;
+  password: String;
 
   @ValidateIf((dto) => dto !== undefined)
   @IsString()
   @IsOptional()
-  confirmPassword: string;
+  confirmPassword: String;
 
   @IsOptional()
   @Type(() => Date)
@@ -58,19 +58,19 @@ export class EditEmployeeDto {
 
   @IsString()
   @IsOptional()
-  phone?: string;
+  phone?: String;
 
   @IsOptional()
   @IsMongoId({ message: 'Company id is not valid' })
-  companyId: string | Types.ObjectId | Company;
+  companyId: String | Types.ObjectId | Company;
 
   @IsOptional()
   @IsMongoId({ message: 'Department id is not valid' })
-  departmentId: string | Types.ObjectId | Department;
+  departmentId: String | Types.ObjectId | Department;
 
   @IsOptional()
   @IsMongoId({ message: 'Designation id is not valid' })
-  designationId: string | Types.ObjectId | Designation;
+  designationId: String | Types.ObjectId | Designation;
 
   @IsEnum(Role)
   @IsOptional()
@@ -83,7 +83,7 @@ export class EditEmployeeDto {
 
   @IsString()
   @IsOptional()
-  address: string;
+  address: String;
 
   @IsEnum(Gender)
   @IsOptional()
@@ -91,19 +91,19 @@ export class EditEmployeeDto {
 
   @IsMongoId({ message: 'reportsTo id is not valid' })
   @IsOptional()
-  reportsTo: string | Types.ObjectId;
+  reportsTo: String | Types.ObjectId;
 
   @IsString()
   @IsOptional()
-  state: string;
+  state: String;
 
   @IsString()
   @IsOptional()
-  country: string;
+  country: String;
 
   @IsString()
   @IsOptional()
-  pinCode?: string;
+  pinCode?: String;
 
   @IsOptional()
   @ValidateNested()

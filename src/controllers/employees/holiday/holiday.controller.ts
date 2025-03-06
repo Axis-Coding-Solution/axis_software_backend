@@ -1,21 +1,9 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { HolidayService } from './holiday.service';
 import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
-import {
-  CreateHolidayDto,
-  EditHolidayDto,
-} from 'src/definitions/dtos/employees/holiday';
-import { successfulResponse } from 'src/util';
+import { CreateHolidayDto, EditHolidayDto } from 'src/definitions/dtos/employees/holiday';
+import { successfulResponse } from 'src/utils';
+import { Types } from 'mongoose';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('holiday')
@@ -29,17 +17,14 @@ export class HolidayController {
   }
 
   @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() editHolidayDto: EditHolidayDto,
-  ) {
+  async update(@Param('id') id: Types.ObjectId, @Body() editHolidayDto: EditHolidayDto) {
     const editHoliday = await this.holidayService.edit(editHolidayDto, id);
 
     return successfulResponse('Holiday edited successfully', editHoliday);
   }
 
   @Get(':id')
-  async get(@Param('id') id: string) {
+  async get(@Param('id') id: Types.ObjectId) {
     const holiday = await this.holidayService.getSingle(id);
     return successfulResponse('Holiday found successfully', holiday);
   }
@@ -55,7 +40,7 @@ export class HolidayController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: Types.ObjectId) {
     const holiday = await this.holidayService.delete(id);
     return successfulResponse('Holiday deleted successfully', holiday);
   }
