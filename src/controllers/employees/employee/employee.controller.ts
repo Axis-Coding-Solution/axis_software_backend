@@ -38,7 +38,7 @@ export class EmployeeController {
   )
   async create(
     @Body() createEmployeeDto: CreateEmployeeDto,
-    @UploadedFile(new FileValidationPipe(true, 'Profile image')) profileImage: Express.Multer.File,
+    @UploadedFile(new FileValidationPipe(false, 'Profile image')) profileImage: Express.Multer.File,
   ) {
     if (profileImage) {
       createEmployeeDto.profileImage = `${this.appConfigService.serverPath}/uploads/images/${profileImage.filename}`;
