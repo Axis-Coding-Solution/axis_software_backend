@@ -1,5 +1,14 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsMongoId,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { Types } from 'mongoose';
 import { LeaveType } from 'src/schemas/enums/employees/leave';
 
 export class CreateLeaveDto {
@@ -25,4 +34,10 @@ export class CreateLeaveDto {
   @IsNotEmpty()
   @IsString()
   reason: String;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsMongoId({ message: 'Employee id is not valid' })
+  @IsOptional()
+  employeeId?: Types.ObjectId;
 }

@@ -5,19 +5,9 @@ import {
   createDesignationDto,
   editDesignationDto,
 } from 'src/definitions/dtos/employees/designation';
-import {
-  DEPARTMENT_MODEL,
-  DepartmentDocument,
-} from 'src/schemas/employees/department';
-import {
-  DESIGNATION_MODEL,
-  DesignationDocument,
-} from 'src/schemas/employees/designation';
-import {
-  badRequestException,
-  isValidMongoId,
-  notFoundException,
-} from 'src/utils';
+import { DEPARTMENT_MODEL, DepartmentDocument } from 'src/schemas/employees/department';
+import { DESIGNATION_MODEL, DesignationDocument } from 'src/schemas/employees/designation';
+import { badRequestException, isValidMongoId, notFoundException } from 'src/utils';
 import { getAllHelper } from 'src/utils/helper';
 
 @Injectable()
@@ -72,8 +62,7 @@ export class DesignationService {
     }
 
     if (departmentId) {
-      const departmentExists =
-        await this.departmentModel.findById(departmentId);
+      const departmentExists = await this.departmentModel.findById(departmentId);
 
       if (!departmentExists) {
         throw badRequestException('Department not found');
@@ -100,9 +89,7 @@ export class DesignationService {
       throw badRequestException('Designation id is not valid');
     }
 
-    const designation = await this.designationModel
-      .findById(id)
-      .populate('departmentId');
+    const designation = await this.designationModel.findById(id).populate('departmentId');
     if (!designation) {
       throw notFoundException('Designation not found');
     }
@@ -111,14 +98,14 @@ export class DesignationService {
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getAllHelper(
-        page,
-        limit,
-        this.designationModel,
-        search,
-        'designationName',
-      );
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
+      page,
+      limit,
+      this.designationModel,
+      search,
+      'designationName',
+      'departmentId',
+    );
 
     if (items.length === 0) {
       throw notFoundException('Departments not found');
