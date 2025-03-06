@@ -1,21 +1,21 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class FamilyInformationDto {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   name: String;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   relationship: String;
 
   @IsDate()
-  @IsNotEmpty()
+  @IsOptional()
   @Type(() => Date)
   dateOfBirth: Date;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   phone: String;
 }

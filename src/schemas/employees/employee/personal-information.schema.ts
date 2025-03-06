@@ -12,7 +12,7 @@ export class PersonalInformation {
   @Prop()
   tel?: String;
 
-  @Prop({ required: true })
+  @Prop()
   nationality: String;
 
   @Prop()
@@ -21,8 +21,6 @@ export class PersonalInformation {
   @Prop({
     type: String,
     enum: Object.keys(MaritalStatus),
-    immutable: true,
-    required: true,
   })
   maritalStatus: MaritalStatus;
 

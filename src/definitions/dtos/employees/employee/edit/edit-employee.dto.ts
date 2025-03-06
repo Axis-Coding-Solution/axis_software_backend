@@ -51,6 +51,11 @@ export class EditEmployeeDto {
   @IsOptional()
   confirmPassword: String;
 
+  //* this is will assign by company to employee
+  @IsString()
+  @IsOptional()
+  employeeId?: String;
+
   @IsOptional()
   @Type(() => Date)
   @IsOptional()

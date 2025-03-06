@@ -15,7 +15,7 @@ export class PersonalInformationDto {
   tel?: String;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   nationality: String;
 
   @IsString()
@@ -23,7 +23,7 @@ export class PersonalInformationDto {
   religion?: String;
 
   @IsEnum(MaritalStatus)
-  @IsNotEmpty()
+  @IsOptional()
   maritalStatus: MaritalStatus;
 
   @IsString()

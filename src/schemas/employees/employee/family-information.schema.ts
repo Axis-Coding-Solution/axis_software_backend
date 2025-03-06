@@ -2,18 +2,17 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
 export class FamilyInformation {
-  @Prop({ required: true })
+  @Prop()
   name: String;
 
-  @Prop({ required: true })
+  @Prop()
   relationship: String;
 
-  @Prop({ required: true })
+  @Prop()
   dateOfBirth: Date;
 
-  @Prop({ required: true })
+  @Prop()
   phone: String;
 }
 
-export const familyInformationSchema =
-  SchemaFactory.createForClass(FamilyInformation);
+export const familyInformationSchema = SchemaFactory.createForClass(FamilyInformation);

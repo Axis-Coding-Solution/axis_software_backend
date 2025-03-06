@@ -2,15 +2,15 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class EmergencyContactDto {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   name: String;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   relationship: String;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   phone1: String;
 
   @IsString()

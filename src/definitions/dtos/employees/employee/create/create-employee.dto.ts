@@ -52,6 +52,11 @@ export class CreateEmployeeDto {
   @IsNotEmpty()
   confirmPassword: String;
 
+  //* this is will assign by company to employee
+  @IsString()
+  @IsOptional()
+  employeeId?: String;
+
   @IsNotEmpty()
   @Type(() => Date)
   @IsNotEmpty()
@@ -83,11 +88,11 @@ export class CreateEmployeeDto {
   birthday?: Date;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   address: String;
 
   @IsEnum(Gender)
-  @IsNotEmpty()
+  @IsOptional()
   gender: Gender;
 
   @IsMongoId({ message: 'reportsTo id is not valid' })
@@ -95,11 +100,11 @@ export class CreateEmployeeDto {
   reportsTo: String | Types.ObjectId;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   state: String;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   country: String;
 
   @IsString()
