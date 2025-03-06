@@ -54,9 +54,9 @@ export class LeaveController {
     @Query('to') to: string,
   ) {
     const leave = await this.leaveService.getAll(
-      employee,
       page,
       limit,
+      employee,
       leaveType,
       status,
       from,

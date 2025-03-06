@@ -89,38 +89,47 @@ export class LeaveService {
     const toDate = new Date(to);
 
     let filters = {};
-    const populateOptions = {
-      path: 'employeeId',
-      select: 'profileImage firstName lastName',
-    };
-    // employee ? (filters['reason'] = { $regex: employee, $options: 'i' }) : null;
-    employee
-      ? (filters = {
-          $lookup: {
-            from: EMPLOYEE_MODEL,
-            localField: 'employeeId',
-            foreignField: '_id',
-            as: 'employeeId',
-          },
-        })
-      : null;
+    // employee ? (filters['employee.firstName'] = { $regex: employee, $options: 'i' }) : null;
+    // employee
+    //   ? (filters = {
+    //       $lookup: {
+    //         from: EMPLOYEE_MODEL,
+    //         localField: 'employeeId',
+    //         foreignField: '_id',
+    //         // as: 'employeeId',
+    //       },
+    //     })
+    //   : null;
     leaveType ? (filters['leaveType'] = leaveType) : null;
     status ? (filters['status'] = status) : null;
     from ? (filters['from'] = { $gte: fromDate }) : null;
     to ? (filters['to'] = { $lte: toDate }) : null;
 
+    console.log('🚀 ~ LeaveService ~ filters:', filters);
     const [items, totalItems] = await Promise.all([
       this.leaveModel
         .find(filters)
         .sort('-createdAt')
         .skip(skip)
         .limit(limitNumber)
-        .populate('employeeId', 'profileImage firstName lastName')
+        .populate({
+          path: 'employeeId',
+          select: 'profileImage firstName lastName',
+          match: employee
+            ? {
+                $or: [
+                  { firstName: { $regex: employee, $options: 'i' } },
+                  { lastName: { $regex: employee, $options: 'i' } },
+                ],
+              }
+            : {},
+        })
         .lean()
         .exec(),
       this.leaveModel.countDocuments(filters).exec(),
     ]);
-    if (items.length === 0) {
+    const filteredItems = employee ? items.filter((item) => item.employeeId) : items;
+    if (filteredItems.length === 0) {
       throw notFoundException(`${LEAVE_MODEL} not found`);
     }
 
