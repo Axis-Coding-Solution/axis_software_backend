@@ -20,7 +20,6 @@ export class Project {
     type: String,
     enum: ProjectType,
     immutable: false,
-    required: true,
   })
   projectType: ProjectType;
 

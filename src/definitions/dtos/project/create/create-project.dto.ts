@@ -26,6 +26,7 @@ export class CreateProjectDto {
 
   @IsEnum(ProjectType)
   @IsNotEmpty()
+  @IsOptional()
   projectType: String;
 
   @IsMongoId()
