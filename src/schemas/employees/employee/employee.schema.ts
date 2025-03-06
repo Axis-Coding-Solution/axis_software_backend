@@ -38,7 +38,7 @@ export class Employee {
   @Prop({ required: true })
   confirmPassword: String;
 
-  //* this is will assign by company to employee
+  //* this id will assign by company to employee
   @Prop()
   employeeId?: String;
 

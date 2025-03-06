@@ -112,24 +112,13 @@ export class LeaveService {
         .sort('-createdAt')
         .skip(skip)
         .limit(limitNumber)
-        .populate({
-          path: 'employeeId',
-          select: 'profileImage firstName lastName',
-          match: employee
-            ? {
-                $or: [
-                  { firstName: { $regex: employee, $options: 'i' } },
-                  { lastName: { $regex: employee, $options: 'i' } },
-                ],
-              }
-            : {},
-        })
+        .populate('employeeId', 'profileImage firstName lastName')
         .lean()
         .exec(),
       this.leaveModel.countDocuments(filters).exec(),
     ]);
-    const filteredItems = employee ? items.filter((item) => item.employeeId) : items;
-    if (filteredItems.length === 0) {
+
+    if (items.length === 0) {
       throw notFoundException(`${LEAVE_MODEL} not found`);
     }
 
