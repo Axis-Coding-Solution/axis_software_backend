@@ -182,7 +182,10 @@ export class EmployeeService {
     return employee;
   }
 
-  async getAll(page: string, limit: string, search: string) {
+  async getAll(page: string, limit: string, search: string, employeeId: string) {
+    let filters = {};
+    employeeId ? (filters['employeeId'] = { $regex: employeeId, $options: 'i' }) : null;
+
     const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
       page,
       limit,
@@ -190,11 +193,8 @@ export class EmployeeService {
       search,
       'firstName',
       'departmentId designationId',
+      filters,
     );
-
-    if (items.length === 0) {
-      throw notFoundException('Departments not found');
-    }
 
     return {
       data: items,

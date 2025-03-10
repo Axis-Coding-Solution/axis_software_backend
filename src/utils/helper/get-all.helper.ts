@@ -7,6 +7,7 @@ import { notFoundException } from '../custom-exception';
  * @param {String} search search come from user
  * @param {String} searchField field to search
  * @param {String} populate fields to populate
+ * @param {Object} filters fields to filter documents
  * @returns {Object} items, totalItems, totalPages, itemsPerPage, currentPage
  */
 export const getAllHelper = async (
@@ -16,16 +17,15 @@ export const getAllHelper = async (
   search: string = null,
   searchField: string = null,
   populate: string = '',
+  filters: object = {},
 ) => {
   const pageNumber = parseInt(page) || 1;
   const limitNumber = parseInt(limit) || 10;
   const skip = (pageNumber - 1) * limitNumber;
 
-  let filters = {};
+  // let filters = {};
   if (search && searchField !== null) {
-    filters = {
-      [searchField]: { $regex: search, $options: 'i' },
-    };
+    filters[searchField] = { $regex: search, $options: 'i' };
   }
 
   const [items, totalItems] = await Promise.all([
