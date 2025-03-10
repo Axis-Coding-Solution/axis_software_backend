@@ -185,18 +185,29 @@ export class EmployeeService {
   async getAll(
     page: string,
     limit: string,
-    search: string,
+    employeeName: string,
     employeeId: string,
     designationName: string,
   ) {
     let filters = {};
     employeeId ? (filters['employeeId'] = { $regex: employeeId, $options: 'i' }) : null;
 
+    if (designationName) {
+      const designationIds = await this.designationModel
+        .find({ designationName: { $regex: designationName, $options: 'i' } })
+        .distinct('_id')
+        .exec();
+
+      console.log('🚀 ~ EmployeeService ~ designationIds:', designationIds);
+      filters['designationId'] = { $in: designationIds };
+    }
+    console.log('🚀 ~ EmployeeService ~ filters:', filters);
+
     const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
       page,
       limit,
       this.employeeModel,
-      search,
+      employeeName,
       'firstName',
       'departmentId designationId',
       filters,

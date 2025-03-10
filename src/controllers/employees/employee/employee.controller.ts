@@ -77,14 +77,14 @@ export class EmployeeController {
   async getAll(
     @Query('page') page: string,
     @Query('limit') limit: string,
-    @Query('search') search: string,
+    @Query('employeeName') employeeName: string,
     @Query('employeeId') employeeId: string,
     @Query('designationName') designationName: string,
   ) {
     const employees = await this.employeeService.getAll(
       page,
       limit,
-      search,
+      employeeName,
       employeeId,
       designationName,
     );

@@ -43,7 +43,7 @@ export class OvertimeService {
   }
 
   async getSingle(id: Types.ObjectId) {
-    const overtime = await getSingleHelper(id, OVERTIME_MODEL, this.overtimeModel);
+    const overtime = await getSingleHelper(id, OVERTIME_MODEL, this.overtimeModel, 'employeeId');
 
     return overtime;
   }
