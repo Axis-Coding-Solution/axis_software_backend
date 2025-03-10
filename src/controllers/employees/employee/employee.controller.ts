@@ -79,8 +79,15 @@ export class EmployeeController {
     @Query('limit') limit: string,
     @Query('search') search: string,
     @Query('employeeId') employeeId: string,
+    @Query('designationName') designationName: string,
   ) {
-    const employees = await this.employeeService.getAll(page, limit, search, employeeId);
+    const employees = await this.employeeService.getAll(
+      page,
+      limit,
+      search,
+      employeeId,
+      designationName,
+    );
     return successfulResponse('Employees found successfully', employees);
   }
 

@@ -85,27 +85,24 @@ export class LeaveService {
     const limitNumber = parseInt(limit) || 10;
     const skip = (pageNumber - 1) * limitNumber;
 
-    const fromDate = new Date(from);
-    const toDate = new Date(to);
+    const fromDate = from ? new Date(from) : null;
+    const toDate = to ? new Date(to) : null;
 
     let filters = {};
-    // employee ? (filters['employee.firstName'] = { $regex: employee, $options: 'i' }) : null;
-    // employee
-    //   ? (filters = {
-    //       $lookup: {
-    //         from: EMPLOYEE_MODEL,
-    //         localField: 'employeeId',
-    //         foreignField: '_id',
-    //         // as: 'employeeId',
-    //       },
-    //     })
-    //   : null;
+    if (employee) {
+      const employeeIds = await this.employeeModel
+        .find({ firstName: { $regex: employee, $options: 'i' } })
+        .distinct('_id')
+        .exec();
+
+      filters['employeeId'] = { $in: employeeIds };
+    }
+
     leaveType ? (filters['leaveType'] = leaveType) : null;
     status ? (filters['status'] = status) : null;
     from ? (filters['from'] = { $gte: fromDate }) : null;
     to ? (filters['to'] = { $lte: toDate }) : null;
 
-    console.log('🚀 ~ LeaveService ~ filters:', filters);
     const [items, totalItems] = await Promise.all([
       this.leaveModel
         .find(filters)

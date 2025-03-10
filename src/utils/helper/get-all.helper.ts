@@ -4,10 +4,10 @@ import { notFoundException } from '../custom-exception';
  * @param {Number} page page no comes form query
  * @param {Number} limit limit no comes form query
  * @param {String} modelName model to query with
- * @param {String} search search come from user
- * @param {String} searchField field to search
- * @param {String} populate fields to populate
- * @param {Object} filters fields to filter documents
+ * @param {String} search search come from user default will be null
+ * @param {String} searchField field to search default will be null
+ * @param {String} populate fields to populate default will be empty string
+ * @param {Object} filters fields to filter documents default will be empty object
  * @returns {Object} items, totalItems, totalPages, itemsPerPage, currentPage
  */
 export const getAllHelper = async (
@@ -23,7 +23,6 @@ export const getAllHelper = async (
   const limitNumber = parseInt(limit) || 10;
   const skip = (pageNumber - 1) * limitNumber;
 
-  // let filters = {};
   if (search && searchField !== null) {
     filters[searchField] = { $regex: search, $options: 'i' };
   }

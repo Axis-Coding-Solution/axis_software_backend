@@ -182,7 +182,13 @@ export class EmployeeService {
     return employee;
   }
 
-  async getAll(page: string, limit: string, search: string, employeeId: string) {
+  async getAll(
+    page: string,
+    limit: string,
+    search: string,
+    employeeId: string,
+    designationName: string,
+  ) {
     let filters = {};
     employeeId ? (filters['employeeId'] = { $regex: employeeId, $options: 'i' }) : null;
 
