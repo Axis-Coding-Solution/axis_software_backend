@@ -188,7 +188,7 @@ export class EmployeeService {
       limit,
       this.employeeModel,
       search,
-      'userName',
+      'firstName',
       'departmentId designationId',
     );
 
