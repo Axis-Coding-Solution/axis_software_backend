@@ -10,4 +10,8 @@ export class EditHolidayDto {
   @IsOptional()
   @Type(() => Date)
   holidayDate?: Date;
+
+  @IsString()
+  @IsOptional()
+  day?: any;
 }

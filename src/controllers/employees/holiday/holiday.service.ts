@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import {
-  CreateHolidayDto,
-  EditHolidayDto,
-} from 'src/definitions/dtos/employees/holiday';
+import { CreateHolidayDto, EditHolidayDto } from 'src/definitions/dtos/employees/holiday';
 import { HOLIDAY_MODEL, HolidayDocument } from 'src/schemas/employees/holiday';
 import {
   badRequestException,
@@ -22,14 +19,11 @@ export class HolidayService {
   ) {}
 
   async create(createHolidayDto: CreateHolidayDto) {
-    if (
-      createHolidayDto.constructor === Object &&
-      Object.keys(createHolidayDto).length === 0
-    ) {
+    if (createHolidayDto.constructor === Object && Object.keys(createHolidayDto).length === 0) {
       throw badRequestException('body is empty');
     }
 
-    const { holidayName } = createHolidayDto;
+    const { holidayName, holidayDate } = createHolidayDto;
 
     const holidayExists = await this.holidayModel.exists({
       holidayName,
@@ -37,6 +31,12 @@ export class HolidayService {
     if (holidayExists) {
       throw conflictException('Holiday already exists');
     }
+
+    const dayName = (date: Date, locale: string) => {
+      return date.toLocaleDateString(locale, { weekday: 'long' });
+    };
+
+    createHolidayDto.day = dayName(holidayDate, 'en-US');
 
     const holiday = await this.holidayModel.create(createHolidayDto);
     if (!holiday) {
@@ -51,14 +51,18 @@ export class HolidayService {
       throw badRequestException('Holiday id is not valid');
     }
 
-    if (
-      editHolidayDto.constructor === Object &&
-      Object.keys(editHolidayDto).length === 0
-    ) {
+    if (editHolidayDto.constructor === Object && Object.keys(editHolidayDto).length === 0) {
       throw badRequestException('body is empty');
     }
 
     const { holidayName, holidayDate } = editHolidayDto;
+
+    if (holidayDate) {
+      const dayName = (date: Date, locale: string) => {
+        return date.toLocaleDateString(locale, { weekday: 'long' });
+      };
+      editHolidayDto.day = dayName(holidayDate, 'en-US');
+    }
 
     const holidayExists = await this.holidayModel.exists({
       holidayName,
@@ -94,14 +98,13 @@ export class HolidayService {
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getAllHelper(
-        page,
-        limit,
-        this.holidayModel,
-        search,
-        'holidayName',
-      );
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
+      page,
+      limit,
+      this.holidayModel,
+      search,
+      'holidayName',
+    );
 
     if (items.length === 0) {
       throw notFoundException('Holidays not found');

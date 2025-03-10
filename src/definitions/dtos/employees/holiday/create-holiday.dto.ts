@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateHolidayDto {
   @IsString()
@@ -10,4 +10,8 @@ export class CreateHolidayDto {
   @IsNotEmpty()
   @Type(() => Date)
   holidayDate: Date;
+
+  @IsString()
+  @IsOptional()
+  day?: any;
 }
