@@ -41,6 +41,15 @@
 }
 ```
 
+2. employee
+
+```
+{
+    "email": "Reagan_Dietrich38@gmail.com",
+    "password": "securepassword123"
+}
+```
+
 ### Things to consider while development on this product
 
 1. Mark fields Optional which are not required. Both in schema and Dtos.

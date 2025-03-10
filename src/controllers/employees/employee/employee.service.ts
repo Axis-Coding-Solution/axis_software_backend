@@ -2,18 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
-import {
-  DEPARTMENT_MODEL,
-  DepartmentDocument,
-} from 'src/schemas/employees/department';
-import {
-  DESIGNATION_MODEL,
-  DesignationDocument,
-} from 'src/schemas/employees/designation';
-import {
-  EMPLOYEE_MODEL,
-  EmployeeDocument,
-} from 'src/schemas/employees/employee';
+import { DEPARTMENT_MODEL, DepartmentDocument } from 'src/schemas/employees/department';
+import { DESIGNATION_MODEL, DesignationDocument } from 'src/schemas/employees/designation';
+import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import {
   badRequestException,
   conflictException,
@@ -46,14 +37,8 @@ export class EmployeeService {
   ) {}
 
   async create(createEmployeeDto: CreateEmployeeDto) {
-    const {
-      password,
-      confirmPassword,
-      userName,
-      companyId,
-      departmentId,
-      designationId,
-    } = createEmployeeDto;
+    const { password, confirmPassword, userName, companyId, departmentId, designationId } =
+      createEmployeeDto;
 
     let passwordExistInDto = false;
 
@@ -64,9 +49,7 @@ export class EmployeeService {
     if (passwordExistInDto) {
       if (password !== confirmPassword) {
         passwordExistInDto = false;
-        throw badRequestException(
-          'Password and confirm password does not match',
-        );
+        throw badRequestException('Password and confirm password does not match');
       }
     }
 
@@ -125,14 +108,8 @@ export class EmployeeService {
   }
 
   async edit(editEmployeeDto: EditEmployeeDto, id: string) {
-    const {
-      password,
-      confirmPassword,
-      userName,
-      companyId,
-      departmentId,
-      designationId,
-    } = editEmployeeDto;
+    const { password, confirmPassword, userName, companyId, departmentId, designationId } =
+      editEmployeeDto;
     let passwordExistInDto = false;
 
     if (password && confirmPassword) {
@@ -142,9 +119,7 @@ export class EmployeeService {
     if (passwordExistInDto) {
       if (password !== confirmPassword) {
         passwordExistInDto = false;
-        throw badRequestException(
-          'Password and confirm password does not match',
-        );
+        throw badRequestException('Password and confirm password does not match');
       }
     }
 
@@ -184,13 +159,9 @@ export class EmployeeService {
       }
     }
 
-    const employee = await this.employeeModel.findByIdAndUpdate(
-      id,
-      editEmployeeDto,
-      {
-        new: true,
-      },
-    );
+    const employee = await this.employeeModel.findByIdAndUpdate(id, editEmployeeDto, {
+      new: true,
+    });
     if (!employee) {
       throw notFoundException('Employee not found');
     }
@@ -212,8 +183,14 @@ export class EmployeeService {
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getAllHelper(page, limit, this.employeeModel, search, 'userName');
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
+      page,
+      limit,
+      this.employeeModel,
+      search,
+      'userName',
+      'departmentId designationId',
+    );
 
     if (items.length === 0) {
       throw notFoundException('Departments not found');
