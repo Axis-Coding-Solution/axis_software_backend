@@ -5,12 +5,7 @@ import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
 import { DEPARTMENT_MODEL, DepartmentDocument } from 'src/schemas/employees/department';
 import { DESIGNATION_MODEL, DesignationDocument } from 'src/schemas/employees/designation';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
-import {
-  badRequestException,
-  conflictException,
-  isValidMongoId,
-  notFoundException,
-} from 'src/utils';
+import { badRequestException, conflictException, notFoundException } from 'src/utils';
 import * as bcrypt from 'bcrypt';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';

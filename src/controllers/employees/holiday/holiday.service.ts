@@ -9,7 +9,7 @@ import {
   isValidMongoId,
   notFoundException,
 } from 'src/utils';
-import { getAllHelper } from 'src/utils/helper';
+import { deleteHelper, getAllHelper, getSingleHelper } from 'src/utils/helper';
 
 @Injectable()
 export class HolidayService {
@@ -51,10 +51,6 @@ export class HolidayService {
       throw badRequestException('Holiday id is not valid');
     }
 
-    if (editHolidayDto.constructor === Object && Object.keys(editHolidayDto).length === 0) {
-      throw badRequestException('body is empty');
-    }
-
     const { holidayName, holidayDate } = editHolidayDto;
 
     if (holidayDate) {
@@ -66,10 +62,12 @@ export class HolidayService {
 
     const holidayExists = await this.holidayModel.exists({
       holidayName,
+      _id: { $ne: id },
     });
     if (holidayExists) {
       throw conflictException('Holiday already exists');
     }
+
     const editHoliday = await this.holidayModel.findByIdAndUpdate(
       id,
       {
@@ -85,14 +83,7 @@ export class HolidayService {
   }
 
   async getSingle(id: Types.ObjectId) {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('Holiday id is not valid');
-    }
-
-    const holiday = await this.holidayModel.findById(id);
-    if (!holiday) {
-      throw notFoundException('Holiday not found');
-    }
+    const holiday = await getSingleHelper(id, HOLIDAY_MODEL, this.holidayModel);
 
     return holiday;
   }
@@ -106,10 +97,6 @@ export class HolidayService {
       'holidayName',
     );
 
-    if (items.length === 0) {
-      throw notFoundException('Holidays not found');
-    }
-
     return {
       data: items,
       pagination: {
@@ -122,14 +109,7 @@ export class HolidayService {
   }
 
   async delete(id: Types.ObjectId) {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('Holiday id is not valid');
-    }
-
-    const holiday = await this.holidayModel.findByIdAndDelete(id);
-    if (!holiday) {
-      throw notFoundException('Holiday not found');
-    }
+    const holiday = await deleteHelper(id, HOLIDAY_MODEL, this.holidayModel);
 
     return holiday;
   }
