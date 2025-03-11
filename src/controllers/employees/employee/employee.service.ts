@@ -15,7 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';
 import { EditEmployeeDto } from 'src/definitions/dtos/employees/employee/edit';
-import { getAllHelper } from 'src/utils/helper';
+import { deleteHelper, getAllHelper, getSingleHelper } from 'src/utils/helper';
 
 @Injectable()
 export class EmployeeService {
@@ -88,6 +88,7 @@ export class EmployeeService {
     const employee = await this.employeeModel.create({
       ...createEmployeeDto,
       password: passwordHash,
+      confirmPassword: passwordHash,
     });
     if (!employee) {
       throw badRequestException('Employee not created');
@@ -110,7 +111,7 @@ export class EmployeeService {
   async edit(editEmployeeDto: EditEmployeeDto, id: string) {
     const { password, confirmPassword, userName, companyId, departmentId, designationId } =
       editEmployeeDto;
-    let passwordExistInDto = false;
+    let passwordExistInDto: boolean;
 
     if (password && confirmPassword) {
       passwordExistInDto = true;
@@ -123,10 +124,12 @@ export class EmployeeService {
       }
     }
 
-    let passwordHash = null;
+    let passwordHash: string;
     if (passwordExistInDto) {
       const salt = bcrypt.genSaltSync(10);
       passwordHash = await bcrypt.hash(password, salt);
+      editEmployeeDto.password = passwordHash;
+      editEmployeeDto.confirmPassword = passwordHash;
     }
 
     const employeeExist = await this.employeeModel.exists({ userName });
@@ -166,18 +169,26 @@ export class EmployeeService {
       throw notFoundException('Employee not found');
     }
 
+    const updateData: any = { userName: employee.userName, email: employee.email };
+    if (passwordHash) {
+      updateData.password = passwordHash;
+    }
+
+    //? interacting with user model
+    const updateUser = await this.userModel.findOneAndUpdate(
+      { employeeId: employee._id },
+      updateData,
+      { new: true },
+    );
+    if (!updateUser) {
+      throw badRequestException('User not updated');
+    }
+
     return employee;
   }
 
   async getSingle(id: Types.ObjectId) {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('Employee id is not valid');
-    }
-
-    const employee = await this.employeeModel.findById(id);
-    if (!employee) {
-      throw notFoundException('Employee not found');
-    }
+    const employee = await getSingleHelper(id, EMPLOYEE_MODEL, this.employeeModel);
 
     return employee;
   }
@@ -225,14 +236,7 @@ export class EmployeeService {
   }
 
   async delete(id: Types.ObjectId) {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('Employee id is not valid');
-    }
-
-    const employee = await this.employeeModel.findByIdAndDelete(id);
-    if (!employee) {
-      throw notFoundException('Employee not found');
-    }
+    const employee = await deleteHelper(id, EMPLOYEE_MODEL, this.employeeModel);
 
     return employee;
   }
