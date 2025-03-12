@@ -4,7 +4,7 @@ import { badRequestException } from 'src/utils';
 
 /** 
   Pipe for validate file. This will validate file's type and size
-  @param {string} fileIsRequired pass true if file is required else false
+  @param {String} fileIsRequired pass true if file is required else false
 */
 @Injectable()
 export class FileValidationPipe implements PipeTransform {

@@ -96,4 +96,27 @@ export class OvertimeService {
 
     return overtime;
   }
+
+  async data(date: string) {
+    const [year, month, day] = date.split('-').map(Number);
+
+    const newDate = new Date(year, month - 1, day);
+    console.log('🚀 ~ OvertimeService ~ data ~ newDate:', newDate.toISOString());
+
+    const firstDay = new Date(newDate.getFullYear(), newDate.getMonth(), 1);
+    console.log('🚀 ~ OvertimeService ~ data ~ firstDay:', firstDay.toISOString());
+
+    const lastDay = new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0);
+    console.log('🚀 ~ OvertimeService ~ data ~ lastDay:', lastDay.toISOString());
+    const data = await this.overtimeModel.aggregate([
+      {
+        $match: {
+          overtimeDate: { $gte: firstDay, $lte: lastDay },
+        },
+      },
+    ]);
+    // console.log('dddddddddddddddddddddd', data);
+
+    return data;
+  }
 }

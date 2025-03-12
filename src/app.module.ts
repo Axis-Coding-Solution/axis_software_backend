@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CheckDbConnectionCommand } from './command';
-import globalImports from './app.imports';
+import GlobalImports from './app.imports';
 @Module({
-  imports: globalImports,
+  imports: GlobalImports,
   controllers: [AppController],
   providers: [
     AppService,
