@@ -98,25 +98,31 @@ export class OvertimeService {
   }
 
   async data(date: string) {
-    const [year, month, day] = date.split('-').map(Number);
+    const [year, month] = date.split('-').map(Number);
+    console.log('🚀 ~ OvertimeService ~ data ~ month:', month);
+    console.log('🚀 ~ OvertimeService ~ data ~ year:', year);
 
-    const newDate = new Date(year, month - 1, day);
-    console.log('🚀 ~ OvertimeService ~ data ~ newDate:', newDate.toISOString());
-
-    const firstDay = new Date(newDate.getFullYear(), newDate.getMonth(), 1);
-    console.log('🚀 ~ OvertimeService ~ data ~ firstDay:', firstDay.toISOString());
-
-    const lastDay = new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0);
-    console.log('🚀 ~ OvertimeService ~ data ~ lastDay:', lastDay.toISOString());
-    const data = await this.overtimeModel.aggregate([
+    const result = await this.overtimeModel.aggregate([
       {
         $match: {
-          overtimeDate: { $gte: firstDay, $lte: lastDay },
+          overtimeDate: {
+            $gte: new Date(year, month - 1, 1),
+            $lt: new Date(year, month, 1),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalRequests: { $sum: 1 },
+          totalHours: { $sum: '$overtimeHours' },
+          pendingRequests: { $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] } },
+          rejectedRequests: { $sum: { $cond: [{ $eq: ['$status', 'rejected'] }, 1, 0] } },
         },
       },
     ]);
-    // console.log('dddddddddddddddddddddd', data);
+    console.log('🚀 ~ OvertimeService ~ data ~ result:', result);
 
-    return data;
+    return result[0];
   }
 }
