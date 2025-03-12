@@ -38,6 +38,12 @@ export class OvertimeController {
     return successfulResponse(`${OVERTIME_MODEL} edited successfully`, editOvertime);
   }
 
+  @Get('data-fetched')
+  async data(@Query('date') date: string) {
+    const data = await this.overtimeService.data(date);
+    return successfulResponse(`${OVERTIME_MODEL} data found successfully`, data);
+  }
+
   @Get(':id')
   async get(@Param('id') id: Types.ObjectId) {
     const overtime = await this.overtimeService.getSingle(id);

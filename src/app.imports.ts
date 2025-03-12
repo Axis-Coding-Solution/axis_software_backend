@@ -13,8 +13,9 @@ import { TimesheetModule } from './controllers/employees/timesheet/timesheet.mod
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { OvertimeModule } from './controllers/employees/overtime/overtime.module';
 import { LeaveModule } from './controllers/employees/leave/leave.module';
+import { ClientModule } from './controllers/client/client.module';
 
-const globalImports = [
+const GlobalImports = [
   ConfigModule.forRoot({
     isGlobal: true,
   }),
@@ -35,6 +36,7 @@ const globalImports = [
   }),
   OvertimeModule,
   LeaveModule,
+  ClientModule,
 ];
 
-export default globalImports;
+export default GlobalImports;

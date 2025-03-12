@@ -9,7 +9,7 @@ import { isValidMongoId } from '../is-valid-mongoId';
  * @param {String} modelName model to query with
  * @returns {Object} updated document
  */
-export const editHelper = async (
+export const editHelper = async <T>(
   id: Types.ObjectId,
   dto: any,
   MODEL: string,
@@ -24,5 +24,5 @@ export const editHelper = async (
     throw notFoundException(`${MODEL} not found`);
   }
 
-  return updateDocument;
+  return updateDocument as T;
 };
