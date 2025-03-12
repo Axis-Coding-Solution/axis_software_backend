@@ -10,7 +10,13 @@ import * as bcrypt from 'bcrypt';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';
 import { EditEmployeeDto } from 'src/definitions/dtos/employees/employee/edit';
-import { deleteHelper, getAllHelper, getSingleHelper } from 'src/utils/helper';
+import {
+  deleteHelper,
+  editHelper,
+  existsHelper,
+  getAllHelper,
+  getSingleHelper,
+} from 'src/utils/helper';
 
 @Injectable()
 export class EmployeeService {
@@ -103,81 +109,21 @@ export class EmployeeService {
     return employee;
   }
 
-  async edit(editEmployeeDto: EditEmployeeDto, id: string) {
-    const { password, confirmPassword, userName, companyId, departmentId, designationId } =
-      editEmployeeDto;
-    let passwordExistInDto: boolean;
+  async edit(editEmployeeDto: EditEmployeeDto, id: Types.ObjectId) {
+    const { userName, companyId, departmentId, designationId } = editEmployeeDto;
 
-    if (password && confirmPassword) {
-      passwordExistInDto = true;
-    }
+    await Promise.all([
+      userName ? await existsHelper(userName, 'userName', this.employeeModel, id) : null,
+      companyId ? await getSingleHelper(companyId, COMPANY_MODEL, this.companyModel) : null,
+      departmentId
+        ? await getSingleHelper(departmentId, DEPARTMENT_MODEL, this.departmentModel)
+        : null,
+      designationId
+        ? await getSingleHelper(designationId, DESIGNATION_MODEL, this.designationModel)
+        : null,
+    ]);
 
-    if (passwordExistInDto) {
-      if (password !== confirmPassword) {
-        passwordExistInDto = false;
-        throw badRequestException('Password and confirm password does not match');
-      }
-    }
-
-    let passwordHash: string;
-    if (passwordExistInDto) {
-      const salt = bcrypt.genSaltSync(10);
-      passwordHash = await bcrypt.hash(password, salt);
-      editEmployeeDto.password = passwordHash;
-      editEmployeeDto.confirmPassword = passwordHash;
-    }
-
-    const employeeExist = await this.employeeModel.exists({ userName });
-    if (employeeExist) {
-      throw conflictException('Employee already exist');
-    }
-
-    if (companyId) {
-      const companyExist = await this.companyModel.exists({ _id: companyId });
-      if (!companyExist) {
-        throw notFoundException('Company not found');
-      }
-    }
-
-    if (departmentId) {
-      const departmentExist = await this.departmentModel.exists({
-        _id: departmentId,
-      });
-      if (!departmentExist) {
-        throw notFoundException('Department not found');
-      }
-    }
-
-    if (designationId) {
-      const designationExist = await this.designationModel.exists({
-        _id: designationId,
-      });
-      if (!designationExist) {
-        throw notFoundException('Designation not found');
-      }
-    }
-
-    const employee = await this.employeeModel.findByIdAndUpdate(id, editEmployeeDto, {
-      new: true,
-    });
-    if (!employee) {
-      throw notFoundException('Employee not found');
-    }
-
-    const updateData: any = { userName: employee.userName, email: employee.email };
-    if (passwordHash) {
-      updateData.password = passwordHash;
-    }
-
-    //? interacting with user model
-    const updateUser = await this.userModel.findOneAndUpdate(
-      { employeeId: employee._id },
-      updateData,
-      { new: true },
-    );
-    if (!updateUser) {
-      throw badRequestException('User not updated');
-    }
+    const employee = await editHelper(id, editEmployeeDto, EMPLOYEE_MODEL, this.employeeModel);
 
     return employee;
   }

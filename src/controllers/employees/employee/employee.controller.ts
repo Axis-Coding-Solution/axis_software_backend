@@ -55,7 +55,7 @@ export class EmployeeController {
     }),
   )
   async edit(
-    @Param('id') id: string,
+    @Param('id') id: Types.ObjectId,
     @Body() editEmployeeDto: EditEmployeeDto,
     @UploadedFile(new FileValidationPipe(false)) profileImage: Express.Multer.File,
   ) {

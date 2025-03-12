@@ -67,15 +67,15 @@ export class EditEmployeeDto {
 
   @IsOptional()
   @IsMongoId({ message: 'Company id is not valid' })
-  companyId: String | Types.ObjectId | Company;
+  companyId: Types.ObjectId;
 
   @IsOptional()
   @IsMongoId({ message: 'Department id is not valid' })
-  departmentId: String | Types.ObjectId | Department;
+  departmentId: Types.ObjectId;
 
   @IsOptional()
   @IsMongoId({ message: 'Designation id is not valid' })
-  designationId: String | Types.ObjectId | Designation;
+  designationId: Types.ObjectId;
 
   @IsEnum(Role)
   @IsOptional()

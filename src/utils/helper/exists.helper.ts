@@ -1,15 +1,27 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { conflictException } from '../custom-exception';
-
+/**
+ *To check if the value is already exists in the database
+ * @param {String} fieldValue what needs to be compared
+ * @param {String} fieldName value in db
+ * @param {String} modelName model to query with
+ * @param {String | Types.ObjectId} id if passed then current document will be excluded
+ * @returns
+ */
 export const existsHelper = async (
-  firstField: String,
-  secondField: string,
+  fieldValue: any,
+  fieldName: string,
   modelName: Model<any>,
+  id?: string | Types.ObjectId,
 ) => {
-  const query = { [secondField]: firstField };
+  const query: any = { [fieldName]: fieldValue };
+  if (id) {
+    query._id = { $ne: id };
+  }
+
   const documentExists = await modelName.exists(query);
   if (documentExists) {
-    throw conflictException(`${firstField} already exists`);
+    throw conflictException(`${fieldValue} already exists`);
   }
   return;
 };
