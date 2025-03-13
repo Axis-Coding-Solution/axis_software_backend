@@ -1,6 +1,7 @@
 import { Model } from 'mongoose';
 import { notFoundException } from '../custom-exception';
 /**
+ * To get all documents from db with pagination
  * @param {Number} page page no comes form query
  * @param {Number} limit limit no comes form query
  * @param {String} modelName model to query with

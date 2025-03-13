@@ -2,6 +2,7 @@ import { Model } from 'mongoose';
 import { badRequestException } from '../custom-exception';
 
 /**
+ * To create a new document in db
  * @param {Class} dto body comes from client
  * @param {String} MODEL model name to generate dynamic message
  * @param {String} modelName model to query with

@@ -3,6 +3,7 @@ import { badRequestException, notFoundException } from '../custom-exception';
 import { isValidMongoId } from '../is-valid-mongoId';
 
 /**
+ * To edit existing document
  * @param {Types.ObjectId} id id comes from client
  * @param {Object} dto body comes from client
  * @param {String} MODEL model name to generate dynamic message
