@@ -66,17 +66,20 @@ export class CreateEmployeeDto {
   @IsOptional()
   phone?: String;
 
+  @IsString()
   @IsNotEmpty()
-  @IsMongoId({ message: 'Company id is not valid' })
-  companyId: String | Types.ObjectId | Company;
+  @IsMongoId({ message: 'Company is required' })
+  companyId: Types.ObjectId;
 
+  @IsString()
   @IsNotEmpty()
-  @IsMongoId({ message: 'Department id is not valid' })
-  departmentId: String | Types.ObjectId | Department;
+  @IsMongoId({ message: 'Department is required' })
+  departmentId: Types.ObjectId;
 
+  @IsString()
   @IsNotEmpty()
-  @IsMongoId({ message: 'Designation id is not valid' })
-  designationId: String | Types.ObjectId | Designation;
+  @IsMongoId({ message: 'Designation is required' })
+  designationId: Types.ObjectId;
 
   @IsEnum(Role)
   @IsOptional()
