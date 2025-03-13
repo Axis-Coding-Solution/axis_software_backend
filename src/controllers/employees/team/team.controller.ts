@@ -1,22 +1,10 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
 import { successfulResponse } from 'src/utils';
-import {
-  CreateTeamDto,
-  EditTeamDto,
-} from 'src/definitions/dtos/employees/team';
+import { CreateTeamDto, EditTeamDto } from 'src/definitions/dtos/employees/team';
 import { Types } from 'mongoose';
+import { TEAM_MODEL } from 'src/schemas/employees/team';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('team')
@@ -26,20 +14,20 @@ export class TeamController {
   @Post()
   async create(@Body() createTeamDto: CreateTeamDto) {
     const team = await this.teamService.create(createTeamDto);
-    return successfulResponse('team created successfully', team);
+    return successfulResponse(`${TEAM_MODEL} created successfully`, team);
   }
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() editTeamDto: EditTeamDto) {
     const editTeam = await this.teamService.edit(editTeamDto, id);
 
-    return successfulResponse('Team edited successfully', editTeam);
+    return successfulResponse(`${TEAM_MODEL} edited successfully`, editTeam);
   }
 
   @Get(':id')
   async get(@Param('id') id: Types.ObjectId) {
     const team = await this.teamService.getSingle(id);
-    return successfulResponse('team found successfully', team);
+    return successfulResponse(`${TEAM_MODEL} found successfully`, team);
   }
 
   @Get()
@@ -49,12 +37,12 @@ export class TeamController {
     @Query('search') search: string,
   ) {
     const teams = await this.teamService.getAll(page, limit, search);
-    return successfulResponse('teams found successfully', teams);
+    return successfulResponse(`${TEAM_MODEL} found successfully`, teams);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: Types.ObjectId) {
     const team = await this.teamService.delete(id);
-    return successfulResponse('team deleted successfully', team);
+    return successfulResponse(`${TEAM_MODEL} deleted successfully`, team);
   }
 }

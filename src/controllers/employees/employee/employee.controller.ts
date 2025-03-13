@@ -21,6 +21,7 @@ import { EditEmployeeDto } from 'src/definitions/dtos/employees/employee/edit';
 import { FileValidationPipe } from 'src/pipes/file';
 import { AppConfigService } from 'src/config';
 import { Types } from 'mongoose';
+import { EMPLOYEE_MODEL } from 'src/schemas/employees/employee';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('employee')
@@ -45,7 +46,7 @@ export class EmployeeController {
     }
 
     const employee = await this.employeeService.create(createEmployeeDto);
-    return successfulResponse('Employee created successfully', employee);
+    return successfulResponse(`${EMPLOYEE_MODEL} created successfully`, employee);
   }
 
   @Put(':id')
@@ -64,13 +65,13 @@ export class EmployeeController {
     }
 
     const employee = await this.employeeService.edit(editEmployeeDto, id);
-    return successfulResponse('Employee edited successfully', employee);
+    return successfulResponse(`${EMPLOYEE_MODEL} edited successfully`, employee);
   }
 
   @Get(':id')
   async getSingle(@Param('id') id: Types.ObjectId) {
     const employee = await this.employeeService.getSingle(id);
-    return successfulResponse('Employee found successfully', employee);
+    return successfulResponse(`${EMPLOYEE_MODEL} found successfully`, employee);
   }
 
   @Get()
@@ -88,12 +89,12 @@ export class EmployeeController {
       employeeId,
       designationName,
     );
-    return successfulResponse('Employees found successfully', employees);
+    return successfulResponse(`${EMPLOYEE_MODEL} found successfully`, employees);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: Types.ObjectId) {
     const employee = await this.employeeService.delete(id);
-    return successfulResponse('Employee deleted successfully', employee);
+    return successfulResponse(`${EMPLOYEE_MODEL} deleted successfully`, employee);
   }
 }
