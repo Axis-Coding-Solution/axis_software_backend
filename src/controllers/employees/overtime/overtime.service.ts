@@ -99,8 +99,6 @@ export class OvertimeService {
 
   async data(date: string) {
     const [year, month] = date.split('-').map(Number);
-    console.log('🚀 ~ OvertimeService ~ data ~ month:', month);
-    console.log('🚀 ~ OvertimeService ~ data ~ year:', year);
 
     const result = await this.overtimeModel.aggregate([
       {
@@ -121,7 +119,6 @@ export class OvertimeService {
         },
       },
     ]);
-    console.log('🚀 ~ OvertimeService ~ data ~ result:', result);
 
     return result[0];
   }
