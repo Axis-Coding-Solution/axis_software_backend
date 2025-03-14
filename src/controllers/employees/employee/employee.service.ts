@@ -138,7 +138,20 @@ export class EmployeeService {
       this.employeeModel,
       employeeName,
       'firstName',
-      'departmentId designationId',
+      [
+        {
+          path: 'companyId',
+          select: 'profileImage companyName -_id',
+        },
+        {
+          path: 'departmentId',
+          select: 'departmentName -_id',
+        },
+        {
+          path: 'designationId',
+          select: 'designationName -_id',
+        },
+      ],
       filters,
     );
 

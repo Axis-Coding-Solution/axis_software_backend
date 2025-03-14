@@ -104,12 +104,13 @@ export class DesignationService {
       this.designationModel,
       search,
       'designationName',
-      'departmentId',
+      [
+        {
+          path: 'departmentId',
+          select: 'departmentName -_id',
+        },
+      ],
     );
-
-    if (items.length === 0) {
-      throw notFoundException('Departments not found');
-    }
 
     return {
       data: items,

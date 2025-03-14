@@ -82,7 +82,12 @@ export class TimesheetService {
       this.timesheetModel,
       null,
       null,
-      'projectId',
+      [
+        {
+          path: 'projectId',
+          select: 'projectName -_id',
+        },
+      ],
     );
 
     return {

@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import {
-  CreateTeamDto,
-  EditTeamDto,
-} from 'src/definitions/dtos/employees/team';
+import { CreateTeamDto, EditTeamDto } from 'src/definitions/dtos/employees/team';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { DEPARTMENT_MODEL } from 'src/schemas/employees/department';
 import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
@@ -30,8 +27,7 @@ export class TeamService {
   ) {}
 
   async create(createTeamDto: CreateTeamDto) {
-    const { teamName, teamLeader, teamManager, teamMembers, department } =
-      createTeamDto;
+    const { teamName, teamLeader, teamManager, teamMembers, department } = createTeamDto;
 
     const [
       teamNameExists,
@@ -43,9 +39,7 @@ export class TeamService {
       teamName ? this.teamModel.exists({ teamName }) : true,
       teamLeader ? this.userModel.exists({ _id: teamLeader }) : true,
       teamManager ? this.userModel.exists({ _id: teamManager }) : true,
-      teamMembers.length > 0
-        ? this.userModel.find({ _id: { $in: teamMembers } }, '_id')
-        : [],
+      teamMembers.length > 0 ? this.userModel.find({ _id: { $in: teamMembers } }, '_id') : [],
       department ? this.departmentModel.exists({ _id: department }) : true,
     ]);
 
@@ -61,16 +55,10 @@ export class TeamService {
       throw notFoundException('Team Manager not found');
     }
 
-    const validMembersIds = validMembers.map((member: any) =>
-      member._id.toString(),
-    );
-    const missingMembers = teamMembers.filter(
-      (id) => !validMembersIds.includes(id.toString()),
-    );
+    const validMembersIds = validMembers.map((member: any) => member._id.toString());
+    const missingMembers = teamMembers.filter((id) => !validMembersIds.includes(id.toString()));
     if (missingMembers.length > 0) {
-      throw notFoundException(
-        `Some team members not found: ${missingMembers.join(', ')}`,
-      );
+      throw notFoundException(`Some team members not found: ${missingMembers.join(', ')}`);
     }
 
     if (department && !isDepartmentExists) {
@@ -89,8 +77,7 @@ export class TeamService {
   }
 
   async edit(editTeamDto: EditTeamDto, id: string): Promise<any> {
-    const { teamName, teamLeader, teamManager, teamMembers, department } =
-      editTeamDto;
+    const { teamName, teamLeader, teamManager, teamMembers, department } = editTeamDto;
 
     const [
       teamNameExists,
@@ -105,9 +92,7 @@ export class TeamService {
       teamMembers?.length > 0
         ? this.userModel.find({ _id: { $in: teamMembers } }, '_id').lean()
         : [],
-      department
-        ? this.departmentModel.exists({ _id: department }).lean()
-        : null,
+      department ? this.departmentModel.exists({ _id: department }).lean() : null,
     ]);
 
     if (teamName && teamNameExists) {
@@ -122,16 +107,10 @@ export class TeamService {
       throw notFoundException('Team Manager not found');
     }
 
-    const validMembersIds = validMembers?.map((member: any) =>
-      member?._id?.toString(),
-    );
-    const missingMembers = teamMembers?.filter(
-      (id) => !validMembersIds?.includes(id?.toString()),
-    );
+    const validMembersIds = validMembers?.map((member: any) => member?._id?.toString());
+    const missingMembers = teamMembers?.filter((id) => !validMembersIds?.includes(id?.toString()));
     if (missingMembers?.length > 0) {
-      throw notFoundException(
-        `Some team members not found: ${missingMembers?.join(', ')}`,
-      );
+      throw notFoundException(`Some team members not found: ${missingMembers?.join(', ')}`);
     }
 
     if (department && !isDepartmentExists) {
@@ -172,15 +151,31 @@ export class TeamService {
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getAllHelper(
-        page,
-        limit,
-        this.teamModel,
-        search,
-        'teamName',
-        'teamLeader teamManager teamMembers department',
-      );
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
+      page,
+      limit,
+      this.teamModel,
+      search,
+      'teamName',
+      [
+        {
+          path: 'teamLeader',
+          select: 'firstName lastName userName -_id',
+        },
+        {
+          path: 'teamManager',
+          select: 'firstName lastName userName -_id',
+        },
+        {
+          path: 'teamMembers',
+          select: 'firstName lastName userName -_id',
+        },
+        {
+          path: 'department',
+          select: 'departmentName -_id',
+        },
+      ],
+    );
 
     if (items.length === 0) {
       throw notFoundException('Departments not found');
