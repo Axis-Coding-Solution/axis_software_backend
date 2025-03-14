@@ -170,7 +170,6 @@ export class ProjectService {
       this.projectModel,
       search,
       'projectName',
-      // 'clientId projectLeader teamId Stakeholders',
       [
         {
           path: 'clientId',

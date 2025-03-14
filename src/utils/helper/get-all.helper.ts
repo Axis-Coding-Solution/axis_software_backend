@@ -30,10 +30,12 @@ export const getAllHelper = async (
 
   let query = modelName.find(filters).sort('-createdAt').skip(skip).limit(limitNumber).lean();
   if (populate.length > 0) query = query.populate(populate);
+
   const [items, totalItems] = await Promise.all([
     query.exec(),
     modelName.countDocuments(filters).exec(),
   ]);
+
   if (items.length === 0) {
     throw notFoundException(`${modelName.modelName} not found`);
   }
