@@ -9,7 +9,7 @@ import { notFoundException } from '../custom-exception';
  * @param {String} searchField field to search default will be null
  * @param {Array} populate populate array of objects containing path and select fields
  * @param {Object} filters fields to filter documents default will be empty object
- * @returns {Object} items, totalItems, totalPages, itemsPerPage, currentPage
+ * @returns {Array & Object} array of documents and pagination data
  */
 export const getAllHelper = async (
   page: string,
