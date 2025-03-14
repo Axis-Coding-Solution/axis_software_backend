@@ -4,7 +4,6 @@ import { CreateClientDto, EditClientDto } from 'src/definitions/dtos/client';
 import { CLIENT_MODEL, ClientDocument } from 'src/schemas/client';
 import { badRequestException } from 'src/utils';
 import * as bcrypt from 'bcrypt';
-import { AppConfigService } from 'src/config';
 import {
   createHelper,
   deleteHelper,
@@ -25,8 +24,6 @@ export class ClientService {
 
     @InjectModel(USER_MODEL)
     private readonly userModel: Model<UserDocument>,
-
-    private readonly appConfigService: AppConfigService,
   ) {}
   async create(createClientDto: CreateClientDto) {
     const { userName, password, confirmPassword } = createClientDto;
@@ -37,7 +34,6 @@ export class ClientService {
       throw badRequestException('Password and confirm password does not match');
     }
 
-    // const salt = bcrypt.genSaltSync(this.appConfigService.saltRounds);
     const salt = bcrypt.genSaltSync(10);
     const passwordHash = await bcrypt.hash(password, salt);
     createClientDto.password = passwordHash;
@@ -48,29 +44,27 @@ export class ClientService {
     const client = await createHelper(createClientDto, CLIENT_MODEL, this.clientModel);
 
     //? interacting with user model
-    const makeUserOfClient = await this.userModel.create({
+    const updateData: object = {
       userName: client.userName,
       email: client.email,
       password: passwordHash,
       role: 'client',
       clientId: client._id,
-    });
-    if (!makeUserOfClient) {
-      throw badRequestException('User not created!');
-    }
+    };
 
-    return client;
+    const user = await createHelper(updateData, USER_MODEL, this.userModel);
+    const updatedClient = await editHelper(
+      client._id,
+      { userId: user._id },
+      CLIENT_MODEL,
+      this.clientModel,
+    );
+
+    return updatedClient;
   }
 
   async edit(editClientDto: EditClientDto, id: Types.ObjectId) {
-    const { userName, password, confirmPassword } = editClientDto;
-    if (password && confirmPassword) {
-      // const salt = bcrypt.genSaltSync(this.appConfigService.saltRounds);
-      const salt = bcrypt.genSaltSync(10);
-      const passwordHash = await bcrypt.hash(password, salt);
-      editClientDto.password = passwordHash;
-      editClientDto.confirmPassword = passwordHash;
-    }
+    const { userName } = editClientDto;
 
     const editClient = await editHelper<FindClient>(
       id,
@@ -124,6 +118,8 @@ export class ClientService {
 
   async delete(id: Types.ObjectId) {
     const client = await deleteHelper(id, CLIENT_MODEL, this.clientModel);
+    //? delete user associated to client
+    await deleteHelper(client?.userId, USER_MODEL, this.userModel);
 
     return client;
   }

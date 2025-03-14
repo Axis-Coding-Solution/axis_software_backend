@@ -14,6 +14,7 @@ import {
   ExperienceInformation,
   experienceInformationSchema,
 } from './experience-information.schema';
+import { User } from 'src/schemas/commons/user';
 
 @Schema({ timestamps: true })
 export class Employee {
@@ -56,6 +57,9 @@ export class Employee {
 
   @Prop({ type: Types.ObjectId, ref: DESIGNATION_MODEL, required: true })
   designationId: String | Types.ObjectId | Designation;
+
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  userId?: String | Types.ObjectId | User;
 
   @Prop({
     type: String,
