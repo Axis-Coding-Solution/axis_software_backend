@@ -9,13 +9,12 @@ import {
   IsString,
 } from 'class-validator';
 import { Types } from 'mongoose';
-import { LeaveType } from 'src/schemas/enums/employees/leave';
 
 export class CreateLeaveDto {
-  @IsNotEmpty()
+  @IsMongoId({ message: 'Leave type is not valid' })
   @IsString()
-  @IsEnum(LeaveType, { message: 'Type is invalid' })
-  leaveType: String;
+  @IsNotEmpty()
+  leaveType: Types.ObjectId;
 
   @IsNotEmpty()
   @IsDate()

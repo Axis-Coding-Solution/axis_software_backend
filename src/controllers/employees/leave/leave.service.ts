@@ -8,6 +8,7 @@ import { FindUser } from 'src/interface';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { LEAVE_MODEL, LeaveDocument } from 'src/schemas/employees/leave';
+import { LEAVE_SETTING_MODEL, LeaveSettingDocument } from 'src/schemas/employees/leave-setting';
 import { badRequestException, notFoundException } from 'src/utils';
 import { createHelper, deleteHelper, editHelper, getSingleHelper } from 'src/utils/helper';
 
@@ -22,20 +23,28 @@ export class LeaveService {
 
     @InjectModel(USER_MODEL)
     private readonly userModel: Model<UserDocument>,
+
+    @InjectModel(LEAVE_SETTING_MODEL)
+    private readonly leaveSettingModel: Model<LeaveSettingDocument>,
   ) {}
 
   async create(createLeaveDto: CreateLeaveDto, currentUser: Types.ObjectId) {
+    //? find current user
     const findCurrentUser = currentUser
       ? await getSingleHelper<FindUser>(currentUser, USER_MODEL, this.userModel)
       : null;
 
+    //? assign employee id
     const employeeId = findCurrentUser?.employeeId;
     if (!employeeId) throw notFoundException('Employee not found');
 
+    //? search employee
     await getSingleHelper(employeeId, EMPLOYEE_MODEL, this.employeeModel);
     createLeaveDto.employeeId = employeeId;
 
-    const { from, to } = createLeaveDto;
+    const { leaveType, from, to } = createLeaveDto;
+    await getSingleHelper(leaveType, LEAVE_SETTING_MODEL, this.leaveSettingModel);
+
     if (from > to) {
       throw badRequestException('From date should be less than to date');
     }
@@ -53,7 +62,12 @@ export class LeaveService {
   }
 
   async edit(editLeaveDto: EditLeaveDto, id: Types.ObjectId) {
-    const { from, to } = editLeaveDto;
+    const { leaveType, from, to } = editLeaveDto;
+
+    leaveType
+      ? await getSingleHelper(leaveType, LEAVE_SETTING_MODEL, this.leaveSettingModel)
+      : null;
+
     if (from && to) {
       if (from > to || from === to) {
         throw badRequestException('From date should be less than to date');
@@ -69,7 +83,13 @@ export class LeaveService {
   }
 
   async getSingle(id: Types.ObjectId) {
-    const leave = await getSingleHelper(id, LEAVE_MODEL, this.leaveModel);
+    const leave = await getSingleHelper(
+      id,
+      LEAVE_MODEL,
+      this.leaveModel,
+      'leaveType',
+      'policyName noOfDays',
+    );
 
     return leave;
   }
@@ -111,7 +131,11 @@ export class LeaveService {
         .sort('-createdAt')
         .skip(skip)
         .limit(limitNumber)
-        .populate('employeeId', 'profileImage firstName lastName')
+        // .populate('employeeId leaveType', 'profileImage firstName lastName')
+        .populate([
+          { path: 'employeeId', select: 'profileImage firstName lastName -_id' },
+          { path: 'leaveType', select: 'policyName noOfDays -_id' },
+        ])
         .lean()
         .exec(),
       this.leaveModel.countDocuments(filters).exec(),
