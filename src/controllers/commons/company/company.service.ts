@@ -91,7 +91,12 @@ export class CompanyService {
       this.companyModel,
       search,
       'companyName',
-      'owner',
+      [
+        {
+          path: 'owner',
+          select: 'firstName lastName userName -_id',
+        },
+      ],
     );
 
     if (items.length === 0) {

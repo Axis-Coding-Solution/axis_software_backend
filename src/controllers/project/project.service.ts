@@ -170,7 +170,25 @@ export class ProjectService {
       this.projectModel,
       search,
       'projectName',
-      'clientId projectLeader teamId Stakeholders',
+      // 'clientId projectLeader teamId Stakeholders',
+      [
+        {
+          path: 'clientId',
+          select: 'firstName lastName userName -_id',
+        },
+        {
+          path: 'projectLeader',
+          select: 'firstName lastName userName -_id',
+        },
+        {
+          path: 'teamId',
+          select: 'teamName teamMembers -_id',
+        },
+        {
+          path: 'Stakeholders',
+          select: 'firstName lastName userName -_id',
+        },
+      ],
     );
 
     return {

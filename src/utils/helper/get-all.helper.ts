@@ -7,7 +7,7 @@ import { notFoundException } from '../custom-exception';
  * @param {String} modelName model to query with
  * @param {String} search search come from user default will be null
  * @param {String} searchField field to search default will be null
- * @param {String} populate fields to populate default will be empty string
+ * @param {Array} populate populate array of objects containing path and select fields
  * @param {Object} filters fields to filter documents default will be empty object
  * @returns {Object} items, totalItems, totalPages, itemsPerPage, currentPage
  */
@@ -17,7 +17,7 @@ export const getAllHelper = async (
   modelName: Model<any>,
   search: string = null,
   searchField: string = null,
-  populate: string = '',
+  populate: Array<{ path: string; select?: string }> = [],
   filters: object = {},
 ) => {
   const pageNumber = parseInt(page) || 1;
@@ -28,15 +28,10 @@ export const getAllHelper = async (
     filters[searchField] = { $regex: search, $options: 'i' };
   }
 
+  let query = modelName.find(filters).sort('-createdAt').skip(skip).limit(limitNumber).lean();
+  if (populate.length > 0) query = query.populate(populate);
   const [items, totalItems] = await Promise.all([
-    modelName
-      .find(filters)
-      .sort('-createdAt')
-      .skip(skip)
-      .limit(limitNumber)
-      .populate(populate)
-      .lean()
-      .exec(),
+    query.exec(),
     modelName.countDocuments(filters).exec(),
   ]);
   if (items.length === 0) {

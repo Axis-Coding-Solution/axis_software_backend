@@ -61,7 +61,12 @@ export class OvertimeService {
       this.overtimeModel,
       null,
       null,
-      'employeeId',
+      [
+        {
+          path: 'employeeId',
+          select: 'firstName lastName userName',
+        },
+      ],
     );
 
     return {
