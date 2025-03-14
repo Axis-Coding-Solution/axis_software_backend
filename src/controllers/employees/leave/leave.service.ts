@@ -30,7 +30,9 @@ export class LeaveService {
       : null;
 
     const employeeId = findCurrentUser?.employeeId;
-    employeeId ? await getSingleHelper(employeeId, EMPLOYEE_MODEL, this.employeeModel) : null;
+    if (!employeeId) throw notFoundException('Employee not found');
+
+    await getSingleHelper(employeeId, EMPLOYEE_MODEL, this.employeeModel);
     createLeaveDto.employeeId = employeeId;
 
     const { from, to } = createLeaveDto;

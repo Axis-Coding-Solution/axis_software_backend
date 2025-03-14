@@ -6,11 +6,7 @@ import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.d
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
 import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
-import {
-  badRequestException,
-  conflictException,
-  notFoundException,
-} from 'src/utils';
+import { badRequestException, conflictException, notFoundException } from 'src/utils';
 import { deleteHelper, getAllHelper, getSingleHelper } from 'src/utils/helper';
 
 @Injectable()
@@ -27,8 +23,7 @@ export class ProjectService {
   ) {}
 
   async create(createProjectDto: CreateProjectDto) {
-    const { projectName, clientId, projectLeader, teamId, Stakeholders } =
-      createProjectDto;
+    const { projectName, clientId, projectLeader, teamId, Stakeholders } = createProjectDto;
 
     const [
       isProjectNameExists,
@@ -40,9 +35,7 @@ export class ProjectService {
       projectName ? this.projectModel.exists({ projectName }).lean() : true,
       clientId ? this.userModel.findById(clientId).lean() : null,
       projectLeader ? this.userModel.findById(projectLeader).lean() : null,
-      teamId?.length > 0
-        ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean()
-        : [],
+      teamId?.length > 0 ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean() : [],
       Stakeholders?.length > 0
         ? this.userModel.find({ _id: { $in: Stakeholders } }, '_id').lean()
         : [],
@@ -61,32 +54,23 @@ export class ProjectService {
     }
 
     //* team members
-    const validTeamIds = isTeamExists.map((member: any) =>
-      member._id.toString(),
-    );
+    const validTeamIds = isTeamExists.map((member: any) => member._id.toString());
 
     const missingTeamMembers = teamId?.filter(
       (teamId: any) => !validTeamIds?.includes(teamId?.toString()),
     );
     if (missingTeamMembers?.length > 0) {
-      throw notFoundException(
-        `Some team members not found: ${missingTeamMembers?.join(', ')}`,
-      );
+      throw notFoundException(`Some team members not found: ${missingTeamMembers?.join(', ')}`);
     }
 
     //* stakeholders
-    const validStakeholderIds = isStakeHoldersExists?.map((member: any) =>
-      member._id.toString(),
-    );
+    const validStakeholderIds = isStakeHoldersExists?.map((member: any) => member._id.toString());
 
     const missingStakeholders = Stakeholders?.filter(
-      (stakeholder: any) =>
-        !validStakeholderIds?.includes(stakeholder.toString()),
+      (stakeholder: any) => !validStakeholderIds?.includes(stakeholder.toString()),
     );
     if (missingStakeholders?.length > 0) {
-      throw notFoundException(
-        `Some stakeholders not found: ${missingStakeholders?.join(', ')}`,
-      );
+      throw notFoundException(`Some stakeholders not found: ${missingStakeholders?.join(', ')}`);
     }
 
     // let { tags } = createProjectDto;
@@ -103,8 +87,7 @@ export class ProjectService {
   }
 
   async edit(editProjectDto: EditProjectDto, id: string) {
-    const { projectName, clientId, projectLeader, teamId, Stakeholders } =
-      editProjectDto;
+    const { projectName, clientId, projectLeader, teamId, Stakeholders } = editProjectDto;
 
     const [
       isProjectNameExists,
@@ -116,9 +99,7 @@ export class ProjectService {
       projectName ? this.projectModel.exists({ projectName }).lean() : true,
       clientId ? this.userModel.findById(clientId).lean() : null,
       projectLeader ? this.userModel.findById(projectLeader).lean() : null,
-      teamId?.length > 0
-        ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean()
-        : [],
+      teamId?.length > 0 ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean() : [],
       Stakeholders?.length > 0
         ? this.userModel.find({ _id: { $in: Stakeholders } }, '_id').lean()
         : [],
@@ -138,33 +119,24 @@ export class ProjectService {
 
     //* team members
     if (teamId && teamId?.length > 0) {
-      const validTeamIds = isTeamExists.map((member: any) =>
-        member._id.toString(),
-      );
+      const validTeamIds = isTeamExists.map((member: any) => member._id.toString());
       const missingTeamMembers = teamId?.filter(
         (teamId: any) => !validTeamIds?.includes(teamId?.toString()),
       );
       if (missingTeamMembers?.length > 0) {
-        throw notFoundException(
-          `Some team members not found: ${missingTeamMembers?.join(', ')}`,
-        );
+        throw notFoundException(`Some team members not found: ${missingTeamMembers?.join(', ')}`);
       }
     }
 
     //* stakeholders
     if (Stakeholders && Stakeholders?.length > 0) {
-      const validStakeholderIds = isStakeHoldersExists?.map((member: any) =>
-        member._id.toString(),
-      );
+      const validStakeholderIds = isStakeHoldersExists?.map((member: any) => member._id.toString());
 
       const missingStakeholders = Stakeholders?.filter(
-        (stakeholder: any) =>
-          !validStakeholderIds?.includes(stakeholder.toString()),
+        (stakeholder: any) => !validStakeholderIds?.includes(stakeholder.toString()),
       );
       if (missingStakeholders?.length > 0) {
-        throw notFoundException(
-          `Some stakeholders not found: ${missingStakeholders?.join(', ')}`,
-        );
+        throw notFoundException(`Some stakeholders not found: ${missingStakeholders?.join(', ')}`);
       }
     }
 
@@ -192,19 +164,14 @@ export class ProjectService {
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getAllHelper(
-        page,
-        limit,
-        this.projectModel,
-        search,
-        'projectName',
-        'clientId projectLeader teamId Stakeholders',
-      );
-
-    if (items.length === 0) {
-      throw notFoundException('Departments not found');
-    }
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
+      page,
+      limit,
+      this.projectModel,
+      search,
+      'projectName',
+      'clientId projectLeader teamId Stakeholders',
+    );
 
     return {
       data: items,

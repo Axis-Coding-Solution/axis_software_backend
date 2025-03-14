@@ -85,10 +85,6 @@ export class TimesheetService {
       'projectId',
     );
 
-    if (items.length === 0) {
-      throw notFoundException('Departments not found');
-    }
-
     return {
       data: items,
       pagination: {
