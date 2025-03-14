@@ -1,12 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { LeaveType } from 'src/schemas/enums/employees/leave';
+import { IsDate, IsMongoId, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class EditLeaveDto {
+  @IsMongoId({ message: 'Leave type is not valid' })
   @IsString()
-  @IsEnum(LeaveType, { message: 'Type is invalid' })
   @IsOptional()
-  leaveType?: String;
+  leaveType?: Types.ObjectId;
 
   @IsDate()
   @Type(() => Date)
