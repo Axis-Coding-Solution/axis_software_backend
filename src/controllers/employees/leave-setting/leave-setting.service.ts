@@ -22,30 +22,30 @@ export class LeaveSettingService {
   ) {}
 
   async create(createLeaveSetting: CreateLeaveSettingDto) {
-    const overtime = await createHelper(
+    const leaveSetting = await createHelper(
       createLeaveSetting,
       LEAVE_SETTING_MODEL,
       this.leaveSettingModel,
     );
 
-    return overtime;
+    return leaveSetting;
   }
 
   async edit(editLeaveSetting: EditLeaveSettingDto, id: Types.ObjectId) {
-    const editOvertime = await editHelper(
+    const leaveSetting = await editHelper(
       id,
       editLeaveSetting,
       LEAVE_SETTING_MODEL,
       this.leaveSettingModel,
     );
 
-    return editOvertime;
+    return leaveSetting;
   }
 
   async getSingle(id: Types.ObjectId) {
-    const overtime = await getSingleHelper(id, LEAVE_SETTING_MODEL, this.leaveSettingModel);
+    const leaveSetting = await getSingleHelper(id, LEAVE_SETTING_MODEL, this.leaveSettingModel);
 
-    return overtime;
+    return leaveSetting;
   }
 
   async getAll(page: string, limit: string) {
@@ -67,8 +67,8 @@ export class LeaveSettingService {
   }
 
   async delete(id: Types.ObjectId) {
-    const overtime = await deleteHelper(id, LEAVE_SETTING_MODEL, this.leaveSettingModel);
+    const leaveSetting = await deleteHelper(id, LEAVE_SETTING_MODEL, this.leaveSettingModel);
 
-    return overtime;
+    return leaveSetting;
   }
 }
