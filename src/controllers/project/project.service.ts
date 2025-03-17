@@ -5,6 +5,7 @@ import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-pro
 import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.dto';
 import { CLIENT_MODEL, ClientDocument } from 'src/schemas/client';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
+import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
 import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
 import { badRequestException, conflictException, notFoundException } from 'src/utils';
@@ -24,6 +25,9 @@ export class ProjectService {
 
     @InjectModel(CLIENT_MODEL)
     private readonly clientModel: Model<ClientDocument>,
+
+    @InjectModel(EMPLOYEE_MODEL)
+    private readonly employeeModel: Model<EmployeeDocument>,
   ) {}
 
   async create(createProjectDto: CreateProjectDto) {
@@ -38,7 +42,7 @@ export class ProjectService {
     ] = await Promise.all([
       projectName ? this.projectModel.exists({ projectName }).lean() : true,
       clientId ? this.clientModel.findById(clientId).lean() : null,
-      projectLeader ? this.userModel.findById(projectLeader).lean() : null,
+      projectLeader ? this.employeeModel.findById(projectLeader).lean() : null,
       teamId?.length > 0 ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean() : [],
       Stakeholders?.length > 0
         ? this.userModel.find({ _id: { $in: Stakeholders } }, '_id').lean()
