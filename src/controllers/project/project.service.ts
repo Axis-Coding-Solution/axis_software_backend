@@ -9,7 +9,7 @@ import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee
 import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
 import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
 import { badRequestException, conflictException, notFoundException } from 'src/utils';
-import { deleteHelper, getAllHelper, getSingleHelper } from 'src/utils/helper';
+import { deleteHelper, existsHelper, getAllHelper, getSingleHelper } from 'src/utils/helper';
 
 @Injectable()
 export class ProjectService {
@@ -33,33 +33,17 @@ export class ProjectService {
   async create(createProjectDto: CreateProjectDto) {
     const { projectName, clientId, projectLeader, teamId, Stakeholders } = createProjectDto;
 
-    const [
-      isProjectNameExists,
-      isClientExists,
-      isProjectLeaderExists,
-      isTeamExists,
-      isStakeHoldersExists,
-    ] = await Promise.all([
-      projectName ? this.projectModel.exists({ projectName }).lean() : true,
-      clientId ? this.clientModel.findById(clientId).lean() : null,
-      projectLeader ? this.employeeModel.findById(projectLeader).lean() : null,
+    const [, , , isTeamExists, isStakeHoldersExists] = await Promise.all([
+      projectName ? await existsHelper(projectName, 'projectName', this.projectModel) : null,
+      clientId ? await getSingleHelper(clientId, CLIENT_MODEL, this.clientModel) : null,
+      projectLeader
+        ? await getSingleHelper(projectLeader, 'Project Leader', this.employeeModel)
+        : null,
       teamId?.length > 0 ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean() : [],
       Stakeholders?.length > 0
         ? this.userModel.find({ _id: { $in: Stakeholders } }, '_id').lean()
         : [],
     ]);
-
-    if (isProjectNameExists) {
-      throw conflictException('Project name already exists');
-    }
-
-    if (!isClientExists) {
-      throw badRequestException('Client not found');
-    }
-
-    if (!isProjectLeaderExists) {
-      throw badRequestException('Project Leader not found');
-    }
 
     //* team members
     const validTeamIds = isTeamExists.map((member: any) => member._id.toString());

@@ -64,7 +64,7 @@ export class CreateProjectDto {
   @IsMongoId()
   @IsString()
   @IsNotEmpty()
-  projectLeader: String | Types.ObjectId | User;
+  projectLeader: Types.ObjectId;
 
   @IsMongoId({ each: true })
   @IsString({ each: true })
