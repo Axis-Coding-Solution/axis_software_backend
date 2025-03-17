@@ -1,21 +1,9 @@
 import { Type } from 'class-transformer';
-import {
-  IsDate,
-  IsEnum,
-  IsMongoId,
-  IsOptional,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { IsDate, IsEnum, IsMongoId, IsOptional, IsNumber, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 import { User } from 'src/schemas/commons/user';
 import { Currency } from 'src/schemas/enums/common';
-import {
-  Priority,
-  ProjectStatus,
-  ProjectType,
-  RateType,
-} from 'src/schemas/enums/project';
+import { Priority, ProjectStatus, ProjectType, RateType } from 'src/schemas/enums/project';
 
 export class EditProjectDto {
   @IsString()
@@ -26,10 +14,10 @@ export class EditProjectDto {
   @IsOptional()
   projectType?: String;
 
-  @IsMongoId()
-  @IsString()
+  @IsMongoId({ each: true })
+  @IsString({ each: true })
   @IsOptional()
-  clientId?: String | Types.ObjectId | User;
+  clientId?: Types.ObjectId[];
 
   @IsDate()
   @IsOptional()

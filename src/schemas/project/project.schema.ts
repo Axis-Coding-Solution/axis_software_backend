@@ -10,6 +10,7 @@ import {
 } from '../enums/project';
 import { Team, TEAM_MODEL } from '../employees/team';
 import { Currency } from '../enums/common';
+import { Client, CLIENT_MODEL } from '../client';
 
 @Schema({ timestamps: true })
 export class Project {
@@ -23,8 +24,8 @@ export class Project {
   })
   projectType: ProjectType;
 
-  @Prop({ type: [Types.ObjectId], ref: USER_MODEL, required: true })
-  clientId: String[] | Types.ObjectId[] | User[];
+  @Prop({ type: [Types.ObjectId], ref: CLIENT_MODEL, required: true })
+  clientId: String[] | Types.ObjectId[] | Client[];
 
   @Prop({ required: true })
   startDate: Date;

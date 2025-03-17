@@ -29,10 +29,10 @@ export class CreateProjectDto {
   @IsOptional()
   projectType: String;
 
-  @IsMongoId()
-  @IsString()
+  @IsMongoId({ each: true })
+  @IsString({ each: true })
   @IsNotEmpty()
-  clientId: String | Types.ObjectId | User;
+  clientId: Types.ObjectId[];
 
   @IsDate()
   @IsNotEmpty()
