@@ -47,7 +47,7 @@ export class CreateProjectDto {
   @IsNumber()
   @Type(() => Number)
   @IsNotEmpty()
-  rate: number;
+  rate: Number;
 
   @IsEnum(Currency)
   @IsOptional()
