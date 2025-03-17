@@ -14,10 +14,10 @@ export class EditProjectDto {
   @IsOptional()
   projectType?: String;
 
-  @IsMongoId({ each: true })
-  @IsString({ each: true })
+  @IsMongoId()
+  @IsString()
   @IsOptional()
-  clientId?: Types.ObjectId[];
+  clientId?: Types.ObjectId;
 
   @IsDate()
   @IsOptional()

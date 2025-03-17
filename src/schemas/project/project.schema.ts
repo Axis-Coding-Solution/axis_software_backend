@@ -24,8 +24,8 @@ export class Project {
   })
   projectType: ProjectType;
 
-  @Prop({ type: [Types.ObjectId], ref: CLIENT_MODEL, required: true })
-  clientId: String[] | Types.ObjectId[] | Client[];
+  @Prop({ type: Types.ObjectId, ref: CLIENT_MODEL, required: true })
+  clientId: String | Types.ObjectId | Client;
 
   @Prop({ required: true })
   startDate: Date;
