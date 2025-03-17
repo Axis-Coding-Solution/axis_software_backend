@@ -29,11 +29,11 @@ export class Leave {
   })
   status: Status;
 
-  //? user who will approving leave
+  //? employee who will approving leave probably hr || manager || team leader
   @Prop({ type: Types.ObjectId, ref: EMPLOYEE_MODEL, default: null })
   approvedBy: String | Types.ObjectId | Employee;
 
-  //? user who is requesting overtime
+  //? employee who is requesting overtime
   @Prop({ type: Types.ObjectId, ref: EMPLOYEE_MODEL, required: true })
   employeeId: String | Types.ObjectId | Employee;
 }

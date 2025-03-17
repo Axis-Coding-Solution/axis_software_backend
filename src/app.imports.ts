@@ -15,6 +15,7 @@ import { OvertimeModule } from './controllers/employees/overtime/overtime.module
 import { LeaveModule } from './controllers/employees/leave/leave.module';
 import { ClientModule } from './controllers/client/client.module';
 import { LeaveSettingModule } from './controllers/employees/leave-setting/leave-setting.module';
+import { AttendanceModule } from './controllers/employees/attendance/attendance.module';
 
 const GlobalImports = [
   ConfigModule.forRoot({
@@ -39,6 +40,7 @@ const GlobalImports = [
   LeaveModule,
   ClientModule,
   LeaveSettingModule,
+  AttendanceModule,
 ];
 
 export default GlobalImports;
