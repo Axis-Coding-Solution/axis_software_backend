@@ -131,7 +131,6 @@ export class LeaveService {
         .sort('-createdAt')
         .skip(skip)
         .limit(limitNumber)
-        // .populate('employeeId leaveType', 'profileImage firstName lastName')
         .populate([
           { path: 'employeeId', select: 'profileImage firstName lastName -_id' },
           { path: 'leaveType', select: 'policyName noOfDays -_id' },
