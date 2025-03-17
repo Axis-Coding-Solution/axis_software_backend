@@ -58,7 +58,7 @@ export class ProjectController {
     }),
   )
   async edit(
-    @Param('id') id: string,
+    @Param('id') id: Types.ObjectId,
     @Body() editProjectDto: EditProjectDto,
     @UploadedFiles(new FileValidationPipe(false)) files: Array<Express.Multer.File>,
   ) {

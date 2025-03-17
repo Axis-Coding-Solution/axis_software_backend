@@ -9,7 +9,13 @@ import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee
 import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
 import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
 import { badRequestException, conflictException, notFoundException } from 'src/utils';
-import { deleteHelper, existsHelper, getAllHelper, getSingleHelper } from 'src/utils/helper';
+import {
+  deleteHelper,
+  editHelper,
+  existsHelper,
+  getAllHelper,
+  getSingleHelper,
+} from 'src/utils/helper';
 
 @Injectable()
 export class ProjectService {
@@ -78,36 +84,20 @@ export class ProjectService {
     return project;
   }
 
-  async edit(editProjectDto: EditProjectDto, id: string) {
+  async edit(editProjectDto: EditProjectDto, id: Types.ObjectId) {
     const { projectName, clientId, projectLeader, teamId, Stakeholders } = editProjectDto;
 
-    const [
-      isProjectNameExists,
-      isClientExists,
-      isProjectLeaderExists,
-      isTeamExists,
-      isStakeHoldersExists,
-    ] = await Promise.all([
-      projectName ? this.projectModel.exists({ projectName }).lean() : true,
-      clientId ? this.userModel.findById(clientId).lean() : null,
-      projectLeader ? this.userModel.findById(projectLeader).lean() : null,
+    const [, , , isTeamExists, isStakeHoldersExists] = await Promise.all([
+      projectName ? await existsHelper(projectName, 'projectName', this.projectModel) : null,
+      clientId ? await getSingleHelper(clientId, CLIENT_MODEL, this.clientModel) : null,
+      projectLeader
+        ? await getSingleHelper(projectLeader, 'Project Leader', this.employeeModel)
+        : null,
       teamId?.length > 0 ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean() : [],
       Stakeholders?.length > 0
         ? this.userModel.find({ _id: { $in: Stakeholders } }, '_id').lean()
         : [],
     ]);
-
-    if (projectName && isProjectNameExists) {
-      throw conflictException('Project name already exists');
-    }
-
-    if (clientId && !isClientExists) {
-      throw badRequestException('Client not found');
-    }
-
-    if (projectLeader && !isProjectLeaderExists) {
-      throw badRequestException('Project Leader not found');
-    }
 
     //* team members
     if (teamId && teamId?.length > 0) {
@@ -139,12 +129,7 @@ export class ProjectService {
 
     const updateData: any = { ...editProjectDto };
 
-    const project = await this.projectModel.findByIdAndUpdate(id, updateData, {
-      new: true,
-    });
-    if (!project) {
-      throw notFoundException('Project not found');
-    }
+    const project = await editHelper(id, updateData, PROJECT_MODEL, this.projectModel);
 
     return project;
   }

@@ -49,12 +49,12 @@ export class EditProjectDto {
   @IsMongoId()
   @IsString()
   @IsOptional()
-  projectLeader?: String | Types.ObjectId | User;
+  projectLeader?: Types.ObjectId;
 
   @IsMongoId({ each: true })
   @IsString({ each: true })
   @IsOptional()
-  teamId?: String[] | Types.ObjectId[] | User[];
+  teamId?: Types.ObjectId[];
 
   @IsString()
   @IsOptional()
