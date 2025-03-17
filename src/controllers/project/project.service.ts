@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-project.dto';
 import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.dto';
+import { CLIENT_MODEL, ClientDocument } from 'src/schemas/client';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
 import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
@@ -20,6 +21,9 @@ export class ProjectService {
 
     @InjectModel(TEAM_MODEL)
     private readonly teamModel: Model<TeamDocument>,
+
+    @InjectModel(CLIENT_MODEL)
+    private readonly clientModel: Model<ClientDocument>,
   ) {}
 
   async create(createProjectDto: CreateProjectDto) {
@@ -33,7 +37,7 @@ export class ProjectService {
       isStakeHoldersExists,
     ] = await Promise.all([
       projectName ? this.projectModel.exists({ projectName }).lean() : true,
-      clientId ? this.userModel.findById(clientId).lean() : null,
+      clientId ? this.clientModel.findById(clientId).lean() : null,
       projectLeader ? this.userModel.findById(projectLeader).lean() : null,
       teamId?.length > 0 ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean() : [],
       Stakeholders?.length > 0
