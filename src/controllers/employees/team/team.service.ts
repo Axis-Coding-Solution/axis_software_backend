@@ -2,16 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CreateTeamDto, EditTeamDto } from 'src/definitions/dtos/employees/team';
-import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
+import { UserDocument } from 'src/schemas/commons/user';
 import { DEPARTMENT_MODEL } from 'src/schemas/employees/department';
+import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
-import {
-  badRequestException,
-  conflictException,
-  isValidMongoId,
-  notFoundException,
-} from 'src/utils';
-import { getAllHelper } from 'src/utils/helper';
+import { notFoundException } from 'src/utils';
+import { deleteHelper, existsHelper, getAllHelper, getSingleHelper } from 'src/utils/helper';
 
 @Injectable()
 export class TeamService {
@@ -19,50 +15,28 @@ export class TeamService {
     @InjectModel(TEAM_MODEL)
     private readonly teamModel: Model<TeamDocument>,
 
-    @InjectModel(USER_MODEL)
-    private readonly userModel: Model<UserDocument>,
-
     @InjectModel(DEPARTMENT_MODEL)
     private readonly departmentModel: Model<UserDocument>,
+
+    @InjectModel(EMPLOYEE_MODEL)
+    private readonly employeeModel: Model<EmployeeDocument>,
   ) {}
 
   async create(createTeamDto: CreateTeamDto) {
     const { teamName, teamLeader, teamManager, teamMembers, department } = createTeamDto;
 
-    const [
-      teamNameExists,
-      isTeamLeaderExists,
-      isTeamMangerExists,
-      validMembers,
-      isDepartmentExists,
-    ] = await Promise.all([
-      teamName ? this.teamModel.exists({ teamName }) : true,
-      teamLeader ? this.userModel.exists({ _id: teamLeader }) : true,
-      teamManager ? this.userModel.exists({ _id: teamManager }) : true,
-      teamMembers.length > 0 ? this.userModel.find({ _id: { $in: teamMembers } }, '_id') : [],
-      department ? this.departmentModel.exists({ _id: department }) : true,
+    const [, , , validMembers] = await Promise.all([
+      teamName ? await existsHelper(teamName, 'teamName', this.teamModel) : null,
+      teamLeader ? await getSingleHelper(teamLeader, 'Team Leader', this.employeeModel) : null,
+      teamManager ? await getSingleHelper(teamManager, 'Team Manager', this.employeeModel) : null,
+      teamMembers.length > 0 ? this.employeeModel.find({ _id: { $in: teamMembers } }, '_id') : [],
+      department ? await getSingleHelper(department, DEPARTMENT_MODEL, this.departmentModel) : true,
     ]);
-
-    if (teamNameExists) {
-      throw conflictException('Team name already exists');
-    }
-
-    if (teamLeader && !isTeamLeaderExists) {
-      throw notFoundException('Team Leader not found');
-    }
-
-    if (teamManager && !isTeamMangerExists) {
-      throw notFoundException('Team Manager not found');
-    }
 
     const validMembersIds = validMembers.map((member: any) => member._id.toString());
     const missingMembers = teamMembers.filter((id) => !validMembersIds.includes(id.toString()));
-    if (missingMembers.length > 0) {
-      throw notFoundException(`Some team members not found: ${missingMembers.join(', ')}`);
-    }
-
-    if (department && !isDepartmentExists) {
-      throw notFoundException('Department not found');
+    if (missingMembers?.length > 0) {
+      throw notFoundException(`Some team members not found: ${missingMembers?.join(', ')}`);
     }
 
     const team = await this.teamModel.create({
@@ -79,42 +53,18 @@ export class TeamService {
   async edit(editTeamDto: EditTeamDto, id: string): Promise<any> {
     const { teamName, teamLeader, teamManager, teamMembers, department } = editTeamDto;
 
-    const [
-      teamNameExists,
-      isTeamLeaderExists,
-      isTeamMangerExists,
-      validMembers,
-      isDepartmentExists,
-    ] = await Promise.all([
-      teamName ? this.teamModel.exists({ teamName }).lean() : null,
-      teamLeader ? this.userModel.exists({ _id: teamLeader }).lean() : null,
-      teamManager ? this.userModel.exists({ _id: teamManager }).lean() : null,
-      teamMembers?.length > 0
-        ? this.userModel.find({ _id: { $in: teamMembers } }, '_id').lean()
-        : [],
-      department ? this.departmentModel.exists({ _id: department }).lean() : null,
+    const [, , , validMembers] = await Promise.all([
+      teamName ? await existsHelper(teamName, 'teamName', this.teamModel) : null,
+      teamLeader ? await getSingleHelper(teamLeader, 'Team Leader', this.employeeModel) : null,
+      teamManager ? await getSingleHelper(teamManager, 'Team Manager', this.employeeModel) : null,
+      teamMembers.length > 0 ? this.employeeModel.find({ _id: { $in: teamMembers } }, '_id') : [],
+      department ? await getSingleHelper(department, DEPARTMENT_MODEL, this.departmentModel) : true,
     ]);
 
-    if (teamName && teamNameExists) {
-      throw conflictException('Team name already exists');
-    }
-
-    if (teamLeader && !isTeamLeaderExists) {
-      throw notFoundException('Team Leader not found');
-    }
-
-    if (teamManager && !isTeamMangerExists) {
-      throw notFoundException('Team Manager not found');
-    }
-
-    const validMembersIds = validMembers?.map((member: any) => member?._id?.toString());
-    const missingMembers = teamMembers?.filter((id) => !validMembersIds?.includes(id?.toString()));
+    const validMembersIds = validMembers.map((member: any) => member._id.toString());
+    const missingMembers = teamMembers.filter((id) => !validMembersIds.includes(id.toString()));
     if (missingMembers?.length > 0) {
       throw notFoundException(`Some team members not found: ${missingMembers?.join(', ')}`);
-    }
-
-    if (department && !isDepartmentExists) {
-      throw notFoundException('Department not found');
     }
 
     const updateData: Partial<EditTeamDto> = {};
@@ -138,14 +88,7 @@ export class TeamService {
   }
 
   async getSingle(id: Types.ObjectId): Promise<any> {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('team id is not valid');
-    }
-
-    const team = await this.teamModel.findById(id).lean();
-    if (!team) {
-      throw notFoundException('team not found');
-    }
+    const team = getSingleHelper(id, TEAM_MODEL, this.teamModel);
 
     return team;
   }
@@ -177,10 +120,6 @@ export class TeamService {
       ],
     );
 
-    if (items.length === 0) {
-      throw notFoundException('Departments not found');
-    }
-
     return {
       data: items,
       pagination: {
@@ -193,14 +132,7 @@ export class TeamService {
   }
 
   async delete(id: Types.ObjectId) {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('team id is not valid');
-    }
-
-    const team = await this.teamModel.findByIdAndDelete(id);
-    if (!team) {
-      throw notFoundException('team not found');
-    }
+    const team = deleteHelper(id, TEAM_MODEL, this.teamModel);
 
     return team;
   }

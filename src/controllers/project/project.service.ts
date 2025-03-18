@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { populate } from 'dotenv';
 import { Model, Types } from 'mongoose';
 import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-project.dto';
 import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.dto';
@@ -38,6 +39,7 @@ export class ProjectService {
 
   async create(createProjectDto: CreateProjectDto) {
     const { projectName, clientId, projectLeader, teamId, Stakeholders } = createProjectDto;
+    console.log('🚀 ~ ProjectService ~ create ~ createProjectDto:', createProjectDto);
 
     const [, , , isTeamExists, isStakeHoldersExists] = await Promise.all([
       projectName ? await existsHelper(projectName, 'projectName', this.projectModel) : null,
@@ -147,24 +149,7 @@ export class ProjectService {
       this.projectModel,
       search,
       'projectName',
-      [
-        {
-          path: 'clientId',
-          select: 'firstName lastName userName -_id',
-        },
-        {
-          path: 'projectLeader',
-          select: 'firstName lastName userName -_id',
-        },
-        {
-          path: 'teamId',
-          select: 'teamName teamMembers -_id',
-        },
-        {
-          path: 'Stakeholders',
-          select: 'firstName lastName userName -_id',
-        },
-      ],
+      options,
     );
 
     return {
@@ -184,3 +169,26 @@ export class ProjectService {
     return project;
   }
 }
+const options = [
+  {
+    path: 'clientId',
+    select: 'firstName lastName userName -_id',
+  },
+  {
+    path: 'projectLeader',
+    select: 'firstName lastName userName -_id',
+  },
+  {
+    path: 'teamId',
+    select: 'teamName teamMembers -_id',
+    populate: {
+      path: 'teamMembers',
+      model: EMPLOYEE_MODEL,
+      select: 'firstName lastName userName -_id',
+    },
+  },
+  {
+    path: 'Stakeholders',
+    select: 'firstName lastName userName -_id',
+  },
+];

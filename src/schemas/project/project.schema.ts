@@ -11,6 +11,7 @@ import {
 import { Team, TEAM_MODEL } from '../employees/team';
 import { Currency } from '../enums/common';
 import { Client, CLIENT_MODEL } from '../client';
+import { Employee, EMPLOYEE_MODEL } from '../employees/employee';
 
 @Schema({ timestamps: true })
 export class Project {
@@ -59,8 +60,8 @@ export class Project {
   })
   priority: Priority;
 
-  @Prop({ type: Types.ObjectId, ref: USER_MODEL, required: true })
-  projectLeader: String | Types.ObjectId | User;
+  @Prop({ type: Types.ObjectId, ref: EMPLOYEE_MODEL, required: true })
+  projectLeader: String | Types.ObjectId | Employee;
 
   @Prop({ type: [Types.ObjectId], ref: TEAM_MODEL, required: true })
   teamId: String[] | Types.ObjectId[] | Team[];
