@@ -45,7 +45,7 @@
 
 ```
 {
-    "email": "Mya_Halvorson65@gmail.com",
+    "email": "Walter_Von86@yahoo.com",
     "password": "securepassword123"
 }
 ```

@@ -44,7 +44,10 @@ export class AttendanceService {
     punchInDto.date = date;
 
     //* calculate current time
-    const time = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    const time = date.toLocaleTimeString('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
     punchInDto.punchIn = time;
 
     const attendance = await createHelper(punchInDto, ATTENDANCE_MODEL, this.attendanceModel);
@@ -52,11 +55,14 @@ export class AttendanceService {
     return attendance;
   }
 
-  async punchOut(punchOutDto: PunchOutDto, currentUser: Types.ObjectId) {
+  async punchOut(punchOutDto: PunchOutDto, currentUser: Types.ObjectId, id: Types.ObjectId) {
     const { isPunch } = punchOutDto;
     if (isPunch) {
       throw badRequestException('Punch Out is required');
     }
+
+    //* find document
+    const attendance = await getSingleHelper(id, ATTENDANCE_MODEL, this.attendanceModel);
   }
 
   async getSingle(id: Types.ObjectId) {
