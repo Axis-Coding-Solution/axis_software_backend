@@ -24,7 +24,6 @@ export class Project {
   @Prop({
     type: String,
     enum: RateType,
-    immutable: true,
     required: true,
   })
   rateType: RateType;
@@ -32,7 +31,6 @@ export class Project {
   @Prop({
     type: String,
     enum: Priority,
-    immutable: true,
     required: true,
   })
   priority: Priority;

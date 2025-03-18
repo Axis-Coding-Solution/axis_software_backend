@@ -62,7 +62,6 @@ export class ProjectService {
   }
 
   async edit(editProjectDto: EditProjectDto, id: Types.ObjectId) {
-    console.log('🚀 ~ ProjectService ~ edit ~ editProjectDto:', editProjectDto);
     const { projectName, clientId, projectLeader, teamMembers } = editProjectDto;
 
     const [, , , teamMembersData] = await Promise.all([
