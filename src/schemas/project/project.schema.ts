@@ -1,15 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { User, USER_MODEL } from '../commons/user';
-import {
-  communicationChannels,
-  Priority,
-  ProjectStatus,
-  ProjectType,
-  RateType,
-} from '../enums/project';
-import { Team, TEAM_MODEL } from '../employees/team';
-import { Currency } from '../enums/common';
+import { Priority, RateType } from '../enums/project';
 import { Client, CLIENT_MODEL } from '../client';
 import { Employee, EMPLOYEE_MODEL } from '../employees/employee';
 
@@ -17,13 +8,6 @@ import { Employee, EMPLOYEE_MODEL } from '../employees/employee';
 export class Project {
   @Prop({ required: true })
   projectName: String;
-
-  @Prop({
-    type: String,
-    enum: ProjectType,
-    immutable: false,
-  })
-  projectType: ProjectType;
 
   @Prop({ type: Types.ObjectId, ref: CLIENT_MODEL, required: true })
   clientId: String | Types.ObjectId | Client;
@@ -36,13 +20,6 @@ export class Project {
 
   @Prop({ required: true })
   rate: Number;
-
-  @Prop({
-    type: String,
-    enum: Currency,
-    immutable: false,
-  })
-  currency: Currency;
 
   @Prop({
     type: String,
@@ -63,40 +40,14 @@ export class Project {
   @Prop({ type: Types.ObjectId, ref: EMPLOYEE_MODEL, required: true })
   projectLeader: String | Types.ObjectId | Employee;
 
-  @Prop({ type: [Types.ObjectId], ref: TEAM_MODEL, required: true })
-  teamId: String[] | Types.ObjectId[] | Team[];
-
   @Prop({ required: true })
   description: String;
 
   @Prop()
   files?: [String];
 
-  @Prop({
-    type: String,
-    enum: ProjectStatus,
-    immutable: true,
-  })
-  projectStatus?: ProjectStatus;
-
-  @Prop()
-  tags?: String[];
-
-  @Prop()
-  technologyStack?: String[];
-
-  @Prop()
-  repositories?: String[];
-
-  @Prop({
-    type: [String],
-    enum: communicationChannels,
-    immutable: false,
-  })
-  communicationChannels?: communicationChannels[];
-
-  @Prop({ type: [Types.ObjectId], ref: USER_MODEL })
-  Stakeholders?: String[] | Types.ObjectId[] | User[];
+  @Prop({ type: [Types.ObjectId], ref: EMPLOYEE_MODEL })
+  teamMembers?: String[] | Types.ObjectId[] | Employee[];
 }
 
 export type ProjectDocument = Project & Document;

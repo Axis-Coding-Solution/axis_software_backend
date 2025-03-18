@@ -9,25 +9,13 @@ import {
   IsString,
 } from 'class-validator';
 import { Types } from 'mongoose';
-import { User } from 'src/schemas/commons/user';
-import { Currency } from 'src/schemas/enums/common';
-import {
-  communicationChannels,
-  Priority,
-  ProjectStatus,
-  ProjectType,
-  RateType,
-} from 'src/schemas/enums/project';
+import { Employee } from 'src/schemas/employees/employee';
+import { Priority, RateType } from 'src/schemas/enums/project';
 
 export class CreateProjectDto {
   @IsString()
   @IsNotEmpty()
   projectName: String;
-
-  @IsEnum(ProjectType)
-  @IsNotEmpty()
-  @IsOptional()
-  projectType: String;
 
   @IsMongoId()
   @IsString()
@@ -49,10 +37,6 @@ export class CreateProjectDto {
   @IsNotEmpty()
   rate: Number;
 
-  @IsEnum(Currency)
-  @IsOptional()
-  currency: String;
-
   @IsEnum(RateType)
   @IsNotEmpty()
   rateType?: String;
@@ -66,11 +50,6 @@ export class CreateProjectDto {
   @IsNotEmpty()
   projectLeader: Types.ObjectId;
 
-  @IsMongoId({ each: true })
-  @IsString({ each: true })
-  @IsNotEmpty()
-  teamId: String[] | Types.ObjectId[] | User[];
-
   @IsString()
   @IsNotEmpty()
   description: String;
@@ -79,29 +58,8 @@ export class CreateProjectDto {
   @IsOptional()
   files?: String[];
 
-  @IsEnum(ProjectStatus)
-  @IsOptional()
-  projectStatus?: String;
-
-  @IsString({ each: true })
-  @IsOptional()
-  tags?: String[];
-
-  @IsString({ each: true })
-  @IsOptional()
-  technologyStack?: String[];
-
-  @IsString({ each: true })
-  @IsOptional()
-  repositories?: String[];
-
-  @IsEnum(communicationChannels)
-  @IsString({ each: true })
-  @IsOptional()
-  communicationChannels?: communicationChannels[];
-
   @IsMongoId({ each: true })
   @IsString({ each: true })
   @IsOptional()
-  Stakeholders?: String[] | Types.ObjectId[] | User[];
+  teamMembers?: String[] | Types.ObjectId[] | Employee[];
 }

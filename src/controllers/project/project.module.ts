@@ -13,8 +13,6 @@ import { EMPLOYEE_MODEL, employeeSchema } from 'src/schemas/employees/employee';
   imports: [
     MongooseModule.forFeature([
       { name: PROJECT_MODEL, schema: projectSchema },
-      { name: USER_MODEL, schema: userSchema },
-      { name: TEAM_MODEL, schema: teamSchema },
       { name: CLIENT_MODEL, schema: clientSchema },
       { name: EMPLOYEE_MODEL, schema: employeeSchema },
     ]),

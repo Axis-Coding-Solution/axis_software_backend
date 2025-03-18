@@ -11,6 +11,7 @@ import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
 import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
 import { badRequestException, conflictException, notFoundException } from 'src/utils';
 import {
+  createHelper,
   deleteHelper,
   editHelper,
   existsHelper,
@@ -24,12 +25,6 @@ export class ProjectService {
     @InjectModel(PROJECT_MODEL)
     private readonly projectModel: Model<ProjectDocument>,
 
-    @InjectModel(USER_MODEL)
-    private readonly userModel: Model<UserDocument>,
-
-    @InjectModel(TEAM_MODEL)
-    private readonly teamModel: Model<TeamDocument>,
-
     @InjectModel(CLIENT_MODEL)
     private readonly clientModel: Model<ClientDocument>,
 
@@ -38,96 +33,58 @@ export class ProjectService {
   ) {}
 
   async create(createProjectDto: CreateProjectDto) {
-    const { projectName, clientId, projectLeader, teamId, Stakeholders } = createProjectDto;
+    const { projectName, clientId, projectLeader, teamMembers } = createProjectDto;
     console.log('🚀 ~ ProjectService ~ create ~ createProjectDto:', createProjectDto);
 
-    const [, , , isTeamExists, isStakeHoldersExists] = await Promise.all([
+    const [, , , teamMembersData] = await Promise.all([
       projectName ? await existsHelper(projectName, 'projectName', this.projectModel) : null,
       clientId ? await getSingleHelper(clientId, CLIENT_MODEL, this.clientModel) : null,
       projectLeader
         ? await getSingleHelper(projectLeader, 'Project Leader', this.employeeModel)
         : null,
-      teamId?.length > 0 ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean() : [],
-      Stakeholders?.length > 0
-        ? this.userModel.find({ _id: { $in: Stakeholders } }, '_id').lean()
+      teamMembers?.length > 0
+        ? this.employeeModel.find({ _id: { $in: teamMembers } }, '_id').lean()
         : [],
     ]);
 
-    //* team members
-    const validTeamIds = isTeamExists.map((member: any) => member._id.toString());
+    //* teamMembers
+    const validTeamMemberIds = teamMembersData?.map((member: any) => member._id.toString());
 
-    const missingTeamMembers = teamId?.filter(
-      (teamId: any) => !validTeamIds?.includes(teamId?.toString()),
+    const missingTeamMembers = teamMembers?.filter(
+      (teamMember: any) => !validTeamMemberIds?.includes(teamMember.toString()),
     );
     if (missingTeamMembers?.length > 0) {
-      throw notFoundException(`Some team members not found: ${missingTeamMembers?.join(', ')}`);
+      throw notFoundException(`Some TeamMembers not found: ${missingTeamMembers?.join(', ')}`);
     }
 
-    //* stakeholders
-    const validStakeholderIds = isStakeHoldersExists?.map((member: any) => member._id.toString());
-
-    const missingStakeholders = Stakeholders?.filter(
-      (stakeholder: any) => !validStakeholderIds?.includes(stakeholder.toString()),
-    );
-    if (missingStakeholders?.length > 0) {
-      throw notFoundException(`Some stakeholders not found: ${missingStakeholders?.join(', ')}`);
-    }
-
-    // let { tags } = createProjectDto;
-    // if (tags) {
-    //   tags = JSON.parse(tags).map((tag: any) => tag?.value);
-    // }
-
-    const project = await this.projectModel.create(createProjectDto);
-    if (!project) {
-      throw badRequestException('Project not created');
-    }
+    const project = createHelper(createProjectDto, PROJECT_MODEL, this.projectModel);
 
     return project;
   }
 
   async edit(editProjectDto: EditProjectDto, id: Types.ObjectId) {
-    const { projectName, clientId, projectLeader, teamId, Stakeholders } = editProjectDto;
+    const { projectName, clientId, projectLeader, teamMembers } = editProjectDto;
 
-    const [, , , isTeamExists, isStakeHoldersExists] = await Promise.all([
+    const [, , , teamMembersData] = await Promise.all([
       projectName ? await existsHelper(projectName, 'projectName', this.projectModel) : null,
       clientId ? await getSingleHelper(clientId, CLIENT_MODEL, this.clientModel) : null,
       projectLeader
         ? await getSingleHelper(projectLeader, 'Project Leader', this.employeeModel)
         : null,
-      teamId?.length > 0 ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean() : [],
-      Stakeholders?.length > 0
-        ? this.userModel.find({ _id: { $in: Stakeholders } }, '_id').lean()
+      teamMembers?.length > 0
+        ? this.employeeModel.find({ _id: { $in: teamMembers } }, '_id').lean()
         : [],
     ]);
 
-    //* team members
-    if (teamId && teamId?.length > 0) {
-      const validTeamIds = isTeamExists.map((member: any) => member._id.toString());
-      const missingTeamMembers = teamId?.filter(
-        (teamId: any) => !validTeamIds?.includes(teamId?.toString()),
-      );
-      if (missingTeamMembers?.length > 0) {
-        throw notFoundException(`Some team members not found: ${missingTeamMembers?.join(', ')}`);
-      }
+    //* teamMembers
+    const validTeamMemberIds = teamMembersData?.map((member: any) => member._id.toString());
+
+    const missingTeamMembers = teamMembers?.filter(
+      (teamMember: any) => !validTeamMemberIds?.includes(teamMember.toString()),
+    );
+    if (missingTeamMembers?.length > 0) {
+      throw notFoundException(`Some TeamMembers not found: ${missingTeamMembers?.join(', ')}`);
     }
-
-    //* stakeholders
-    if (Stakeholders && Stakeholders?.length > 0) {
-      const validStakeholderIds = isStakeHoldersExists?.map((member: any) => member._id.toString());
-
-      const missingStakeholders = Stakeholders?.filter(
-        (stakeholder: any) => !validStakeholderIds?.includes(stakeholder.toString()),
-      );
-      if (missingStakeholders?.length > 0) {
-        throw notFoundException(`Some stakeholders not found: ${missingStakeholders?.join(', ')}`);
-      }
-    }
-
-    // let { tags } = editProjectDto;
-    // if (tags) {
-    //   tags = JSON.parse(tags).map((tag: any) => tag?.value);
-    // }
 
     const updateData: any = { ...editProjectDto };
 
@@ -188,7 +145,7 @@ const options = [
     },
   },
   {
-    path: 'Stakeholders',
+    path: 'TeamMembers',
     select: 'firstName lastName userName -_id',
   },
 ];
