@@ -34,7 +34,6 @@ export class ProjectService {
 
   async create(createProjectDto: CreateProjectDto) {
     const { projectName, clientId, projectLeader, teamMembers } = createProjectDto;
-    console.log('🚀 ~ ProjectService ~ create ~ createProjectDto:', createProjectDto);
 
     const [, , , teamMembersData] = await Promise.all([
       projectName ? await existsHelper(projectName, 'projectName', this.projectModel) : null,
@@ -47,7 +46,7 @@ export class ProjectService {
         : [],
     ]);
 
-    //* teamMembers
+    //* search teamMembers
     const validTeamMemberIds = teamMembersData?.map((member: any) => member._id.toString());
 
     const missingTeamMembers = teamMembers?.filter(
@@ -63,6 +62,7 @@ export class ProjectService {
   }
 
   async edit(editProjectDto: EditProjectDto, id: Types.ObjectId) {
+    console.log('🚀 ~ ProjectService ~ edit ~ editProjectDto:', editProjectDto);
     const { projectName, clientId, projectLeader, teamMembers } = editProjectDto;
 
     const [, , , teamMembersData] = await Promise.all([
@@ -76,19 +76,19 @@ export class ProjectService {
         : [],
     ]);
 
-    //* teamMembers
-    const validTeamMemberIds = teamMembersData?.map((member: any) => member._id.toString());
+    //* search teamMembers
+    if (teamMembers?.length > 0) {
+      const validTeamMemberIds = teamMembersData?.map((member: any) => member._id.toString());
 
-    const missingTeamMembers = teamMembers?.filter(
-      (teamMember: any) => !validTeamMemberIds?.includes(teamMember.toString()),
-    );
-    if (missingTeamMembers?.length > 0) {
-      throw notFoundException(`Some TeamMembers not found: ${missingTeamMembers?.join(', ')}`);
+      const missingTeamMembers = teamMembers?.filter(
+        (teamMember: any) => !validTeamMemberIds?.includes(teamMember.toString()),
+      );
+      if (missingTeamMembers?.length > 0) {
+        throw notFoundException(`Some TeamMembers not found: ${missingTeamMembers?.join(', ')}`);
+      }
     }
 
-    const updateData: any = { ...editProjectDto };
-
-    const project = await editHelper(id, updateData, PROJECT_MODEL, this.projectModel);
+    const project = await editHelper(id, editProjectDto, PROJECT_MODEL, this.projectModel);
 
     return project;
   }
@@ -106,7 +106,20 @@ export class ProjectService {
       this.projectModel,
       search,
       'projectName',
-      options,
+      [
+        {
+          path: 'clientId',
+          select: 'firstName lastName userName -_id',
+        },
+        {
+          path: 'projectLeader',
+          select: 'firstName lastName userName -_id',
+        },
+        {
+          path: 'teamMembers',
+          select: 'firstName lastName userName -_id',
+        },
+      ],
     );
 
     return {
@@ -126,26 +139,3 @@ export class ProjectService {
     return project;
   }
 }
-const options = [
-  {
-    path: 'clientId',
-    select: 'firstName lastName userName -_id',
-  },
-  {
-    path: 'projectLeader',
-    select: 'firstName lastName userName -_id',
-  },
-  {
-    path: 'teamId',
-    select: 'teamName teamMembers -_id',
-    populate: {
-      path: 'teamMembers',
-      model: EMPLOYEE_MODEL,
-      select: 'firstName lastName userName -_id',
-    },
-  },
-  {
-    path: 'TeamMembers',
-    select: 'firstName lastName userName -_id',
-  },
-];

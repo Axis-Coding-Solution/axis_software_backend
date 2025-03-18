@@ -46,8 +46,8 @@ export class Project {
   @Prop()
   files?: [String];
 
-  @Prop({ type: [Types.ObjectId], ref: EMPLOYEE_MODEL })
-  teamMembers?: String[] | Types.ObjectId[] | Employee[];
+  @Prop({ type: [Types.ObjectId], ref: EMPLOYEE_MODEL, required: true })
+  teamMembers: String[] | Types.ObjectId[] | Employee[];
 }
 
 export type ProjectDocument = Project & Document;

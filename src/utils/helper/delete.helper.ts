@@ -1,6 +1,6 @@
 import { Model, Types } from 'mongoose';
 import { badRequestException, notFoundException } from '../custom-exception';
-import { isValidMongoId } from '../is-valid-mongoId';
+import { isValidMongoId } from '../common-functions';
 /**
  * To delete a document from db
  * @param {Types.ObjectId} id id comes from frontend

@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsDate,
   IsEnum,
   IsMongoId,
@@ -9,7 +10,6 @@ import {
   IsString,
 } from 'class-validator';
 import { Types } from 'mongoose';
-import { Employee } from 'src/schemas/employees/employee';
 import { Priority, RateType } from 'src/schemas/enums/project';
 
 export class CreateProjectDto {
@@ -59,7 +59,7 @@ export class CreateProjectDto {
   files?: String[];
 
   @IsMongoId({ each: true })
-  @IsString({ each: true })
-  @IsOptional()
-  teamMembers?: String[] | Types.ObjectId[] | Employee[];
+  @IsArray()
+  @IsNotEmpty()
+  teamMembers?: Types.ObjectId[];
 }
