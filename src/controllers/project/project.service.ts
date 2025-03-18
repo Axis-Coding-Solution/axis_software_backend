@@ -65,7 +65,7 @@ export class ProjectService {
     const { projectName, clientId, projectLeader, teamMembers } = editProjectDto;
 
     const [, , , teamMembersData] = await Promise.all([
-      projectName ? await existsHelper(projectName, 'projectName', this.projectModel) : null,
+      projectName ? await existsHelper(projectName, 'projectName', this.projectModel, id) : null,
       clientId ? await getSingleHelper(clientId, CLIENT_MODEL, this.clientModel) : null,
       projectLeader
         ? await getSingleHelper(projectLeader, 'Project Leader', this.employeeModel)
