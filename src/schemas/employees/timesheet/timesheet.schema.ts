@@ -5,8 +5,8 @@ import { Employee, EMPLOYEE_MODEL } from '../employee';
 
 @Schema({ timestamps: true })
 export class Timesheet {
-  @Prop({ type: [Types.ObjectId], ref: PROJECT_MODEL, required: true })
-  projectId: String[] | Types.ObjectId[] | Project[];
+  @Prop({ type: Types.ObjectId, ref: PROJECT_MODEL, required: true })
+  projectId: String | Types.ObjectId | Project;
 
   @Prop({ required: true })
   date: Date;

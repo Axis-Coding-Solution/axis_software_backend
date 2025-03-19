@@ -15,7 +15,7 @@ export class createTimesheetDto {
 
   @IsNumber()
   @IsNotEmpty()
-  hours: Number;
+  hours: number;
 
   @IsNotEmpty()
   @IsString()

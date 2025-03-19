@@ -3,17 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { createTimesheetDto } from 'src/definitions/dtos/employees/timesheet/create-timesheet.dto';
 import { editTimesheetDto } from 'src/definitions/dtos/employees/timesheet/edit-timesheet.dto';
-import { FindUser } from 'src/interface';
+import { FindUser, Project } from 'src/interface';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { TIMESHEET_MODEL, TimesheetDocument } from 'src/schemas/employees/timesheet';
 import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
-import {
-  badRequestException,
-  conflictException,
-  isValidMongoId,
-  notFoundException,
-} from 'src/utils';
+import { notFoundException } from 'src/utils';
 import {
   createHelper,
   deleteHelper,
@@ -52,8 +47,13 @@ export class TimesheetService {
     await getSingleHelper(employeeId, EMPLOYEE_MODEL, this.employeeModel);
     createTimesheetDto.employeeId = employeeId;
 
-    const { projectId } = createTimesheetDto;
-    await getSingleHelper(projectId, PROJECT_MODEL, this.projectModel);
+    const { projectId, hours } = createTimesheetDto;
+    let project = await getSingleHelper<Project>(projectId, PROJECT_MODEL, this.projectModel);
+
+    const updateData: object = {
+      remainingHours: project?.remainingHours - hours,
+    };
+    await editHelper(projectId, updateData, PROJECT_MODEL, this.projectModel);
 
     const timesheet = await createHelper(createTimesheetDto, TIMESHEET_MODEL, this.timesheetModel);
 
@@ -61,9 +61,11 @@ export class TimesheetService {
   }
 
   async edit(editTimesheetDto: editTimesheetDto, id: Types.ObjectId) {
-    let { projectId } = editTimesheetDto;
+    let { projectId, hours } = editTimesheetDto;
 
-    projectId ? await getSingleHelper(projectId, PROJECT_MODEL, this.projectModel) : null;
+    const project = projectId
+      ? await getSingleHelper<Project>(projectId, PROJECT_MODEL, this.projectModel)
+      : null;
 
     const editTimesheet = await editHelper(
       id,
@@ -71,6 +73,11 @@ export class TimesheetService {
       TIMESHEET_MODEL,
       this.timesheetModel,
     );
+
+    const updateData: object = {
+      remainingHours: project?.remainingHours - hours,
+    };
+    await editHelper(projectId, updateData, PROJECT_MODEL, this.projectModel);
 
     return editTimesheet;
   }

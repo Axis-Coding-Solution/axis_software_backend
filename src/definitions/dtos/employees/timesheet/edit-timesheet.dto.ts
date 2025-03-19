@@ -17,7 +17,7 @@ export class editTimesheetDto {
 
   @IsNumber()
   @IsOptional()
-  hours?: Number;
+  hours?: number;
 
   @IsNotEmpty()
   @IsString()
