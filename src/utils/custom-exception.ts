@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 
 /**
+ * This is wrapper on Nest Js Exception but with custom response.
  * @param {String} message message send to client
  * @param {Object} data default data will be null
  */
@@ -19,6 +20,7 @@ export const conflictException = (message: string, data: any = null) => {
 };
 
 /**
+ * This is wrapper on Nest Js Exception but with custom response.
  * @param {String} message message send to client
  * @param {Object} data default data will be null
  */
@@ -31,6 +33,7 @@ export const badRequestException = (message: string, data: any = null) => {
 };
 
 /**
+ * This is wrapper on Nest Js Exception but with custom response.
  * @param {String} message message send to client
  * @param {Object} data default data will be null
  */
@@ -43,6 +46,7 @@ export const notFoundException = (message: string, data: any = null) => {
 };
 
 /**
+ * This is wrapper on Nest Js Exception but with custom response.
  * @param {String} message message send to client
  * @param {Object} data default data will be null
  */
@@ -55,6 +59,7 @@ export const forbiddenException = (message: string, data: any = null) => {
 };
 
 /**
+ * This is wrapper on Nest Js Exception but with custom response.
  * @param {String} message message send to client
  * @param {Object} data default data will be null
  */

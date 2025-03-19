@@ -62,4 +62,12 @@ export class CreateProjectDto {
   @IsArray()
   @IsNotEmpty()
   teamMembers?: Types.ObjectId[];
+
+  @IsNumber()
+  @IsOptional()
+  totalHours?: Number;
+
+  @IsNumber()
+  @IsOptional()
+  remainingHours?: Number;
 }
