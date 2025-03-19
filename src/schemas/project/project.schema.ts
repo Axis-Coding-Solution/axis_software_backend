@@ -46,6 +46,12 @@ export class Project {
 
   @Prop({ type: [Types.ObjectId], ref: EMPLOYEE_MODEL, required: true })
   teamMembers: String[] | Types.ObjectId[] | Employee[];
+
+  @Prop({ required: true, default: 0 })
+  totalHours: Number;
+
+  @Prop({ required: true, default: 0 })
+  remainingHours: Number;
 }
 
 export type ProjectDocument = Project & Document;
