@@ -3,6 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { createTimesheetDto } from 'src/definitions/dtos/employees/timesheet/create-timesheet.dto';
 import { editTimesheetDto } from 'src/definitions/dtos/employees/timesheet/edit-timesheet.dto';
+import { FindUser } from 'src/interface';
+import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
+import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { TIMESHEET_MODEL, TimesheetDocument } from 'src/schemas/employees/timesheet';
 import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
 import {
@@ -11,7 +14,13 @@ import {
   isValidMongoId,
   notFoundException,
 } from 'src/utils';
-import { deleteHelper, getAllHelper, getSingleHelper } from 'src/utils/helper';
+import {
+  createHelper,
+  deleteHelper,
+  editHelper,
+  getAllHelper,
+  getSingleHelper,
+} from 'src/utils/helper';
 
 @Injectable()
 export class TimesheetService {
@@ -21,50 +30,47 @@ export class TimesheetService {
 
     @InjectModel(PROJECT_MODEL)
     private readonly projectModel: Model<ProjectDocument>,
+
+    @InjectModel(USER_MODEL)
+    private readonly userModel: Model<UserDocument>,
+
+    @InjectModel(EMPLOYEE_MODEL)
+    private readonly employeeModel: Model<EmployeeDocument>,
   ) {}
 
-  async create(createTimesheetDto: createTimesheetDto) {
+  async create(createTimesheetDto: createTimesheetDto, currentUser: Types.ObjectId) {
+    //* find current user
+    const findCurrentUser = currentUser
+      ? await getSingleHelper<FindUser>(currentUser, USER_MODEL, this.userModel)
+      : null;
+
+    //* assign employee id
+    const employeeId = findCurrentUser?.employeeId;
+    if (!employeeId) throw notFoundException('Employee not found');
+
+    //* search employee
+    await getSingleHelper(employeeId, EMPLOYEE_MODEL, this.employeeModel);
+    createTimesheetDto.employeeId = employeeId;
+
     const { projectId } = createTimesheetDto;
+    await getSingleHelper(projectId, PROJECT_MODEL, this.projectModel);
 
-    const timesheetExists = await this.projectModel.findById(projectId);
-    if (!timesheetExists) {
-      throw notFoundException('Project not found');
-    }
-
-    const timesheet = await this.timesheetModel.create({
-      ...createTimesheetDto,
-    });
-    if (!timesheet) {
-      throw badRequestException('timesheet not created');
-    }
+    const timesheet = await createHelper(createTimesheetDto, TIMESHEET_MODEL, this.timesheetModel);
 
     return timesheet;
   }
 
   async edit(editTimesheetDto: editTimesheetDto, id: Types.ObjectId) {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('timesheet id is not valid');
-    }
-
     let { projectId } = editTimesheetDto;
 
-    if (projectId) {
-      const projectExists = await this.projectModel.findById(projectId);
-      if (!projectExists) {
-        throw notFoundException('Project not found');
-      }
-    }
+    projectId ? await getSingleHelper(projectId, PROJECT_MODEL, this.projectModel) : null;
 
-    const editTimesheet = await this.timesheetModel.findByIdAndUpdate(
+    const editTimesheet = await editHelper(
       id,
-      {
-        ...editTimesheetDto,
-      },
-      { new: true },
+      editTimesheetDto,
+      TIMESHEET_MODEL,
+      this.timesheetModel,
     );
-    if (!editTimesheet) {
-      throw notFoundException('timesheet not found');
-    }
 
     return editTimesheet;
   }

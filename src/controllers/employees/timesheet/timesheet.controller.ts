@@ -6,6 +6,7 @@ import { editTimesheetDto } from 'src/definitions/dtos/employees/timesheet/edit-
 import { Types } from 'mongoose';
 import { JwtAuthGuard } from 'src/middlewares/guard';
 import { TIMESHEET_MODEL } from 'src/schemas/employees/timesheet';
+import { User } from 'src/decorator';
 
 @UseGuards(JwtAuthGuard)
 @Controller('timesheet')
@@ -13,8 +14,11 @@ export class TimesheetController {
   constructor(private readonly timesheetService: TimesheetService) {}
 
   @Post()
-  async create(@Body() createTimesheetDto: createTimesheetDto) {
-    const timesheet = await this.timesheetService.create(createTimesheetDto);
+  async create(
+    @Body() createTimesheetDto: createTimesheetDto,
+    @User() currentUser: Types.ObjectId,
+  ) {
+    const timesheet = await this.timesheetService.create(createTimesheetDto, currentUser);
     return successfulResponse(`${TIMESHEET_MODEL} created successfully`, timesheet);
   }
 
