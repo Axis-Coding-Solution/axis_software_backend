@@ -88,13 +88,13 @@ export class OvertimeService {
 
   async approval(
     approveOvertimeDto: ApproveOvertimeDto,
-    currentUser: Types.ObjectId,
+    currentUserId: Types.ObjectId,
     id: Types.ObjectId,
   ) {
     const { status } = approveOvertimeDto;
     const overtime = editHelper(
       id,
-      { status, approvedBy: currentUser },
+      { status, approvedBy: currentUserId },
       OVERTIME_MODEL,
       this.overtimeModel,
     );

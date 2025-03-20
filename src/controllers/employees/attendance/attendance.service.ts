@@ -21,14 +21,14 @@ export class AttendanceService {
     @InjectModel(USER_MODEL)
     private userModel: Model<UserDocument>,
   ) {}
-  async punchIn(punchInDto: PunchInDto, currentUser: Types.ObjectId) {
+  async punchIn(punchInDto: PunchInDto, currentUserId: Types.ObjectId) {
     const { isPunch } = punchInDto;
     if (!isPunch) {
       throw badRequestException('Punch In is required');
     }
     //* find current user
-    const findCurrentUser = currentUser
-      ? await getSingleHelper<FindUser>(currentUser, USER_MODEL, this.userModel)
+    const findCurrentUser = currentUserId
+      ? await getSingleHelper<FindUser>(currentUserId, USER_MODEL, this.userModel)
       : null;
 
     //* assign employee id

@@ -33,10 +33,10 @@ export class TimesheetService {
     private readonly employeeModel: Model<EmployeeDocument>,
   ) {}
 
-  async create(createTimesheetDto: createTimesheetDto, currentUser: Types.ObjectId) {
+  async create(createTimesheetDto: createTimesheetDto, currentUserId: Types.ObjectId) {
     //* find current user
-    const findCurrentUser = currentUser
-      ? await getSingleHelper<FindUser>(currentUser, USER_MODEL, this.userModel)
+    const findCurrentUser = currentUserId
+      ? await getSingleHelper<FindUser>(currentUserId, USER_MODEL, this.userModel)
       : null;
 
     //* assign employee id
