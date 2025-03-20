@@ -1,17 +1,8 @@
 import { IsNotEmpty, IsMongoId, IsOptional, IsString } from 'class-validator';
 import { Types } from 'mongoose';
-import { Company } from 'src/schemas/commons/company';
-import { IsFile } from 'src/validator';
 
 export class editCompanyDto {
   //* basic info
-  @IsFile(
-    { mime: ['image/jpg', 'image/png', 'image/jpeg'] },
-    {
-      message: 'Profile image either not received or valid',
-    },
-  )
-  @IsOptional()
   profileImage?: String;
 
   @IsString()
@@ -46,7 +37,7 @@ export class editCompanyDto {
   @IsNotEmpty()
   @IsMongoId({ message: 'Owner id is not valid' })
   @IsOptional()
-  owner?: string | Types.ObjectId | Company;
+  owner?: Types.ObjectId;
 
   @IsString({ each: true })
   @IsNotEmpty()

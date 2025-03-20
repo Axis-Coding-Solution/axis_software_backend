@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { MaritalStatus } from 'src/schemas/enums/employee';
+import { MaritalStatus } from 'src/schemas/enums/employees/employee/marital-status.enum';
 
 @Schema()
 export class PersonalInformation {
@@ -12,7 +12,7 @@ export class PersonalInformation {
   @Prop()
   tel?: String;
 
-  @Prop({ required: true })
+  @Prop()
   nationality: String;
 
   @Prop()
@@ -21,8 +21,6 @@ export class PersonalInformation {
   @Prop({
     type: String,
     enum: Object.keys(MaritalStatus),
-    immutable: true,
-    required: true,
   })
   maritalStatus: MaritalStatus;
 
@@ -33,5 +31,4 @@ export class PersonalInformation {
   noOfChildren?: String;
 }
 
-export const personalInformationSchema =
-  SchemaFactory.createForClass(PersonalInformation);
+export const personalInformationSchema = SchemaFactory.createForClass(PersonalInformation);

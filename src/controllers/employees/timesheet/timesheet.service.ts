@@ -1,17 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { createTimesheetDto } from 'src/definitions/dtos/employees/timesheet/create-timesheet.dto';
 import { editTimesheetDto } from 'src/definitions/dtos/employees/timesheet/edit-timesheet.dto';
+import { FindUser, Project } from 'src/interface';
+import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
+import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { TIMESHEET_MODEL, TimesheetDocument } from 'src/schemas/employees/timesheet';
 import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
+import { notFoundException } from 'src/utils';
 import {
-  badRequestException,
-  conflictException,
-  isValidMongoId,
-  notFoundException,
-} from 'src/utils';
-import { deleteHelper, getPagination, getSingleHelper } from 'src/utils/helper';
+  createHelper,
+  deleteHelper,
+  editHelper,
+  getAllHelper,
+  getSingleHelper,
+} from 'src/utils/helper';
 
 @Injectable()
 export class TimesheetService {
@@ -21,73 +25,83 @@ export class TimesheetService {
 
     @InjectModel(PROJECT_MODEL)
     private readonly projectModel: Model<ProjectDocument>,
+
+    @InjectModel(USER_MODEL)
+    private readonly userModel: Model<UserDocument>,
+
+    @InjectModel(EMPLOYEE_MODEL)
+    private readonly employeeModel: Model<EmployeeDocument>,
   ) {}
 
-  async create(createTimesheetDto: createTimesheetDto) {
-    const { projectId } = createTimesheetDto;
+  async create(createTimesheetDto: createTimesheetDto, currentUser: Types.ObjectId) {
+    //* find current user
+    const findCurrentUser = currentUser
+      ? await getSingleHelper<FindUser>(currentUser, USER_MODEL, this.userModel)
+      : null;
 
-    const timesheetExists = await this.projectModel.findById(projectId);
-    if (!timesheetExists) {
-      throw notFoundException('Project not found');
-    }
+    //* assign employee id
+    const employeeId = findCurrentUser?.employeeId;
+    if (!employeeId) throw notFoundException('Employee not found');
 
-    const timesheet = await this.timesheetModel.create({
-      ...createTimesheetDto,
-    });
-    if (!timesheet) {
-      throw badRequestException('timesheet not created');
-    }
+    //* search employee
+    await getSingleHelper(employeeId, EMPLOYEE_MODEL, this.employeeModel);
+    createTimesheetDto.employeeId = employeeId;
+
+    const { projectId, hours } = createTimesheetDto;
+    let project = await getSingleHelper<Project>(projectId, PROJECT_MODEL, this.projectModel);
+
+    const updateData: object = {
+      remainingHours: project?.remainingHours - hours,
+    };
+    await editHelper(projectId, updateData, PROJECT_MODEL, this.projectModel);
+
+    const timesheet = await createHelper(createTimesheetDto, TIMESHEET_MODEL, this.timesheetModel);
 
     return timesheet;
   }
 
-  async edit(editTimesheetDto: editTimesheetDto, id: string) {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('timesheet id is not valid');
-    }
+  async edit(editTimesheetDto: editTimesheetDto, id: Types.ObjectId) {
+    let { projectId, hours } = editTimesheetDto;
 
-    let { projectId } = editTimesheetDto;
+    const project = projectId
+      ? await getSingleHelper<Project>(projectId, PROJECT_MODEL, this.projectModel)
+      : null;
 
-    if (projectId) {
-      const projectExists = await this.projectModel.findById(projectId);
-      if (!projectExists) {
-        throw notFoundException('Project not found');
-      }
-    }
-
-    const editTimesheet = await this.timesheetModel.findByIdAndUpdate(
+    const editTimesheet = await editHelper(
       id,
-      {
-        ...editTimesheetDto,
-      },
-      { new: true },
+      editTimesheetDto,
+      TIMESHEET_MODEL,
+      this.timesheetModel,
     );
-    if (!editTimesheet) {
-      throw notFoundException('timesheet not found');
-    }
+
+    const updateData: object = {
+      remainingHours: project?.remainingHours - hours,
+    };
+    await editHelper(projectId, updateData, PROJECT_MODEL, this.projectModel);
 
     return editTimesheet;
   }
 
-  async getSingle(id: string): Promise<any> {
+  async getSingle(id: Types.ObjectId): Promise<any> {
     const timesheet = await getSingleHelper(id, TIMESHEET_MODEL, this.timesheetModel);
 
     return timesheet;
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getPagination(
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
       page,
       limit,
       this.timesheetModel,
       null,
       null,
-      'projectId',
+      [
+        {
+          path: 'projectId',
+          select: 'projectName -_id',
+        },
+      ],
     );
-
-    if (items.length === 0) {
-      throw notFoundException('Departments not found');
-    }
 
     return {
       data: items,
@@ -100,7 +114,7 @@ export class TimesheetService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: Types.ObjectId) {
     const timesheet = await deleteHelper(id, TIMESHEET_MODEL, this.timesheetModel);
 
     return timesheet;

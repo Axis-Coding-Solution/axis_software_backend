@@ -41,6 +41,15 @@
 }
 ```
 
+2. employee
+
+```
+{
+    "email": "Walter_Von86@yahoo.com",
+    "password": "securepassword123"
+}
+```
+
 ### Things to consider while development on this product
 
 1. Mark fields Optional which are not required. Both in schema and Dtos.
@@ -53,4 +62,4 @@
 
 5. Name of API function and service function should be same in every module for better readability and maintainability.
 
-6. If there is any mongodId you have to add a check and search it in db.
+6. If there is any mongodId you have to add a check and search it in db and validate it as well.

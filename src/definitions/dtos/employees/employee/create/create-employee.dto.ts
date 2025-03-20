@@ -24,33 +24,38 @@ import { EducationInformationDto } from './education-information.dto';
 import { ExperienceInformationDto } from './experience-information.dto';
 
 export class CreateEmployeeDto {
-  profileImage: string;
+  profileImage: String;
 
   @IsString()
   @IsNotEmpty()
-  firstName: string;
+  firstName: String;
 
   @IsString()
   @IsNotEmpty()
-  lastName: string;
+  lastName: String;
 
   @IsString()
   @IsNotEmpty()
-  userName: string;
+  userName: String;
 
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email: String;
 
   @ValidateIf((dto) => dto !== undefined)
   @IsString()
   @IsNotEmpty()
-  password: string;
+  password: String;
 
   @ValidateIf((dto) => dto !== undefined)
   @IsString()
   @IsNotEmpty()
-  confirmPassword: string;
+  confirmPassword: String;
+
+  //* this id will assign by company to employee
+  @IsString()
+  @IsOptional()
+  employeeId?: String;
 
   @IsNotEmpty()
   @Type(() => Date)
@@ -59,19 +64,22 @@ export class CreateEmployeeDto {
 
   @IsString()
   @IsOptional()
-  phone?: string;
+  phone?: String;
 
+  @IsString()
   @IsNotEmpty()
-  @IsMongoId({ message: 'Company id is not valid' })
-  companyId: string | Types.ObjectId | Company;
+  @IsMongoId({ message: 'Company is required' })
+  companyId: Types.ObjectId;
 
+  @IsString()
   @IsNotEmpty()
-  @IsMongoId({ message: 'Department id is not valid' })
-  departmentId: string | Types.ObjectId | Department;
+  @IsMongoId({ message: 'Department is required' })
+  departmentId: Types.ObjectId;
 
+  @IsString()
   @IsNotEmpty()
-  @IsMongoId({ message: 'Designation id is not valid' })
-  designationId: string | Types.ObjectId | Designation;
+  @IsMongoId({ message: 'Designation is required' })
+  designationId: Types.ObjectId;
 
   @IsEnum(Role)
   @IsOptional()
@@ -83,28 +91,28 @@ export class CreateEmployeeDto {
   birthday?: Date;
 
   @IsString()
-  @IsNotEmpty()
-  address: string;
+  @IsOptional()
+  address: String;
 
   @IsEnum(Gender)
-  @IsNotEmpty()
+  @IsOptional()
   gender: Gender;
 
   @IsMongoId({ message: 'reportsTo id is not valid' })
   @IsOptional()
-  reportsTo: string | Types.ObjectId;
-
-  @IsString()
-  @IsNotEmpty()
-  state: string;
-
-  @IsString()
-  @IsNotEmpty()
-  country: string;
+  reportsTo: String | Types.ObjectId;
 
   @IsString()
   @IsOptional()
-  pinCode?: string;
+  state: String;
+
+  @IsString()
+  @IsOptional()
+  country: String;
+
+  @IsString()
+  @IsOptional()
+  pinCode?: String;
 
   @IsOptional()
   @ValidateNested()

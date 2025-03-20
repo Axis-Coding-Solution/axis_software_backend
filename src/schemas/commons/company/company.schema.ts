@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { User } from '../user';
 import { Types } from 'mongoose';
 import { Contact } from 'src/schemas/enums/common';
+import { Client, CLIENT_MODEL } from 'src/schemas/client';
 
 @Schema({ timestamps: true })
 export class Company {
@@ -30,8 +30,9 @@ export class Company {
   // @Prop()
   // reviews: String;
 
-  @Prop({ type: Types.ObjectId, ref: 'user', required: true })
-  owner: String | Types.ObjectId | User;
+  //* owner would be a client
+  @Prop({ type: Types.ObjectId, ref: CLIENT_MODEL, required: true })
+  owner: String | Types.ObjectId | Client;
 
   @Prop({ required: true })
   tags: String[];
@@ -67,36 +68,36 @@ export class Company {
   primaryAddress: String;
 
   @Prop()
-  secondaryAddress: String;
+  secondaryAddress?: String;
 
   @Prop()
-  city: String;
+  city?: String;
 
   @Prop()
-  state: String;
+  state?: String;
 
   @Prop()
-  country: String;
+  country?: String;
 
   @Prop()
-  zipCode: String;
+  zipCode?: String;
 
   //* social profile
 
   @Prop()
-  facebook: String;
+  facebook?: String;
 
   @Prop()
-  instagram: String;
+  instagram?: String;
 
   @Prop()
-  linkedin: String;
+  linkedin?: String;
 
   @Prop()
-  twitter: String;
+  twitter?: String;
 
   @Prop()
-  youtube: String;
+  youtube?: String;
 }
 
 export type CompanyDocument = Company & Document;

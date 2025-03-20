@@ -3,21 +3,21 @@ import { IsOptional, IsString } from 'class-validator';
 export class BankInformationDto {
   @IsString()
   @IsOptional()
-  bankName?: string;
+  bankName?: String;
 
   @IsString()
   @IsOptional()
-  branchName?: string;
+  branchName?: String;
 
   @IsString()
   @IsOptional()
-  bankAccountNumber?: string;
+  bankAccountNumber?: String;
 
   @IsString()
   @IsOptional()
-  ifscCode?: string;
+  ifscCode?: String;
 
   @IsString()
   @IsOptional()
-  panNumber?: string;
+  panNumber?: String;
 }

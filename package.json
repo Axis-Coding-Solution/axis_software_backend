@@ -2,7 +2,7 @@
   "name": "nest-docker-postgres",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Nouman Sharif",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -19,6 +19,16 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
+  "keywords": [
+    "nestjs",
+    "mongoose",
+    "typescript",
+    "javascript",
+    "nodejs",
+    "axis",
+    "backend",
+    "docker"
+  ],
   "dependencies": {
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.3",
@@ -35,6 +45,7 @@
     "class-validator": "^0.14.1",
     "compression": "^1.7.4",
     "dotenv": "^16.4.5",
+    "expres": "^0.0.5",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.2",

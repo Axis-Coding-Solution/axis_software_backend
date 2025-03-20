@@ -8,7 +8,7 @@ export class Designation {
   designationName: String;
 
   @Prop({ type: Types.ObjectId, ref: DEPARTMENT_MODEL, required: true })
-  departmentId: string | Types.ObjectId | Department;
+  departmentId: String | Types.ObjectId | Department;
 }
 
 export type DesignationDocument = Designation & Document;

@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import {
-  createCompanyDto,
-  editCompanyDto,
-} from 'src/definitions/dtos/commons/company';
+import { Model, Types } from 'mongoose';
+import { createCompanyDto, editCompanyDto } from 'src/definitions/dtos/commons/company';
+import { CLIENT_MODEL, ClientDocument } from 'src/schemas/client';
 import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
+import { badRequestException, isValidMongoId, notFoundException } from 'src/utils';
 import {
-  badRequestException,
-  isValidMongoId,
-  notFoundException,
-} from 'src/utils';
-import { getPagination } from 'src/utils/helper';
+  createHelper,
+  deleteHelper,
+  editHelper,
+  existsHelper,
+  getAllHelper,
+  getSingleHelper,
+} from 'src/utils/helper';
 
 @Injectable()
 export class CompanyService {
@@ -22,88 +23,57 @@ export class CompanyService {
 
     @InjectModel(USER_MODEL)
     private readonly userModel: Model<UserDocument>,
+
+    @InjectModel(CLIENT_MODEL)
+    private readonly clientModel: Model<ClientDocument>,
   ) {}
 
   async create(createCompanyDto: createCompanyDto) {
     const { companyName, owner } = createCompanyDto;
-    const companyExists = await this.companyModel.exists({
-      companyName,
-    });
-    if (companyExists) {
-      throw badRequestException('Company already exists');
-    }
 
-    const findOwner = await this.userModel.findById(owner);
-    if (!findOwner) {
-      throw badRequestException('Owner not found');
-    }
+    const [, , company] = await Promise.all([
+      await existsHelper(companyName, 'companyName', this.companyModel),
+      await getSingleHelper(owner, 'Owner', this.clientModel),
 
-    const company = await this.companyModel.create(createCompanyDto);
-    if (!company) {
-      throw badRequestException('Company not created');
-    }
+      await createHelper(createCompanyDto, COMPANY_MODEL, this.companyModel),
+    ]);
 
     return company;
   }
 
-  async edit(editCompanyDto: editCompanyDto, id: string) {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('Company id is not valid');
-    }
-
+  async edit(editCompanyDto: editCompanyDto, id: Types.ObjectId) {
     const { companyName, owner } = editCompanyDto;
-    const companyExists = await this.companyModel.exists({
-      companyName,
-    });
-    if (companyExists) {
-      throw badRequestException('Company already exists');
-    }
 
-    const findOwner = await this.userModel.findById(owner);
-    if (!findOwner) {
-      throw badRequestException('Owner not found');
-    }
+    await Promise.all([
+      companyName ? await existsHelper(companyName, 'companyName', this.companyModel, id) : null,
+      owner ? await getSingleHelper(owner, 'Owner', this.clientModel) : null,
+    ]);
 
-    const editCompany = await this.companyModel.findByIdAndUpdate(
-      id,
-      {
-        ...editCompanyDto,
-      },
-      { new: true },
-    );
-    if (!editCompany) {
-      throw notFoundException('Company not found');
-    }
+    const editCompany = await editHelper(id, editCompanyDto, COMPANY_MODEL, this.companyModel);
 
     return editCompany;
   }
 
-  async getSingle(id: string) {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('Company id is not valid');
-    }
-
-    const company = await this.companyModel.findById(id);
-    if (!company) {
-      throw notFoundException('Company not found');
-    }
+  async getSingle(id: Types.ObjectId) {
+    const company = await getSingleHelper(id, COMPANY_MODEL, this.companyModel);
 
     return company;
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getPagination(
-        page,
-        limit,
-        this.companyModel,
-        search,
-        'companyName',
-      );
-
-    if (items.length === 0) {
-      throw notFoundException('Departments not found');
-    }
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
+      page,
+      limit,
+      this.companyModel,
+      search,
+      'companyName',
+      [
+        {
+          path: 'owner',
+          select: 'firstName lastName userName -_id',
+        },
+      ],
+    );
 
     return {
       data: items,
@@ -116,15 +86,8 @@ export class CompanyService {
     };
   }
 
-  async delete(id: string) {
-    if (!isValidMongoId(id)) {
-      throw badRequestException('Company id is not valid');
-    }
-
-    const company = await this.companyModel.findByIdAndDelete(id);
-    if (!company) {
-      throw notFoundException('Company not found');
-    }
+  async delete(id: Types.ObjectId) {
+    const company = await deleteHelper(id, COMPANY_MODEL, this.companyModel);
 
     return company;
   }

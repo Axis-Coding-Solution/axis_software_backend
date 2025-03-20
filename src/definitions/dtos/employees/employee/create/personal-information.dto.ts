@@ -1,36 +1,36 @@
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { MaritalStatus } from 'src/schemas/enums/employee';
+import { MaritalStatus } from 'src/schemas/enums/employees/employee/marital-status.enum';
 
 export class PersonalInformationDto {
   @IsString()
   @IsOptional()
-  passportNo?: string;
+  passportNo?: String;
 
   @IsString()
   @IsOptional()
-  passportExpDate?: string;
+  passportExpDate?: String;
 
   @IsString()
   @IsOptional()
-  tel?: string;
-
-  @IsString()
-  @IsNotEmpty()
-  nationality: string;
+  tel?: String;
 
   @IsString()
   @IsOptional()
-  religion?: string;
+  nationality: String;
+
+  @IsString()
+  @IsOptional()
+  religion?: String;
 
   @IsEnum(MaritalStatus)
-  @IsNotEmpty()
+  @IsOptional()
   maritalStatus: MaritalStatus;
 
   @IsString()
   @IsOptional()
-  employmentOfSpouse?: string;
+  employmentOfSpouse?: String;
 
   @IsString()
   @IsOptional()
-  noOfChildren?: string;
+  noOfChildren?: String;
 }

@@ -7,6 +7,9 @@ export class Holiday {
 
   @Prop({ required: true })
   holidayDate: Date;
+
+  @Prop({ required: true })
+  day: String;
 }
 
 export type HolidayDocument = Holiday & Document;

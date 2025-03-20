@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+import { Client, CLIENT_MODEL } from 'src/schemas/client';
 import { Role } from 'src/schemas/constants';
 import { Employee, EMPLOYEE_MODEL } from 'src/schemas/employees/employee';
 
@@ -41,6 +42,9 @@ export class User {
 
   @Prop({ type: Types.ObjectId, ref: EMPLOYEE_MODEL })
   employeeId: String | Types.ObjectId | Employee;
+
+  @Prop({ type: Types.ObjectId, ref: CLIENT_MODEL })
+  clientId: String | Types.ObjectId | Client;
 }
 
 export type UserDocument = User & Document;
