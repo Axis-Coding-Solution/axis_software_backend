@@ -13,8 +13,8 @@ export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
   @Post()
-  async punchIn(@Body() punchInDto: PunchInDto, @User() currentUser: Types.ObjectId) {
-    const leave = await this.attendanceService.punchIn(punchInDto, currentUser);
+  async punchIn(@Body() punchInDto: PunchInDto, @User('id') currentUserId: Types.ObjectId) {
+    const leave = await this.attendanceService.punchIn(punchInDto, currentUserId);
     return successfulResponse(`${ATTENDANCE_MODEL} created successfully`, leave);
   }
 

@@ -16,9 +16,9 @@ export class TimesheetController {
   @Post()
   async create(
     @Body() createTimesheetDto: createTimesheetDto,
-    @User() currentUser: Types.ObjectId,
+    @User('id') currentUserId: Types.ObjectId,
   ) {
-    const timesheet = await this.timesheetService.create(createTimesheetDto, currentUser);
+    const timesheet = await this.timesheetService.create(createTimesheetDto, currentUserId);
     return successfulResponse(`${TIMESHEET_MODEL} created successfully`, timesheet);
   }
 

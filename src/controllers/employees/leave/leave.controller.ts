@@ -26,8 +26,8 @@ export class LeaveController {
   constructor(private readonly leaveService: LeaveService) {}
 
   @Post()
-  async create(@Body() createLeaveDto: CreateLeaveDto, @User() currentUser: Types.ObjectId) {
-    const leave = await this.leaveService.create(createLeaveDto, currentUser);
+  async create(@Body() createLeaveDto: CreateLeaveDto, @User('id') currentUserId: Types.ObjectId) {
+    const leave = await this.leaveService.create(createLeaveDto, currentUserId);
     return successfulResponse(`${LEAVE_MODEL} created successfully`, leave);
   }
 
@@ -74,10 +74,10 @@ export class LeaveController {
   @Patch(':id')
   async approval(
     @Body() approveLeaveDto: ApproveLeaveDto,
-    @User() currentUser: Types.ObjectId,
+    @User('id') currentUserId: Types.ObjectId,
     @Param('id') id: Types.ObjectId,
   ) {
-    const leave = await this.leaveService.approval(approveLeaveDto, currentUser, id);
+    const leave = await this.leaveService.approval(approveLeaveDto, currentUserId, id);
     return successfulResponse(`${LEAVE_MODEL} approved successfully`, leave);
   }
 }

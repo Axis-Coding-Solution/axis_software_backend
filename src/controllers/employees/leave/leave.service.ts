@@ -28,10 +28,10 @@ export class LeaveService {
     private readonly leaveSettingModel: Model<LeaveSettingDocument>,
   ) {}
 
-  async create(createLeaveDto: CreateLeaveDto, currentUser: Types.ObjectId) {
+  async create(createLeaveDto: CreateLeaveDto, currentUserId: Types.ObjectId) {
     //? find current user
-    const findCurrentUser = currentUser
-      ? await getSingleHelper<FindUser>(currentUser, USER_MODEL, this.userModel)
+    const findCurrentUser = currentUserId
+      ? await getSingleHelper<FindUser>(currentUserId, USER_MODEL, this.userModel)
       : null;
 
     //? assign employee id
@@ -165,11 +165,16 @@ export class LeaveService {
 
   async approval(
     approveLeaveDto: ApproveLeaveDto,
-    currentUser: Types.ObjectId,
+    currentUserId: Types.ObjectId,
     id: Types.ObjectId,
   ) {
     const { status } = approveLeaveDto;
-    const leave = editHelper(id, { status, approvedBy: currentUser }, LEAVE_MODEL, this.leaveModel);
+    const leave = editHelper(
+      id,
+      { status, approvedBy: currentUserId },
+      LEAVE_MODEL,
+      this.leaveModel,
+    );
 
     return leave;
   }
