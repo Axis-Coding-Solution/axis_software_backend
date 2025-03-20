@@ -1,20 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { populate } from 'dotenv';
 import { Model, Types } from 'mongoose';
 import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-project.dto';
 import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.dto';
+import { FindUserInterface } from 'src/interfaces/user';
 import { CLIENT_MODEL, ClientDocument } from 'src/schemas/client';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
-import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
 import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
 import {
   areDatesSame,
   areDatesValid,
-  badRequestException,
   calculateBusinessHours,
-  conflictException,
+  forbiddenException,
   isDateWeekend,
   notFoundException,
 } from 'src/utils';
@@ -38,6 +36,9 @@ export class ProjectService {
 
     @InjectModel(EMPLOYEE_MODEL)
     private readonly employeeModel: Model<EmployeeDocument>,
+
+    @InjectModel(USER_MODEL)
+    private readonly userModel: Model<UserDocument>,
   ) {}
 
   async create(createProjectDto: CreateProjectDto) {
@@ -174,5 +175,35 @@ export class ProjectService {
     const project = await deleteHelper(id, PROJECT_MODEL, this.projectModel);
 
     return project;
+  }
+
+  async projectByRole(id: Types.ObjectId, role: string) {
+    if (role === 'admin') {
+      const { items } = await getAllHelper(null, null, this.projectModel, null, null);
+      // return items.map((item) => item?.projectName);
+      return items;
+    }
+    if (role === 'employee') {
+      //* find current user
+      const findCurrentUser = id
+        ? await getSingleHelper<FindUserInterface>(id, USER_MODEL, this.userModel)
+        : null;
+
+      //* assign employee id
+      const employeeId = findCurrentUser?.employeeId;
+
+      if (!employeeId) throw notFoundException('Employee not found');
+
+      const employeeIdStr = employeeId?.toString();
+      const project = await this.projectModel.find({
+        $or: [{ projectLeader: employeeIdStr }, { teamMembers: { $in: [employeeIdStr] } }],
+      });
+      if (project.length === 0) {
+        throw notFoundException('Currently, you are not added to any project');
+      }
+      return project;
+    } else {
+      throw forbiddenException(`${role} is not eligible to access this resource`);
+    }
   }
 }
