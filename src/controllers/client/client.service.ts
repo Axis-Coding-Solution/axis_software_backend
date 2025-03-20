@@ -14,7 +14,7 @@ import {
 } from 'src/utils/helper';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { InjectModel } from '@nestjs/mongoose';
-import { FindClient } from 'src/interface/find-client.interface';
+import { FindClientInterface } from 'src/interfaces/user';
 
 @Injectable()
 export class ClientService {
@@ -66,7 +66,7 @@ export class ClientService {
   async edit(editClientDto: EditClientDto, id: Types.ObjectId) {
     const { userName } = editClientDto;
 
-    const editClient = await editHelper<FindClient>(
+    const editClient = await editHelper<FindClientInterface>(
       id,
       editClientDto,
       CLIENT_MODEL,

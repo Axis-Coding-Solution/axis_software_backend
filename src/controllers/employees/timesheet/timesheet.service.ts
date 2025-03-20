@@ -3,7 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { createTimesheetDto } from 'src/definitions/dtos/employees/timesheet/create-timesheet.dto';
 import { editTimesheetDto } from 'src/definitions/dtos/employees/timesheet/edit-timesheet.dto';
-import { FindUser, Project } from 'src/interface';
+import { FindProjectInterface, FindTimesheetInterface } from 'src/interfaces';
+import { FindUserInterface } from 'src/interfaces/user';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { TIMESHEET_MODEL, TimesheetDocument } from 'src/schemas/employees/timesheet';
@@ -36,7 +37,7 @@ export class TimesheetService {
   async create(createTimesheetDto: createTimesheetDto, currentUserId: Types.ObjectId) {
     //* find current user
     const findCurrentUser = currentUserId
-      ? await getSingleHelper<FindUser>(currentUserId, USER_MODEL, this.userModel)
+      ? await getSingleHelper<FindUserInterface>(currentUserId, USER_MODEL, this.userModel)
       : null;
 
     //* assign employee id
@@ -47,9 +48,15 @@ export class TimesheetService {
     await getSingleHelper(employeeId, EMPLOYEE_MODEL, this.employeeModel);
     createTimesheetDto.employeeId = employeeId;
 
+    //* search project
     const { projectId, hours } = createTimesheetDto;
-    let project = await getSingleHelper<Project>(projectId, PROJECT_MODEL, this.projectModel);
+    let project = await getSingleHelper<FindProjectInterface>(
+      projectId,
+      PROJECT_MODEL,
+      this.projectModel,
+    );
 
+    //* update project
     const updateData: object = {
       remainingHours: project?.remainingHours - hours,
     };
@@ -64,8 +71,14 @@ export class TimesheetService {
     let { projectId, hours } = editTimesheetDto;
 
     const project = projectId
-      ? await getSingleHelper<Project>(projectId, PROJECT_MODEL, this.projectModel)
+      ? await getSingleHelper<FindProjectInterface>(projectId, PROJECT_MODEL, this.projectModel)
       : null;
+
+    const remainingHours = project?.remainingHours;
+    const searchTimesheet = id
+      ? await getSingleHelper<FindTimesheetInterface>(id, TIMESHEET_MODEL, this.timesheetModel)
+      : null;
+    const updatedHours = remainingHours + searchTimesheet.hours;
 
     const editTimesheet = await editHelper(
       id,
@@ -75,7 +88,7 @@ export class TimesheetService {
     );
 
     const updateData: object = {
-      remainingHours: project?.remainingHours - hours,
+      remainingHours: updatedHours - hours,
     };
     await editHelper(projectId, updateData, PROJECT_MODEL, this.projectModel);
 

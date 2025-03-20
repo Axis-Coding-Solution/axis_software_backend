@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 
-export interface FindUser {
+export interface FindUserInterface {
   _id: Types.ObjectId;
   userName: string;
   email: string;
