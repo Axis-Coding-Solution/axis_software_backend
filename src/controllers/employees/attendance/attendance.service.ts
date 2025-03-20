@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { PunchInDto, PunchOutDto } from 'src/definitions/dtos/employees/attendance';
-import { FindUser } from 'src/interface';
+import { FindUserInterface } from 'src/interfaces/user';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { ATTENDANCE_MODEL, AttendanceDocument } from 'src/schemas/employees/attendance';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
@@ -28,7 +28,7 @@ export class AttendanceService {
     }
     //* find current user
     const findCurrentUser = currentUserId
-      ? await getSingleHelper<FindUser>(currentUserId, USER_MODEL, this.userModel)
+      ? await getSingleHelper<FindUserInterface>(currentUserId, USER_MODEL, this.userModel)
       : null;
 
     //* assign employee id
