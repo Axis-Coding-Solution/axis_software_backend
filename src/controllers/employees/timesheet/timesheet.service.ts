@@ -113,6 +113,10 @@ export class TimesheetService {
           path: 'projectId',
           select: 'projectName -_id',
         },
+        {
+          path: 'employeeId',
+          select: 'profileImage firstName lastName userName -_id',
+        },
       ],
     );
 
