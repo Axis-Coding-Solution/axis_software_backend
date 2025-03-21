@@ -96,7 +96,13 @@ export class TimesheetService {
   }
 
   async getSingle(id: Types.ObjectId): Promise<any> {
-    const timesheet = await getSingleHelper(id, TIMESHEET_MODEL, this.timesheetModel);
+    const timesheet = await getSingleHelper(
+      id,
+      TIMESHEET_MODEL,
+      this.timesheetModel,
+      'projectId',
+      'projectName endDate totalHours remainingHours',
+    );
 
     return timesheet;
   }
