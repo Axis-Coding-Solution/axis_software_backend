@@ -7,7 +7,7 @@ import { FindUserInterface } from 'src/interfaces/user';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { ATTENDANCE_MODEL, AttendanceDocument } from 'src/schemas/employees/attendance';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
-import { badRequestException, notFoundException } from 'src/utils';
+import { badRequestException, forbiddenException, notFoundException } from 'src/utils';
 import { createHelper, editHelper, getSingleHelper } from 'src/utils/helper';
 import * as moment from 'moment';
 
@@ -33,7 +33,7 @@ export class AttendanceService {
       ? await getSingleHelper<FindUserInterface>(currentUserId, USER_MODEL, this.userModel)
       : null;
 
-    //* assign employee id
+    //* find employee id
     const employeeId = findCurrentUser?.employeeId;
     if (!employeeId) throw notFoundException('Employee not found');
 
@@ -54,11 +54,20 @@ export class AttendanceService {
     return attendance;
   }
 
-  async punchOut(punchOutDto: PunchOutDto, currentUser: Types.ObjectId, id: Types.ObjectId) {
+  async punchOut(punchOutDto: PunchOutDto, currentUserId: Types.ObjectId, id: Types.ObjectId) {
     const { isPunch } = punchOutDto;
     if (isPunch) {
       throw badRequestException('Punch Out is required');
     }
+
+    //* find current user
+    const findCurrentUser = currentUserId
+      ? await getSingleHelper<FindUserInterface>(currentUserId, USER_MODEL, this.userModel)
+      : null;
+
+    //* find employee id
+    const employeeId = findCurrentUser?.employeeId;
+    if (!employeeId) throw notFoundException('Employee not found');
 
     //* find document
     let attendance = await getSingleHelper<FindAttendanceInterface>(
@@ -66,31 +75,47 @@ export class AttendanceService {
       ATTENDANCE_MODEL,
       this.attendanceModel,
     );
-    const date: Date = attendance?.date;
-    console.log('🚀 ~ AttendanceService ~ punchOut ~ date:', date);
 
-    const today: any = moment();
-    console.log('🚀 ~ AttendanceService ~ punchOut ~ today:', today);
-
-    const diff = today.diff(date, 'hours');
-    console.log('🚀 ~ AttendanceService ~ punchOut ~ diff:', diff + 5);
-
-    let totalHours: number;
-    if (diff < 9) {
-      totalHours = attendance.requiredHours - diff;
-    } else {
+    if (attendance?.employeeId.toString() !== employeeId.toString()) {
+      throw forbiddenException('You cannot punch out other employee');
     }
 
-    if (diff < 9) {
-      // attendance.remainingHours = diff;
+    const date: Date = attendance?.date;
+
+    const today: any = moment();
+
+    //* calculate current time
+    const time = today.format('hh:mm:ss A');
+
+    //* calculate hours difference btw punch in and out
+    const diff = today.diff(date, 'hours');
+
+    //* update total hours
+    attendance = await editHelper(
+      id,
+      { totalHours: diff, punchOut: time, isPunch: false },
+      ATTENDANCE_MODEL,
+      this.attendanceModel,
+    );
+
+    if (diff < attendance?.requiredHours) {
+      //* calculate remaining hours
+      const remainingHours = attendance?.requiredHours - diff;
       attendance = await editHelper(
         id,
-        { remainingHours: diff },
+        { remainingHours: remainingHours },
         ATTENDANCE_MODEL,
         this.attendanceModel,
       );
-    } else if (diff > 9) {
-      attendance = await editHelper(id, { overtime: diff }, ATTENDANCE_MODEL, this.attendanceModel);
+    } else if (diff > attendance?.requiredHours) {
+      //* calculate overtime
+      const overtime = diff - attendance?.requiredHours;
+      attendance = await editHelper(
+        id,
+        { overtime: overtime },
+        ATTENDANCE_MODEL,
+        this.attendanceModel,
+      );
     }
 
     return attendance;
