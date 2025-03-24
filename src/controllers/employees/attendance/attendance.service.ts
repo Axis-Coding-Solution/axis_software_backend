@@ -151,20 +151,17 @@ export class AttendanceService {
       filters['$expr'] = { $and: [] };
 
       if (month) {
-        // filters['$expr']['$eq'] = [{ $month: '$createdAt' }, parseInt(month)];
         filters['$expr']['$and']?.push({
           $eq: [{ $month: '$createdAt' }, parseInt(month)],
         });
       }
       if (year) {
-        // filters['$expr']['$eq'] = [{ $year: '$createdAt' }, parseInt(year)];
         filters['$expr']['$and']?.push({
           $eq: [{ $year: '$createdAt' }, parseInt(year)],
         });
       }
 
       if (filters['$expr']['$and'].length === 1) {
-        // filters['$expr']['$and'] = filters['$expr']['$and'][0];
         filters['$expr'] = filters['$expr']['$and'][0];
       }
     }
