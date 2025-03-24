@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 import { ApproveLeaveDto } from 'src/definitions/dtos/employees/leave/approve-leave.dto';
 import { CreateLeaveDto } from 'src/definitions/dtos/employees/leave/create-leave.dto';
 import { EditLeaveDto } from 'src/definitions/dtos/employees/leave/edit-leave.dto';
-import { FindUser } from 'src/interface';
+import { FindUserInterface } from 'src/interfaces/user';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { LEAVE_MODEL, LeaveDocument } from 'src/schemas/employees/leave';
@@ -28,10 +28,10 @@ export class LeaveService {
     private readonly leaveSettingModel: Model<LeaveSettingDocument>,
   ) {}
 
-  async create(createLeaveDto: CreateLeaveDto, currentUser: Types.ObjectId) {
+  async create(createLeaveDto: CreateLeaveDto, currentUserId: Types.ObjectId) {
     //? find current user
-    const findCurrentUser = currentUser
-      ? await getSingleHelper<FindUser>(currentUser, USER_MODEL, this.userModel)
+    const findCurrentUser = currentUserId
+      ? await getSingleHelper<FindUserInterface>(currentUserId, USER_MODEL, this.userModel)
       : null;
 
     //? assign employee id
@@ -165,11 +165,16 @@ export class LeaveService {
 
   async approval(
     approveLeaveDto: ApproveLeaveDto,
-    currentUser: Types.ObjectId,
+    currentUserId: Types.ObjectId,
     id: Types.ObjectId,
   ) {
     const { status } = approveLeaveDto;
-    const leave = editHelper(id, { status, approvedBy: currentUser }, LEAVE_MODEL, this.leaveModel);
+    const leave = editHelper(
+      id,
+      { status, approvedBy: currentUserId },
+      LEAVE_MODEL,
+      this.leaveModel,
+    );
 
     return leave;
   }

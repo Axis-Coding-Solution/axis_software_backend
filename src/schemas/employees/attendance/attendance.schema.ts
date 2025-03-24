@@ -32,10 +32,10 @@ export class Attendance {
   @Prop({ required: true, default: false })
   isPunch: Boolean;
 
-  @Prop({ required: true, default: 0 })
+  @Prop({ required: true, default: '0:00' })
   punchIn: String;
 
-  @Prop({ required: true, default: 0 })
+  @Prop({ required: true, default: '0:00' })
   punchOut: String;
 }
 

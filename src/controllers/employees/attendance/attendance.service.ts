@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { PunchInDto, PunchOutDto } from 'src/definitions/dtos/employees/attendance';
-import { FindUser } from 'src/interface';
+import { FindAttendanceInterface } from 'src/interfaces';
+import { FindUserInterface } from 'src/interfaces/user';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { ATTENDANCE_MODEL, AttendanceDocument } from 'src/schemas/employees/attendance';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
-import { badRequestException, notFoundException } from 'src/utils';
-import { createHelper, getSingleHelper } from 'src/utils/helper';
+import { badRequestException, forbiddenException, notFoundException } from 'src/utils';
+import { createHelper, editHelper, getSingleHelper } from 'src/utils/helper';
+import * as moment from 'moment';
 
 @Injectable()
 export class AttendanceService {
@@ -21,17 +23,17 @@ export class AttendanceService {
     @InjectModel(USER_MODEL)
     private userModel: Model<UserDocument>,
   ) {}
-  async punchIn(punchInDto: PunchInDto, currentUser: Types.ObjectId) {
+  async punchIn(punchInDto: PunchInDto, currentUserId: Types.ObjectId) {
     const { isPunch } = punchInDto;
     if (!isPunch) {
       throw badRequestException('Punch In is required');
     }
     //* find current user
-    const findCurrentUser = currentUser
-      ? await getSingleHelper<FindUser>(currentUser, USER_MODEL, this.userModel)
+    const findCurrentUser = currentUserId
+      ? await getSingleHelper<FindUserInterface>(currentUserId, USER_MODEL, this.userModel)
       : null;
 
-    //* assign employee id
+    //* find employee id
     const employeeId = findCurrentUser?.employeeId;
     if (!employeeId) throw notFoundException('Employee not found');
 
@@ -40,14 +42,11 @@ export class AttendanceService {
     punchInDto.employeeId = employeeId;
 
     //* calculate current date
-    const date = new Date();
+    const date: any = moment();
     punchInDto.date = date;
 
     //* calculate current time
-    const time = date.toLocaleTimeString('es-ES', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    const time = date.format('hh:mm:ss A');
     punchInDto.punchIn = time;
 
     const attendance = await createHelper(punchInDto, ATTENDANCE_MODEL, this.attendanceModel);
@@ -55,14 +54,72 @@ export class AttendanceService {
     return attendance;
   }
 
-  async punchOut(punchOutDto: PunchOutDto, currentUser: Types.ObjectId, id: Types.ObjectId) {
+  async punchOut(punchOutDto: PunchOutDto, currentUserId: Types.ObjectId, id: Types.ObjectId) {
     const { isPunch } = punchOutDto;
     if (isPunch) {
       throw badRequestException('Punch Out is required');
     }
 
+    //* find current user
+    const findCurrentUser = currentUserId
+      ? await getSingleHelper<FindUserInterface>(currentUserId, USER_MODEL, this.userModel)
+      : null;
+
+    //* find employee id
+    const employeeId = findCurrentUser?.employeeId;
+    if (!employeeId) throw notFoundException('Employee not found');
+
     //* find document
-    const attendance = await getSingleHelper(id, ATTENDANCE_MODEL, this.attendanceModel);
+    let attendance = await getSingleHelper<FindAttendanceInterface>(
+      id,
+      ATTENDANCE_MODEL,
+      this.attendanceModel,
+    );
+
+    //* is this same employee who punchIn?
+    if (attendance?.employeeId.toString() !== employeeId.toString()) {
+      throw forbiddenException('You cannot punch out other employee');
+    }
+
+    const date: Date = attendance?.date;
+
+    const today: any = moment();
+
+    //* calculate current time
+    const time = today.format('hh:mm:ss A');
+
+    //* calculate hours difference btw punch in and out
+    const diff = today.diff(date, 'hours');
+
+    //* update total hours
+    attendance = await editHelper(
+      id,
+      { totalHours: diff, punchOut: time, isPunch: false },
+      ATTENDANCE_MODEL,
+      this.attendanceModel,
+    );
+
+    if (diff < attendance?.requiredHours) {
+      //* calculate remaining hours
+      const remainingHours = attendance?.requiredHours - diff;
+      attendance = await editHelper(
+        id,
+        { remainingHours: remainingHours },
+        ATTENDANCE_MODEL,
+        this.attendanceModel,
+      );
+    } else if (diff > attendance?.requiredHours) {
+      //* calculate overtime
+      const overtime = diff - attendance?.requiredHours;
+      attendance = await editHelper(
+        id,
+        { overtime: overtime },
+        ATTENDANCE_MODEL,
+        this.attendanceModel,
+      );
+    }
+
+    return attendance;
   }
 
   async getSingle(id: Types.ObjectId) {
@@ -71,18 +128,43 @@ export class AttendanceService {
     return attendance;
   }
 
-  async getAll(page: string, limit: string, from?: string, to?: string): Promise<any> {
+  async getAll(
+    page: string,
+    limit: string,
+    date?: string,
+    month?: string,
+    year?: string,
+  ): Promise<any> {
     const pageNumber = parseInt(page) || 1;
     const limitNumber = parseInt(limit) || 10;
     const skip = (pageNumber - 1) * limitNumber;
 
-    const fromDate = from ? new Date(from) : null;
-    const toDate = to ? new Date(to) : null;
+    const fromDate = date ? new Date(date) : null;
 
     let filters = {};
 
-    from ? (filters['from'] = { $gte: fromDate }) : null;
-    to ? (filters['to'] = { $lte: toDate }) : null;
+    if (fromDate) {
+      filters['createdAt'] = { $gte: fromDate, $lt: new Date(fromDate.getTime() + 86400000) };
+    }
+
+    if (month || year) {
+      filters['$expr'] = { $and: [] };
+
+      if (month) {
+        filters['$expr']['$and']?.push({
+          $eq: [{ $month: '$createdAt' }, parseInt(month)],
+        });
+      }
+      if (year) {
+        filters['$expr']['$and']?.push({
+          $eq: [{ $year: '$createdAt' }, parseInt(year)],
+        });
+      }
+
+      if (filters['$expr']['$and'].length === 1) {
+        filters['$expr'] = filters['$expr']['$and'][0];
+      }
+    }
 
     const [items, totalItems] = await Promise.all([
       this.attendanceModel
@@ -90,10 +172,6 @@ export class AttendanceService {
         .sort('-createdAt')
         .skip(skip)
         .limit(limitNumber)
-        // .populate([
-        //   { path: 'employeeId', select: 'profileImage firstName lastName -_id' },
-        //   { path: 'leaveType', select: 'policyName noOfDays -_id' },
-        // ])
         .lean()
         .exec(),
       this.attendanceModel.countDocuments(filters).exec(),

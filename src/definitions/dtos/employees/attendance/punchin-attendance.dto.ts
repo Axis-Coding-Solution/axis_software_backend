@@ -24,15 +24,7 @@ export class PunchInDto {
   @Type(() => Date)
   date?: Date;
 
-  @IsMilitaryTime()
-  @IsOptional()
-  time?: String;
-
   @IsString()
   @IsOptional()
   punchIn?: String;
-
-  @IsString()
-  @IsOptional()
-  punchOut?: String;
 }

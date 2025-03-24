@@ -1,9 +1,15 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { UserPayloadInterface } from 'src/interfaces/user';
 /**
- * This decorator is used to get id of current user from the request
- * @returns {Types.ObjectId} current user id
+ * Custom decorator used to get current user from the request
+ * @param {keyof UserPayloadInterface | undefined} data Role or id.If no data is passed then whole user object will be returned.
+ * @param {ExecutionContext} ctx The execution context
+ * @returns {String | UserPayloadInterface} User id or role or whole user object.
  */
-export const User = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
-  const request = ctx.switchToHttp().getRequest();
-  return request.user?.id;
-});
+export const User = createParamDecorator(
+  (data: keyof UserPayloadInterface | undefined, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    const user = request.user as UserPayloadInterface;
+    return data ? user[data] : user;
+  },
+);

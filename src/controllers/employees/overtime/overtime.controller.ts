@@ -65,11 +65,10 @@ export class OvertimeController {
   @Patch(':id')
   async approval(
     @Body() approveOvertimeDto: ApproveOvertimeDto,
-    @User() currentUser: Types.ObjectId,
+    @User('id') currentUserId: Types.ObjectId,
     @Param('id') id: Types.ObjectId,
   ) {
-    console.log("🚀 ~ OvertimeController ~ currentUser:", currentUser)
-    const overtime = await this.overtimeService.approval(approveOvertimeDto, currentUser, id);
+    const overtime = await this.overtimeService.approval(approveOvertimeDto, currentUserId, id);
     return successfulResponse(`${OVERTIME_MODEL} approved successfully`, overtime);
   }
 }

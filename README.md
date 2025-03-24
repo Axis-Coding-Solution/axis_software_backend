@@ -41,12 +41,21 @@
 }
 ```
 
-2. employee
+3. employee
 
 ```
 {
-    "email": "Walter_Von86@yahoo.com",
+    "email": "Sebastian80@gmail.com",
     "password": "securepassword123"
+}
+```
+
+4. client
+
+```
+{
+    "email": "Adolfo26@gmail.com",
+    "password": "SecurePass123!"
 }
 ```
 
