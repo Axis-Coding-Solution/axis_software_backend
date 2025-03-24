@@ -38,10 +38,11 @@ export class AttendanceController {
   async getAll(
     @Query('page') page: string,
     @Query('limit') limit: string,
-    @Query('from') from: string,
-    @Query('to') to: string,
+    @Query('date') date?: string,
+    @Query('month') month?: string,
+    @Query('year') year?: string,
   ) {
-    const leave = await this.attendanceService.getAll(page, limit, from, to);
+    const leave = await this.attendanceService.getAll(page, limit, date, month, year);
     return successfulResponse(`${ATTENDANCE_MODEL} found successfully`, leave);
   }
 }

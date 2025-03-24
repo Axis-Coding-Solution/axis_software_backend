@@ -76,6 +76,7 @@ export class AttendanceService {
       this.attendanceModel,
     );
 
+    //* is this same employee who punchIn?
     if (attendance?.employeeId.toString() !== employeeId.toString()) {
       throw forbiddenException('You cannot punch out other employee');
     }
@@ -127,29 +128,45 @@ export class AttendanceService {
     return attendance;
   }
 
-  async getAll(page: string, limit: string, from?: string, to?: string): Promise<any> {
+  async getAll(
+    page: string,
+    limit: string,
+    date?: string,
+    month?: string,
+    year?: string,
+  ): Promise<any> {
     const pageNumber = parseInt(page) || 1;
     const limitNumber = parseInt(limit) || 10;
     const skip = (pageNumber - 1) * limitNumber;
 
-    const fromDate = from ? new Date(from) : null;
-    const toDate = to ? new Date(to) : null;
+    const fromDate = date ? new Date(date) : null;
+    // const toDate = to ? new Date(to) : null;
 
     let filters = {};
 
-    from ? (filters['from'] = { $gte: fromDate }) : null;
-    to ? (filters['to'] = { $lte: toDate }) : null;
+    if (fromDate) {
+      filters['createdAt'] = { $gte: fromDate, $lt: new Date(fromDate.getTime() + 86400000) };
+    }
 
+    if (month || year) {
+      filters['$expr'] = { $and: [] };
+      filters['$expr'] = {};
+
+      if (month) {
+        filters['$expr']['$eq'] = [{ $month: '$createdAt' }, parseInt(month)];
+      }
+      if (year) {
+        filters['$expr']['$eq'] = [{ $year: '$createdAt' }, parseInt(year)];
+      }
+    }
+
+    console.log('🚀 ~ AttendanceService ~ filters:', filters);
     const [items, totalItems] = await Promise.all([
       this.attendanceModel
         .find(filters)
         .sort('-createdAt')
         .skip(skip)
         .limit(limitNumber)
-        // .populate([
-        //   { path: 'employeeId', select: 'profileImage firstName lastName -_id' },
-        //   { path: 'leaveType', select: 'policyName noOfDays -_id' },
-        // ])
         .lean()
         .exec(),
       this.attendanceModel.countDocuments(filters).exec(),
