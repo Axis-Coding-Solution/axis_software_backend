@@ -140,7 +140,6 @@ export class AttendanceService {
     const skip = (pageNumber - 1) * limitNumber;
 
     const fromDate = date ? new Date(date) : null;
-    // const toDate = to ? new Date(to) : null;
 
     let filters = {};
 
@@ -150,17 +149,26 @@ export class AttendanceService {
 
     if (month || year) {
       filters['$expr'] = { $and: [] };
-      filters['$expr'] = {};
 
       if (month) {
-        filters['$expr']['$eq'] = [{ $month: '$createdAt' }, parseInt(month)];
+        // filters['$expr']['$eq'] = [{ $month: '$createdAt' }, parseInt(month)];
+        filters['$expr']['$and']?.push({
+          $eq: [{ $month: '$createdAt' }, parseInt(month)],
+        });
       }
       if (year) {
-        filters['$expr']['$eq'] = [{ $year: '$createdAt' }, parseInt(year)];
+        // filters['$expr']['$eq'] = [{ $year: '$createdAt' }, parseInt(year)];
+        filters['$expr']['$and']?.push({
+          $eq: [{ $year: '$createdAt' }, parseInt(year)],
+        });
+      }
+
+      if (filters['$expr']['$and'].length === 1) {
+        // filters['$expr']['$and'] = filters['$expr']['$and'][0];
+        filters['$expr'] = filters['$expr']['$and'][0];
       }
     }
 
-    console.log('🚀 ~ AttendanceService ~ filters:', filters);
     const [items, totalItems] = await Promise.all([
       this.attendanceModel
         .find(filters)
