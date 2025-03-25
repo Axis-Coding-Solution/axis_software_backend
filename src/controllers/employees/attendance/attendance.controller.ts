@@ -28,6 +28,12 @@ export class AttendanceController {
     return successfulResponse(`${ATTENDANCE_MODEL} recorded successfully`, leave);
   }
 
+  @Get('statistics')
+  async statistics(@User('id') currentUserId: Types.ObjectId) {
+    const statistics = await this.attendanceService.statistics(currentUserId);
+    return successfulResponse(`${ATTENDANCE_MODEL} statistics found successfully`, statistics);
+  }
+
   @Get(':id')
   async get(@Param('id') id: Types.ObjectId) {
     const leave = await this.attendanceService.getSingle(id);
