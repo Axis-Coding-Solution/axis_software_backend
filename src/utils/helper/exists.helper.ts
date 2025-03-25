@@ -2,10 +2,10 @@ import { Model, Types } from 'mongoose';
 import { conflictException } from '../custom-exception';
 /**
  *To check if the value is already exists in the database
- * @param {String} fieldValue what needs to be compared
- * @param {String} fieldName value in db
- * @param {String} modelName model to query with
- * @param {String | Types.ObjectId} id if passed then current document will be excluded
+ * @param {String} fieldValue What needs to be compared
+ * @param {String} fieldName Value in db
+ * @param {String} modelName Model to query with
+ * @param {String | Types.ObjectId} id If passed then current document will be excluded
  * @returns
  */
 export const existsHelper = async (

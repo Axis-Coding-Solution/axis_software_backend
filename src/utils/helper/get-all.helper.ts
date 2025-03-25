@@ -2,14 +2,14 @@ import { Model } from 'mongoose';
 import { notFoundException } from '../custom-exception';
 /**
  * To get all documents from db with pagination
- * @param {Number} page page no comes form query
- * @param {Number} limit limit no comes form query
- * @param {String} modelName model to query with
- * @param {String} search search come from user default will be null
- * @param {String} searchField field to search default will be null
- * @param {Array} populate populate array of objects containing path and select fields
- * @param {Object} filters fields to filter documents default will be empty object
- * @returns {Array & Object} array of documents and pagination data
+ * @param {Number} page Page no comes form query
+ * @param {Number} limit Limit no comes form query
+ * @param {String} modelName Model to query with
+ * @param {String} search Search come from user default will be null
+ * @param {String} searchField Field to search default will be null
+ * @param {Array} populate Populate array of objects containing path and select fields
+ * @param {Object} filters Fields to filter documents default will be empty object
+ * @returns {Array & Object} Array of documents and pagination data
  */
 export const getAllHelper = async (
   page: string,
