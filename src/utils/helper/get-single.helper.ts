@@ -8,6 +8,7 @@ import { isValidMongoId } from '../common-functions';
  * @param {String} modelName Model to query with
  * @param {String} populate Fields to populate
  * @param {String} fieldsToIncludeInPopulate Fields to include in populate
+ * @param {String} message Error message
  * @returns {Object} Single document from db
  */
 export const getSingleHelper = async <T>(
@@ -16,6 +17,7 @@ export const getSingleHelper = async <T>(
   modelName: Model<any>,
   populate: string = '',
   fieldsToIncludeInPopulate: string = '',
+  message: string = `${MODEL} not found`,
 ) => {
   if (!isValidMongoId(id)) {
     throw badRequestException('Id is not valid');
@@ -26,7 +28,7 @@ export const getSingleHelper = async <T>(
     .populate(populate, fieldsToIncludeInPopulate)
     .lean();
   if (!singleDocument) {
-    throw notFoundException(`${MODEL} not found`);
+    throw notFoundException(message);
   }
 
   return singleDocument as T;
