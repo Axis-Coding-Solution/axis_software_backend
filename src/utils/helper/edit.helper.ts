@@ -4,11 +4,11 @@ import { isValidMongoId } from '../common-functions';
 
 /**
  * To edit existing document
- * @param {Types.ObjectId} id id comes from client
- * @param {Object} dto body comes from client
- * @param {String} MODEL model name to generate dynamic message
- * @param {String} modelName model to query with
- * @returns {Object} updated document
+ * @param {Types.ObjectId} id Id comes from client
+ * @param {Object} dto Body comes from client
+ * @param {String} MODEL Model name to generate dynamic message
+ * @param {String} modelName Model to query with
+ * @returns {Object} Updated document from db
  */
 export const editHelper = async <T>(
   id: Types.ObjectId,
