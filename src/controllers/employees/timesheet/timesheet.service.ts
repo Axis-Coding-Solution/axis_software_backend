@@ -71,14 +71,23 @@ export class TimesheetService {
     let { projectId, hours } = editTimesheetDto;
 
     const project = projectId
-      ? await getSingleHelper<FindProjectInterface>(projectId, PROJECT_MODEL, this.projectModel)
+      ? await getSingleHelper<FindProjectInterface>(
+          projectId,
+          PROJECT_MODEL,
+          this.projectModel,
+          '',
+          '',
+          `${PROJECT_MODEL} associated with ${TIMESHEET_MODEL} does not exist`,
+        )
       : null;
 
     const remainingHours = project?.remainingHours;
+
     const searchTimesheet = id
       ? await getSingleHelper<FindTimesheetInterface>(id, TIMESHEET_MODEL, this.timesheetModel)
       : null;
-    const updatedHours = remainingHours + searchTimesheet.hours;
+
+    const updatedHours = remainingHours + searchTimesheet?.hours;
 
     const editTimesheet = await editHelper(
       id,
@@ -90,6 +99,7 @@ export class TimesheetService {
     const updateData: object = {
       remainingHours: updatedHours - hours,
     };
+
     await editHelper(projectId, updateData, PROJECT_MODEL, this.projectModel);
 
     return editTimesheet;
@@ -138,6 +148,36 @@ export class TimesheetService {
   }
 
   async delete(id: Types.ObjectId) {
+    //* search timesheet
+    const searchTimesheet = await getSingleHelper<FindTimesheetInterface>(
+      id,
+      TIMESHEET_MODEL,
+      this.timesheetModel,
+    );
+
+    //* search project
+    const { projectId } = searchTimesheet;
+    const project = projectId
+      ? await getSingleHelper<FindProjectInterface>(
+          projectId,
+          PROJECT_MODEL,
+          this.projectModel,
+          '',
+          '',
+          `${PROJECT_MODEL} associated with ${TIMESHEET_MODEL} does not exist`,
+        )
+      : null;
+
+    const remainingHours = project?.remainingHours;
+    const updatedHours = remainingHours + searchTimesheet?.hours;
+
+    const updateData: object = {
+      remainingHours: updatedHours,
+    };
+
+    await editHelper(projectId, updateData, PROJECT_MODEL, this.projectModel);
+
+    //* delete timesheet
     const timesheet = await deleteHelper(id, TIMESHEET_MODEL, this.timesheetModel);
 
     return timesheet;
