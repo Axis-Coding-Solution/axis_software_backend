@@ -122,6 +122,22 @@ export class AttendanceService {
     return attendance;
   }
 
+  async statistics(currentUserId: Types.ObjectId) {
+    const statistics = this.attendanceModel.aggregate([
+      {
+        $match: {
+          employeeId: currentUserId,
+        },
+      },
+      {
+        $project: {
+          totalHours: { $sum: '$hours' },
+        },
+      },
+    ]);
+    console.log("🚀 ~ AttendanceService ~ statistics ~ statistics:", statistics)
+  }
+
   async getSingle(id: Types.ObjectId) {
     const attendance = await getSingleHelper(id, ATTENDANCE_MODEL, this.attendanceModel);
 
