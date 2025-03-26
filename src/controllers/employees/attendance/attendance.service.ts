@@ -123,19 +123,72 @@ export class AttendanceService {
   }
 
   async statistics(currentUserId: Types.ObjectId) {
-    const statistics = this.attendanceModel.aggregate([
+    //* find User
+    const findUser = currentUserId
+      ? await getSingleHelper<FindUserInterface>(currentUserId, USER_MODEL, this.userModel)
+      : null;
+
+    //* employee Id
+    const employeeId = findUser?.employeeId;
+
+    const today = moment().startOf('day').toDate();
+    const tomorrow = moment().endOf('day').toDate();
+    const weekStart = moment().startOf('week').toDate();
+    const weekEnd = moment().endOf('week').toDate();
+    const monthStart = moment().startOf('month').toDate();
+    const monthEnd = moment().endOf('month').toDate();
+
+    // const employeeId = currentUserId;
+    const statistics: any = await this.attendanceModel.aggregate([
       {
         $match: {
-          employeeId: currentUserId,
+          employeeId: employeeId,
+          date: { $gte: monthStart, $lte: monthEnd },
         },
       },
       {
-        $project: {
-          totalHours: { $sum: '$hours' },
+        $group: {
+          _id: null,
+          todayHours: {
+            $sum: {
+              $cond: [
+                { $and: [{ $gte: ['$date', today] }, { $lt: ['$date', tomorrow] }] },
+                '$totalHours',
+                0,
+              ],
+            },
+          },
+          weeklyHours: {
+            $sum: {
+              $cond: [
+                { $and: [{ $gte: ['$date', weekStart] }, { $lte: ['$date', weekEnd] }] },
+                '$totalHours',
+                0,
+              ],
+            },
+          },
+          monthlyHours: {
+            $sum: '$totalHours',
+          },
+          remaining: {
+            $sum: '$remainingHours',
+          },
+          overtime: {
+            $sum: '$overtime',
+          },
         },
       },
     ]);
-    console.log("🚀 ~ AttendanceService ~ statistics ~ statistics:", statistics)
+
+    return statistics.length
+      ? statistics[0]
+      : {
+          todayHours: 0,
+          weeklyHours: 0,
+          monthlyHours: 0,
+          remaining: 0,
+          overtime: 0,
+        };
   }
 
   async getSingle(id: Types.ObjectId) {
