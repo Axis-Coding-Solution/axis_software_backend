@@ -5,7 +5,7 @@ import { Types } from 'mongoose';
 import { PunchInDto, PunchOutDto } from 'src/definitions/dtos/employees/attendance';
 import { User } from 'src/decorator';
 import { ATTENDANCE_MODEL } from 'src/schemas/employees/attendance';
-import { JwtAuthGuard } from 'src/middlewares/guard';
+import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('attendance')
@@ -14,8 +14,8 @@ export class AttendanceController {
 
   @Post()
   async punchIn(@Body() punchInDto: PunchInDto, @User('id') currentUserId: Types.ObjectId) {
-    const leave = await this.attendanceService.punchIn(punchInDto, currentUserId);
-    return successfulResponse(`${ATTENDANCE_MODEL} recorded successfully`, leave);
+    const attendance = await this.attendanceService.punchIn(punchInDto, currentUserId);
+    return successfulResponse(`${ATTENDANCE_MODEL} recorded successfully`, attendance);
   }
 
   @Put(':id')
@@ -24,8 +24,8 @@ export class AttendanceController {
     @User('id') currentUserId: Types.ObjectId,
     @Param('id') id: Types.ObjectId,
   ) {
-    const leave = await this.attendanceService.punchOut(punchOut, currentUserId, id);
-    return successfulResponse(`${ATTENDANCE_MODEL} recorded successfully`, leave);
+    const attendance = await this.attendanceService.punchOut(punchOut, currentUserId, id);
+    return successfulResponse(`${ATTENDANCE_MODEL} recorded successfully`, attendance);
   }
 
   @Get('statistics')
@@ -34,10 +34,17 @@ export class AttendanceController {
     return successfulResponse(`${ATTENDANCE_MODEL} statistics found successfully`, statistics);
   }
 
+  @UseGuards(isAdminGuard)
+  @Get('admin')
+  async adminAttendance() {
+    const attendance = await this.attendanceService.adminAttendance();
+    return successfulResponse(`${ATTENDANCE_MODEL} found successfully`, attendance);
+  }
+
   @Get(':id')
   async get(@Param('id') id: Types.ObjectId) {
-    const leave = await this.attendanceService.getSingle(id);
-    return successfulResponse(`${ATTENDANCE_MODEL} found successfully`, leave);
+    const attendance = await this.attendanceService.getSingle(id);
+    return successfulResponse(`${ATTENDANCE_MODEL} found successfully`, attendance);
   }
 
   @Get()
@@ -48,7 +55,7 @@ export class AttendanceController {
     @Query('month') month?: string,
     @Query('year') year?: string,
   ) {
-    const leave = await this.attendanceService.getAll(page, limit, date, month, year);
-    return successfulResponse(`${ATTENDANCE_MODEL} found successfully`, leave);
+    const attendance = await this.attendanceService.getAll(page, limit, date, month, year);
+    return successfulResponse(`${ATTENDANCE_MODEL} found successfully`, attendance);
   }
 }

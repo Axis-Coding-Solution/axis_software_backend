@@ -190,6 +190,77 @@ export class AttendanceService {
         };
   }
 
+  async adminAttendance(): Promise<any> {
+    // const employee = await this.employeeModel.aggregate([
+    //   {
+    //     $project: {
+    //       _id: 1,
+    //       profileImage: 1,
+    //       firstName: 1,
+    //       lastName: 1,
+    //     },
+    //   },
+    // ]);
+    // const employee = await this.employeeModel.find(
+    //   {},
+    //   {
+    //     _id: 1,
+    //     profileImage: 1,
+    //     firstName: 1,
+    //     lastName: 1,
+    //   },
+    // );
+    // return employee;
+    const attendance = await this.attendanceModel.aggregate([
+      {
+        $lookup: {
+          from: 'employees',
+          localField: 'employeeId',
+          foreignField: '_id',
+          as: 'employee',
+        },
+      },
+      // {
+      //   $group: {
+      //     _id: '$_id',
+      //     profileImage: { $first: '$profileImage' },
+      //   },
+      // },
+      {
+        $project: {
+          // employeeId: 1,
+          // employeeId: {
+          //   $first: '$employee._id',
+          //   // $first: '$employee.profileImage',
+          //   // $first: '$employee.firstName',
+          //   // $first: '$employee.lastName',
+          // },
+          employeeId: [
+            {
+              $first: '$employee._id',
+            },
+            {
+              $first: '$employee.profileImage',
+            },
+            {
+              $first: '$employee.firstName',
+            },
+            {
+              $first: '$employee.lastName',
+            },
+          ],
+          date: 1,
+          totalHours: 1,
+          requiredHours: 1,
+          remainingHours: 1,
+          overtime: 1,
+        },
+      },
+    ]);
+
+    return attendance;
+  }
+
   async getSingle(id: Types.ObjectId) {
     const attendance = await getSingleHelper(id, ATTENDANCE_MODEL, this.attendanceModel);
 
