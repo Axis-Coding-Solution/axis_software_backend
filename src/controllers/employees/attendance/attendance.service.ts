@@ -191,26 +191,6 @@ export class AttendanceService {
   }
 
   async adminAttendance(): Promise<any> {
-    // const employee = await this.employeeModel.aggregate([
-    //   {
-    //     $project: {
-    //       _id: 1,
-    //       profileImage: 1,
-    //       firstName: 1,
-    //       lastName: 1,
-    //     },
-    //   },
-    // ]);
-    // const employee = await this.employeeModel.find(
-    //   {},
-    //   {
-    //     _id: 1,
-    //     profileImage: 1,
-    //     firstName: 1,
-    //     lastName: 1,
-    //   },
-    // );
-    // return employee;
     const attendance = await this.attendanceModel.aggregate([
       {
         $lookup: {
@@ -220,21 +200,8 @@ export class AttendanceService {
           as: 'employee',
         },
       },
-      // {
-      //   $group: {
-      //     _id: '$_id',
-      //     profileImage: { $first: '$profileImage' },
-      //   },
-      // },
       {
         $project: {
-          // employeeId: 1,
-          // employeeId: {
-          //   $first: '$employee._id',
-          //   // $first: '$employee.profileImage',
-          //   // $first: '$employee.firstName',
-          //   // $first: '$employee.lastName',
-          // },
           employeeId: [
             {
               $first: '$employee._id',
@@ -249,11 +216,26 @@ export class AttendanceService {
               $first: '$employee.lastName',
             },
           ],
+          // dat1: {
+          //   $first: '$employee._id',
+          // },
+          // dat2: {
+          //   $first: '$employee.profileImage',
+          // },
+          // dat3: {
+          //   $first: '$employee.firstName',
+          // },
+          // dat4: {
+          //   $first: '$employee.lastName',
+          // },
           date: 1,
           totalHours: 1,
           requiredHours: 1,
           remainingHours: 1,
           overtime: 1,
+          isPunch: 1,
+          punchIn: 1,
+          punchOut: 1,
         },
       },
     ]);
