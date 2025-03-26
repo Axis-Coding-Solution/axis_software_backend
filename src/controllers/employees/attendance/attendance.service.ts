@@ -123,6 +123,14 @@ export class AttendanceService {
   }
 
   async statistics(currentUserId: Types.ObjectId) {
+    //* find User
+    const findUser = currentUserId
+      ? await getSingleHelper<FindUserInterface>(currentUserId, USER_MODEL, this.userModel)
+      : null;
+
+    //* employee Id
+    const employeeId = findUser?.employeeId;
+
     const today = moment().startOf('day').toDate();
     const tomorrow = moment().endOf('day').toDate();
     const weekStart = moment().startOf('week').toDate();
@@ -131,10 +139,10 @@ export class AttendanceService {
     const monthEnd = moment().endOf('month').toDate();
 
     // const employeeId = currentUserId;
-    const statistics: any = this.attendanceModel.aggregate([
+    const statistics: any = await this.attendanceModel.aggregate([
       {
         $match: {
-          employeeId: new Types.ObjectId(currentUserId),
+          employeeId: employeeId,
           date: { $gte: monthStart, $lte: monthEnd },
         },
       },
@@ -172,7 +180,6 @@ export class AttendanceService {
       },
     ]);
 
-    console.log('🚀 ~ AttendanceService ~ statistics ~ statistics:', statistics);
     return statistics.length
       ? statistics[0]
       : {
