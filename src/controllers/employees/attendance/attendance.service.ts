@@ -138,7 +138,6 @@ export class AttendanceService {
     const monthStart = moment().startOf('month').toDate();
     const monthEnd = moment().endOf('month').toDate();
 
-    // const employeeId = currentUserId;
     const statistics: any = await this.attendanceModel.aggregate([
       {
         $match: {
