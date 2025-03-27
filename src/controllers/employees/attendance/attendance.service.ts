@@ -191,54 +191,32 @@ export class AttendanceService {
   }
 
   async adminAttendance(): Promise<any> {
+    const employee = await this.employeeModel.aggregate([
+      {
+        $project: {
+          _id: 1,
+          profileImage: 1,
+          firstName: 1,
+          lastName: 1,
+        },
+      },
+      // this.attendanceModel.aggregate([
+
+      // ])
+    ]);
+
     const attendance = await this.attendanceModel.aggregate([
       {
         $lookup: {
-          from: 'employees',
+          from: EMPLOYEE_MODEL,
           localField: 'employeeId',
           foreignField: '_id',
           as: 'employee',
         },
       },
-      {
-        $project: {
-          employeeId: [
-            {
-              $first: '$employee._id',
-            },
-            {
-              $first: '$employee.profileImage',
-            },
-            {
-              $first: '$employee.firstName',
-            },
-            {
-              $first: '$employee.lastName',
-            },
-          ],
-          // dat1: {
-          //   $first: '$employee._id',
-          // },
-          // dat2: {
-          //   $first: '$employee.profileImage',
-          // },
-          // dat3: {
-          //   $first: '$employee.firstName',
-          // },
-          // dat4: {
-          //   $first: '$employee.lastName',
-          // },
-          date: 1,
-          totalHours: 1,
-          requiredHours: 1,
-          remainingHours: 1,
-          overtime: 1,
-          isPunch: 1,
-          punchIn: 1,
-          punchOut: 1,
-        },
-      },
     ]);
+
+    console.log('🚀 ~ AttendanceService ~ adminAttendance ~ attendance:', employee);
 
     return attendance;
   }
