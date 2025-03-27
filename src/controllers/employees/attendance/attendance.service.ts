@@ -191,34 +191,52 @@ export class AttendanceService {
   }
 
   async adminAttendance(): Promise<any> {
-    const employee = await this.employeeModel.aggregate([
-      {
-        $project: {
-          _id: 1,
-          profileImage: 1,
-          firstName: 1,
-          lastName: 1,
+    const startOfMonth = moment().startOf('month').toDate();
+    const endOfMonth = moment().endOf('month').toDate();
+
+    //* find employees
+    const employees = await this.employeeModel.find().lean();
+
+    //* find attendance of current month
+    const attendanceRecords = await this.attendanceModel
+      .find({
+        date: { $gte: startOfMonth, $lte: endOfMonth },
+      })
+      .lean();
+
+    //* employees according to attendance set false initially
+    const attendanceData = employees.map((employee) => {
+      const attendanceMap = new Map();
+
+      const totalDays = moment().daysInMonth();
+      const attendanceArray = Array.from({ length: totalDays }, (_, i) => {
+        const day = moment(startOfMonth).add(i, 'days').format('YYYY-MM-DD');
+        attendanceMap.set(day, { date: day, present: false });
+        return { date: day, present: false };
+      });
+
+      //* set present to true if employee is present
+      attendanceRecords
+        .filter((record) => record?.employeeId.toString() === employee?._id.toString())
+        .forEach((record) => {
+          const recordDate = moment(record?.date).format('YYYY-MM-DD');
+          if (attendanceMap.has(recordDate)) {
+            attendanceMap.set(recordDate, { date: recordDate, present: true });
+          }
+        });
+
+      return {
+        employee: {
+          id: employee?._id,
+          firstName: employee?.firstName,
+          lastName: employee?.lastName,
+          profileImage: employee?.profileImage,
         },
-      },
-      // this.attendanceModel.aggregate([
+        attendance: Array.from(attendanceMap.values()),
+      };
+    });
 
-      // ])
-    ]);
-
-    const attendance = await this.attendanceModel.aggregate([
-      {
-        $lookup: {
-          from: EMPLOYEE_MODEL,
-          localField: 'employeeId',
-          foreignField: '_id',
-          as: 'employee',
-        },
-      },
-    ]);
-
-    console.log('🚀 ~ AttendanceService ~ adminAttendance ~ attendance:', employee);
-
-    return attendance;
+    return attendanceData;
   }
 
   async getSingle(id: Types.ObjectId) {
