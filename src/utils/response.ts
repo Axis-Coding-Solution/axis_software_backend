@@ -1,7 +1,7 @@
 /**
- * send response to client
-  @param message message to send to client
-  @param data data to send. default will be null
+ * Send response to client
+  @param message Message to send to client
+  @param data Data to send. default will be null
 */
 const successfulResponse = (message: string, data = null) => {
   return {
@@ -11,9 +11,9 @@ const successfulResponse = (message: string, data = null) => {
   };
 };
 /** 
- * send error response to client
-  @param message message to send to client
-  @param data data to send. default will be null
+ * Send error response to client
+  @param message Message to send to client
+  @param data Data to send. default will be null
 */
 const invalidResponse = (message: string, data = null) => {
   return {
