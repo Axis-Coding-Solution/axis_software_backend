@@ -221,7 +221,11 @@ export class AttendanceService {
         .forEach((record) => {
           const recordDate = moment(record?.date).format('YYYY-MM-DD');
           if (attendanceMap.has(recordDate)) {
-            attendanceMap.set(recordDate, { date: recordDate, present: true });
+            attendanceMap.set(recordDate, {
+              date: recordDate,
+              present: true,
+              attendanceId: record._id,
+            });
           }
         });
 
