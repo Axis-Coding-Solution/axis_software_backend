@@ -41,6 +41,7 @@ export class AttendanceController {
     return successfulResponse(`${ATTENDANCE_MODEL} found successfully`, attendance);
   }
 
+  @UseGuards(isAdminGuard)
   @Get(':id')
   async get(@Param('id') id: Types.ObjectId) {
     const attendance = await this.attendanceService.getSingle(id);
