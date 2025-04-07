@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { createGroupMenuDto } from 'src/definitions/dtos/commons/roles-and-permissions';
+import {
+  createGroupMenuDto,
+  EditGroupMenuDto,
+} from 'src/definitions/dtos/commons/roles-and-permissions';
 import {
   GROUP_MODEL,
   GroupDocument,
@@ -12,7 +15,13 @@ import {
   GROUP_MENU_MODEL,
   GroupMenuDocument,
 } from 'src/schemas/roles-and-permissions/group-menu.schema';
-import { createHelper, editHelper, getSingleHelper } from 'src/utils/helper';
+import {
+  createHelper,
+  deleteHelper,
+  editHelper,
+  getAllHelper,
+  getSingleHelper,
+} from 'src/utils/helper';
 
 @Injectable()
 export class RolesAndPermissionsService {
@@ -27,7 +36,7 @@ export class RolesAndPermissionsService {
     private readonly menuModel: Model<MenuDocument>,
   ) {}
 
-  async createGroupMenus(createGroupMenuDto: createGroupMenuDto) {
+  async create(createGroupMenuDto: createGroupMenuDto) {
     const { groupId, menuId } = createGroupMenuDto;
 
     groupId ? getSingleHelper(groupId, GROUP_MODEL, this.groupModel) : null;
@@ -37,8 +46,8 @@ export class RolesAndPermissionsService {
     return groupMenu;
   }
 
-  async editGroupMenus(createGroupMenuDto: createGroupMenuDto, id: Types.ObjectId) {
-    const { groupId, menuId } = createGroupMenuDto;
+  async edit(editGroupMenuDto: EditGroupMenuDto, id: Types.ObjectId) {
+    const { groupId, menuId } = editGroupMenuDto;
 
     groupId ? getSingleHelper(groupId, GROUP_MODEL, this.groupModel) : null;
     menuId ? getSingleHelper(menuId, MENU_MODEL, this.menuModel) : null;
@@ -49,6 +58,25 @@ export class RolesAndPermissionsService {
       GROUP_MENU_MODEL,
       this.groupMenuModel,
     );
+
     return groupMenu;
+  }
+
+  async getSingle(id: Types.ObjectId) {
+    const groupMenu = await getSingleHelper(id, GROUP_MENU_MODEL, this.groupMenuModel);
+
+    return groupMenu;
+  }
+
+  async getAll(page: string, limit: string, search: string) {
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
+      page,
+      limit,
+      this.groupMenuModel,
+    );
+  }
+
+  async delete(id: Types.ObjectId) {
+    const groupMenu = await deleteHelper(id, GROUP_MENU_MODEL, this.groupMenuModel);
   }
 }
