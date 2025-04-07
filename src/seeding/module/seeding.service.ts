@@ -7,7 +7,11 @@ import {
   MENU_MODEL,
   MenuDocument,
 } from 'src/schemas/roles-and-permissions';
-// import groupData from '../data/group.data.seeding.json';
+import * as fs from 'fs';
+import * as path from 'path';
+// import groupData from JSON.parse('../data/group.data.seeding.json');
+// const groupData = JSON.parse(fs.readFileSync(path:`${__dirname}/data/group.data.seeding.json`,options: 'utf-8'));
+// console.log("🚀 ~ groupData:", groupData)
 @Injectable()
 export class SeedingService {
   constructor(
