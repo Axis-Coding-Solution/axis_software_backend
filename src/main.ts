@@ -5,10 +5,15 @@ import helmet from 'helmet';
 import * as compression from 'compression';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AllExceptionsFilter, badRequestException } from './utils';
+import { SeedingService } from './seeding/module/seeding.service';
 const PORT = process.env.PORT || 4000;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  //* seeding
+  const seedService = app.get(SeedingService);
+  await seedService.seedGroups();
+  await seedService.seedMenus();
 
   app.use(helmet());
   app.use(compression());
@@ -23,9 +28,7 @@ async function bootstrap() {
           property: error.property,
           message: error.constraints[Object.keys(error.constraints)[0]],
         }));
-        return badRequestException(
-          result.map((r) => `${r.message}`).join(', '),
-        );
+        return badRequestException(result.map((r) => `${r.message}`).join(', '));
       },
     }),
   );
