@@ -8,8 +8,8 @@ export class Menu {
   @Prop({ required: true })
   path: String;
 
-  @Prop({ required: true })
-  subMenu: String[];
+  @Prop()
+  subMenu?: String[];
 }
 
 export type MenuDocument = Menu & Document;
