@@ -53,12 +53,7 @@ export class RolesAndPermissionsService {
     groupId ? await getSingleHelper(groupId, GROUP_MODEL, this.groupModel) : null;
     menuId ? await getSingleHelper(menuId, MENU_MODEL, this.menuModel) : null;
 
-    const groupMenu = await editHelper(
-      id,
-      createGroupMenuDto,
-      GROUP_MENU_MODEL,
-      this.groupMenuModel,
-    );
+    const groupMenu = await editHelper(id, editGroupMenuDto, GROUP_MENU_MODEL, this.groupMenuModel);
 
     return groupMenu;
   }
@@ -70,9 +65,21 @@ export class RolesAndPermissionsService {
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const groupMenu = await getAllHelper(page, limit, this.groupMenuModel);
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
+      page,
+      limit,
+      this.groupMenuModel,
+    );
 
-    return groupMenu;
+    return {
+      data: items,
+      pagination: {
+        totalItems: totalItems,
+        totalPages: totalPages,
+        itemsPerPage: itemsPerPage,
+        currentPage: currentPage,
+      },
+    };
   }
 
   async delete(id: Types.ObjectId) {
