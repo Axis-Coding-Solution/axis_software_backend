@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { RolesAndPermissionsService } from './roles-and-permissions.service';
 import { GROUP_MENU_MODEL } from 'src/schemas/roles-and-permissions';
 import { successfulResponse } from 'src/utils';
@@ -7,7 +7,10 @@ import {
   createGroupMenuDto,
   EditGroupMenuDto,
 } from 'src/definitions/dtos/commons/roles-and-permissions';
+import { User } from 'src/decorator';
+import { JwtAuthGuard } from 'src/middlewares/guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('roles-and-permissions')
 export class RolesAndPermissionsController {
   constructor(private readonly rolesAndPermissionsService: RolesAndPermissionsService) {}
@@ -21,13 +24,19 @@ export class RolesAndPermissionsController {
   @Put(':id')
   async update(@Param('id') id: Types.ObjectId, @Body() editGroupMenuDto: EditGroupMenuDto) {
     const editRolesAndPermission = await this.rolesAndPermissionsService.edit(editGroupMenuDto, id);
-    return successfulResponse(`${GROUP_MENU_MODEL}t edited successfully`, editRolesAndPermission);
+    return successfulResponse(`${GROUP_MENU_MODEL} edited successfully`, editRolesAndPermission);
+  }
+
+  @Get('group-menu')
+  async getGroupMenu(@User('role') role: string) {
+    const groupMenu = await this.rolesAndPermissionsService.getGroupMenu(role);
+    return successfulResponse(`${GROUP_MENU_MODEL} found successfully`, groupMenu);
   }
 
   @Get(':id')
   async get(@Param('id') id: Types.ObjectId) {
     const rolesAndPermission = await this.rolesAndPermissionsService.getSingle(id);
-    return successfulResponse(`${GROUP_MENU_MODEL}nt found successfully`, rolesAndPermission);
+    return successfulResponse(`${GROUP_MENU_MODEL} found successfully`, rolesAndPermission);
   }
 
   @Get()

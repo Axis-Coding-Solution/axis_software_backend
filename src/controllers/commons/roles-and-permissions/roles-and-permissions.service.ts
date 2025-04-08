@@ -87,4 +87,13 @@ export class RolesAndPermissionsService {
 
     return groupMenu;
   }
+
+  async getGroupMenu(role: string) {
+    const groupDocument = await this.groupModel.findOne({ role });
+    const groupId = groupDocument._id.toString();
+
+    const groupMenu = await this.groupMenuModel.find({ groupId }).populate('menuId').exec();
+
+    return groupMenu;
+  }
 }
