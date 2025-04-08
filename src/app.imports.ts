@@ -18,6 +18,8 @@ import { LeaveSettingModule } from './controllers/employees/leave-setting/leave-
 import { AttendanceModule } from './controllers/employees/attendance/attendance.module';
 import { RolesAndPermissionsModule } from './controllers/commons/roles-and-permissions/roles-and-permissions.module';
 import { SeedingModule } from './seeding/module/seeding.module';
+import { GroupsModule } from './controllers/commons/groups/groups.module';
+import { MenusModule } from './controllers/commons/menus/menus.module';
 
 const GlobalImports = [
   ConfigModule.forRoot({
@@ -45,6 +47,8 @@ const GlobalImports = [
   AttendanceModule,
   RolesAndPermissionsModule,
   SeedingModule,
+  GroupsModule,
+  MenusModule,
 ];
 
 export default GlobalImports;

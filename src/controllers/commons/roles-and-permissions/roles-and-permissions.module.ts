@@ -7,7 +7,7 @@ import {
   groupMenuSchema,
   groupSchema,
   MENU_MODEL,
-  menuSChema,
+  menuSchema,
 } from 'src/schemas/roles-and-permissions';
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -15,7 +15,7 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [
     MongooseModule.forFeature([
       { name: GROUP_MODEL, schema: groupSchema },
-      { name: MENU_MODEL, schema: menuSChema },
+      { name: MENU_MODEL, schema: menuSchema },
       { name: GROUP_MENU_MODEL, schema: groupMenuSchema },
     ]),
   ],
