@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {
@@ -15,6 +15,7 @@ import {
   GROUP_MENU_MODEL,
   GroupMenuDocument,
 } from 'src/schemas/roles-and-permissions/group-menu.schema';
+import { notFoundException } from 'src/utils';
 import {
   createHelper,
   deleteHelper,
@@ -93,6 +94,8 @@ export class RolesAndPermissionsService {
     const groupId = groupDocument._id.toString();
 
     const groupMenu = await this.groupMenuModel.find({ groupId }).populate('menuId').exec();
+
+    if (!groupMenu) throw notFoundException(`${GROUP_MENU_MODEL} not found`);
 
     return groupMenu;
   }
