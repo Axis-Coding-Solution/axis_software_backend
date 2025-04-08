@@ -13,5 +13,5 @@ export class Menu {
 }
 
 export type MenuDocument = Menu & Document;
-export const menuSChema = SchemaFactory.createForClass(Menu);
+export const menuSchema = SchemaFactory.createForClass(Menu);
 export const MENU_MODEL = Menu.name;

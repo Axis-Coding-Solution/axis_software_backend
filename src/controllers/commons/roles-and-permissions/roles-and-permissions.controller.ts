@@ -37,7 +37,7 @@ export class RolesAndPermissionsController {
     @Query('search') search: string,
   ) {
     const rolesAndPermissions = await this.rolesAndPermissionsService.getAll(page, limit, search);
-    return successfulResponse(`${GROUP_MENU_MODEL}ts found successfully`, rolesAndPermissions);
+    return successfulResponse(`${GROUP_MENU_MODEL} found successfully`, rolesAndPermissions);
   }
 
   @Delete(':id')
