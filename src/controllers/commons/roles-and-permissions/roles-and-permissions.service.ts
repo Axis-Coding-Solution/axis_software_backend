@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {
@@ -39,18 +39,19 @@ export class RolesAndPermissionsService {
   async create(createGroupMenuDto: createGroupMenuDto) {
     const { groupId, menuId } = createGroupMenuDto;
 
-    groupId ? getSingleHelper(groupId, GROUP_MODEL, this.groupModel) : null;
-    menuId ? getSingleHelper(menuId, MENU_MODEL, this.menuModel) : null;
+    groupId ? await getSingleHelper(groupId, GROUP_MODEL, this.groupModel) : null;
+    menuId ? await getSingleHelper(menuId, MENU_MODEL, this.menuModel) : null;
 
     const groupMenu = await createHelper(createGroupMenuDto, GROUP_MENU_MODEL, this.groupMenuModel);
+
     return groupMenu;
   }
 
   async edit(editGroupMenuDto: EditGroupMenuDto, id: Types.ObjectId) {
     const { groupId, menuId } = editGroupMenuDto;
 
-    groupId ? getSingleHelper(groupId, GROUP_MODEL, this.groupModel) : null;
-    menuId ? getSingleHelper(menuId, MENU_MODEL, this.menuModel) : null;
+    groupId ? await getSingleHelper(groupId, GROUP_MODEL, this.groupModel) : null;
+    menuId ? await getSingleHelper(menuId, MENU_MODEL, this.menuModel) : null;
 
     const groupMenu = await editHelper(
       id,
@@ -69,14 +70,14 @@ export class RolesAndPermissionsService {
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
-      page,
-      limit,
-      this.groupMenuModel,
-    );
+    const groupMenu = await getAllHelper(page, limit, this.groupMenuModel);
+
+    return groupMenu;
   }
 
   async delete(id: Types.ObjectId) {
     const groupMenu = await deleteHelper(id, GROUP_MENU_MODEL, this.groupMenuModel);
+
+    return groupMenu;
   }
 }
