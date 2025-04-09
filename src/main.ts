@@ -11,9 +11,9 @@ const PORT = process.env.PORT || 4000;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   //* seeding
-  const seedService = app.get(SeedingService);
-  await seedService.seedGroups();
-  await seedService.seedMenus();
+  // const seedService = app.get(SeedingService);
+  // await seedService.seedGroups();
+  // await seedService.seedMenus();
 
   app.use(helmet());
   app.use(compression());
