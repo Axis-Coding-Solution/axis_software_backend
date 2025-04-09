@@ -5,11 +5,17 @@ export class Menu {
   @Prop({ required: true })
   name: String;
 
-  @Prop({ required: true })
-  path: String;
+  @Prop()
+  path?: String;
+
+  @Prop({ default: false })
+  subMenu?: Boolean;
+
+  @Prop({ default: null })
+  parentId?: String;
 
   @Prop()
-  subMenu?: String[];
+  uniqueId?: String;
 }
 
 export type MenuDocument = Menu & Document;
