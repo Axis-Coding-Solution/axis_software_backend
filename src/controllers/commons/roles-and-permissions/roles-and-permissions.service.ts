@@ -93,7 +93,7 @@ export class RolesAndPermissionsService {
     const groupDocument = await this.groupModel.findOne({ role });
     const groupId = groupDocument._id.toString();
 
-    const groupMenu = await this.groupMenuModel.find({ groupId }).populate('menuId').exec();
+    const groupMenu = await this.groupMenuModel.find({ groupId }).populate('groupId menuId').exec();
 
     if (!groupMenu) throw notFoundException(`${GROUP_MENU_MODEL} not found`);
 
