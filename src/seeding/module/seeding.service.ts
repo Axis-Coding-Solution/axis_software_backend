@@ -19,14 +19,31 @@ export class SeedingService {
   ) {}
 
   async seedGroups() {
-    await this.groupModel.deleteMany({});
+    const groups = await this.groupModel.find();
 
-    await this.groupModel.insertMany(groupData);
+    if (groups.length === 0) {
+      await this.groupModel.insertMany(groupData);
+      return;
+    }
+
+    const isGroupExists = groupData.filter((group) => !groups.find((g) => g.role === group.role));
+
+    if (isGroupExists) {
+      await this.groupModel.create(isGroupExists);
+    }
   }
 
   async seedMenus() {
-    await this.menuModel.deleteMany({});
+    const menus = await this.menuModel.find();
 
-    await this.menuModel.insertMany(menuData);
+    if (menus.length === 0) {
+      await this.menuModel.insertMany(menuData);
+      return;
+    }
+
+    const isMenuExist = menuData.filter((menu) => !menus.find((m) => m.name === menu.name));
+    if (isMenuExist) {
+      await this.menuModel.create(isMenuExist);
+    }
   }
 }
