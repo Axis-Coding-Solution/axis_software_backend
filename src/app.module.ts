@@ -8,7 +8,7 @@ import GlobalImports from './app.imports';
   controllers: [AppController],
   providers: [
     AppService,
-    CheckDbConnectionCommand,
+    // CheckDbConnectionCommand,
     // {
     //   provide: 'APP_INTERCEPTOR',
     //   useClass: UploadFileInterceptor,
