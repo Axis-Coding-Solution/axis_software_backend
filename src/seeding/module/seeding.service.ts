@@ -41,7 +41,7 @@ export class SeedingService {
       return;
     }
 
-    const isMenuExist = menuData.filter((menu) => !menus.find((m) => m.name === menu.name));
+    const isMenuExist = menuData.filter((menu) => !menus.find((m) => m.title === menu.title));
     if (isMenuExist) {
       await this.menuModel.create(isMenuExist);
     }
