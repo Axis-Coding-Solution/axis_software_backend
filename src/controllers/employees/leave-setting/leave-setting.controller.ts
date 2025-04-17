@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { LeaveSettingService } from './leave-setting.service';
 import { successfulResponse } from 'src/utils';
 import { Types } from 'mongoose';
@@ -7,7 +7,9 @@ import {
   EditLeaveSettingDto,
 } from 'src/definitions/dtos/employees/leave-setting';
 import { LEAVE_SETTING_MODEL } from 'src/schemas/employees/leave-setting';
+import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
 
+@UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('leave-setting')
 export class LeaveSettingController {
   constructor(private readonly leaveSettingService: LeaveSettingService) {}
