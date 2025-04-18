@@ -17,6 +17,9 @@ export class Notification {
   @Prop({ default: false })
   read: Boolean;
 
+  @Prop({ required: true })
+  path: String;
+
   @Prop({ type: Types.ObjectId, ref: USER_MODEL, required: true })
   userId: Types.ObjectId | User;
 }

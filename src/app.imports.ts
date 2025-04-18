@@ -20,6 +20,7 @@ import { RolesAndPermissionsModule } from './controllers/commons/roles-and-permi
 import { SeedingModule } from './seeding/module/seeding.module';
 import { GroupsModule } from './controllers/commons/groups/groups.module';
 import { MenusModule } from './controllers/commons/menus/menus.module';
+import { NotificationModule } from './controllers/notification/notification.module';
 
 const GlobalImports = [
   ConfigModule.forRoot({
@@ -49,6 +50,7 @@ const GlobalImports = [
   SeedingModule,
   GroupsModule,
   MenusModule,
+  NotificationModule,
 ];
 
 export default GlobalImports;
