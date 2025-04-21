@@ -21,11 +21,20 @@ import { SeedingModule } from './seeding/module/seeding.module';
 import { GroupsModule } from './controllers/commons/groups/groups.module';
 import { MenusModule } from './controllers/commons/menus/menus.module';
 import { NotificationModule } from './controllers/notification/notification.module';
+import { minutes, ThrottlerModule } from '@nestjs/throttler';
 
 const GlobalImports = [
   ConfigModule.forRoot({
     isGlobal: true,
   }),
+  //* throttling implementation
+  ThrottlerModule.forRoot([
+    {
+      name: 'globalThrottler',
+      ttl: minutes(1),
+      limit: 60,
+    },
+  ]),
   DataBaseModule,
   AuthModule,
   DepartmentModule,
