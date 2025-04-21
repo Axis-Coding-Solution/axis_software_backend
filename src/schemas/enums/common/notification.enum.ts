@@ -1,5 +1,8 @@
 export enum Type {
-  info = 'info',
-  warning = 'warning',
-  error = 'error',
+  holiday = 'holiday',
+  leave = 'leave',
+  task = 'task',
+  attendance = 'attendance',
+  timesheet = 'timesheet',
+  overtime = 'overtime',
 }
