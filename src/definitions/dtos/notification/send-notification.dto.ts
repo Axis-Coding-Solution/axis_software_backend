@@ -9,6 +9,5 @@ export class SendNotificationDto {
   path: string;
   read: boolean;
   userId: Types.ObjectId;
-  message: string;
   createdAt: Date;
 }
