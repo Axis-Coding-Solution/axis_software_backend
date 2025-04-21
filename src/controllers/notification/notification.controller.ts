@@ -2,10 +2,9 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } fro
 import { NotificationService } from './notification.service';
 import { successfulResponse } from '@/utils';
 import { Types } from 'mongoose';
-import { CreateNotificationDto } from '@/definitions/dtos/notification/create-notification.dto';
-import { EditNotificationDto } from '@/definitions/dtos/notification/edit-notification.dto';
 import { NOTIFICATION_MODEL } from '@/schemas/notification';
 import { JwtAuthGuard } from '@/middlewares/guard';
+import { CreateNotificationDto, EditNotificationDto } from '@/definitions/dtos/notification';
 
 @UseGuards(JwtAuthGuard)
 @Controller('notification')
@@ -22,6 +21,12 @@ export class NotificationController {
   async edit(@Body() editNotificationDto: EditNotificationDto, @Param('id') id: Types.ObjectId) {
     const editNotification = await this.notificationService.edit(editNotificationDto, id);
     return successfulResponse(`${NOTIFICATION_MODEL} edited successfully`, editNotification);
+  }
+
+  @Put('read/:id')
+  async readNotification(@Param('id') id: Types.ObjectId) {
+    const notification = await this.notificationService.readNotification(id);
+    return successfulResponse(`${NOTIFICATION_MODEL} read successfully`, notification);
   }
 
   @Get(':id')
