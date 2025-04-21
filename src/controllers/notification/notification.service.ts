@@ -1,4 +1,8 @@
-import { CreateNotificationDto, EditNotificationDto } from '@/definitions/dtos/notification';
+import {
+  CreateNotificationDto,
+  EditNotificationDto,
+  SendNotificationDto,
+} from '@/definitions/dtos/notification';
 import { NotificationInterface } from '@/interfaces';
 import { USER_MODEL, UserDocument } from '@/schemas/commons/user';
 import { NOTIFICATION_MODEL, NotificationDocument } from '@/schemas/notification';
@@ -13,6 +17,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { NotificationGateway } from './notification.gateway';
 
 @Injectable()
 export class NotificationService {
@@ -22,10 +27,12 @@ export class NotificationService {
 
     @InjectModel(USER_MODEL)
     private readonly userModel: Model<UserDocument>,
+
+    private notificationGateway: NotificationGateway,
   ) {}
 
   async create(createNotificationDto: CreateNotificationDto) {
-    const { userId } = createNotificationDto;
+    const { userId, title, description, type, path } = createNotificationDto;
     await getSingleHelper(userId, USER_MODEL, this.userModel);
 
     const notification = await createHelper(
@@ -33,6 +40,17 @@ export class NotificationService {
       NOTIFICATION_MODEL,
       this.notificationModel,
     );
+
+    //* emit real time notification
+    this.notificationGateway.notifyUser(userId, {
+      _id: notification._id,
+      title,
+      description,
+      type,
+      path,
+      read: notification?.read,
+      createdAt: notification?.createdAt,
+    } as SendNotificationDto);
 
     return notification;
   }
