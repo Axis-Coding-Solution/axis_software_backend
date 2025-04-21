@@ -6,6 +6,8 @@ import * as compression from 'compression';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AllExceptionsFilter, badRequestException } from './utils';
 import { SeedingService } from './seeding/module/seeding.service';
+import { corsConfig } from './lib';
+import responseValidation from './validation/exception-factory.validation';
 const PORT = process.env.PORT || 4000;
 
 async function bootstrap() {
@@ -15,27 +17,14 @@ async function bootstrap() {
   // await seedService.seedGroups();
   // await seedService.seedMenus();
 
+  //* middlewares
   app.use(helmet());
   app.use(compression());
-  app.enableCors({
-    origin: '*',
-  });
+  app.enableCors(corsConfig);
   app.setGlobalPrefix('v1/api');
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      exceptionFactory: (errors) => {
-        const result = errors.map((error) => ({
-          property: error.property,
-          message: error.constraints[Object.keys(error.constraints)[0]],
-        }));
-        return badRequestException(result.map((r) => `${r.message}`).join(', '));
-      },
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe(responseValidation));
   // app.useGlobalFilters(new AllExceptionsFilter());
+
   //? swagger
   const config = new DocumentBuilder()
     .setTitle('Axis Software Api')
