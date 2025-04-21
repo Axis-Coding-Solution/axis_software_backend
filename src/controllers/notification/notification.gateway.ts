@@ -9,7 +9,9 @@ import { Types } from 'mongoose';
 import { SendNotificationDto } from '@/definitions/dtos/notification';
 import { SocketEvents } from '@/definitions/enum';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: '*',
+})
 export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
@@ -30,6 +32,8 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
   }
 
   async notifyUser(userId: Types.ObjectId, data: SendNotificationDto) {
-    this.server.to(userId.toString()).emit(SocketEvents.NOTIFICATION, data);
+    const notification = this.server.to(userId.toString()).emit(SocketEvents.NOTIFICATION, data);
+    console.log('nnnnnnnnnnnnnnnn', notification);
+    return notification;
   }
 }

@@ -42,7 +42,7 @@ export class NotificationService {
     );
 
     //* emit real time notification
-    this.notificationGateway.notifyUser(userId, {
+    const socketNotification = this.notificationGateway.notifyUser(userId, {
       _id: notification._id,
       title,
       description,
@@ -52,6 +52,7 @@ export class NotificationService {
       createdAt: notification?.createdAt,
     } as SendNotificationDto);
 
+    console.log('fffffffffffffffffffff', socketNotification);
     return notification;
   }
 
