@@ -8,10 +8,9 @@ import { Server } from 'socket.io';
 import { Types } from 'mongoose';
 import { SendNotificationDto } from '@/definitions/dtos/notification';
 import { SocketEvents } from '@/definitions/enum';
+import { corsConfig } from '@/lib';
 
-@WebSocketGateway({
-  cors: '*',
-})
+@WebSocketGateway(corsConfig)
 export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
