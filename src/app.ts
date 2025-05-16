@@ -8,6 +8,7 @@ import { ValidationPipe } from '@nestjs/common';
 import responseValidation from './validation/exception-factory.validation';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { SeedingService } from './seeding/module/seeding.service';
+import { AllExceptionsFilter } from './utils';
 
 export const createApp = async () => {
   const app = await NestFactory.create(AppModule);
@@ -27,6 +28,7 @@ export const createApp = async () => {
   app.use(compression());
   app.enableCors(corsConfig);
   app.useGlobalPipes(new ValidationPipe(responseValidation));
+  // app.useGlobalFilters(new AllExceptionsFilter());
 
   //* set Global Prefix
   app.setGlobalPrefix('v1/api');
