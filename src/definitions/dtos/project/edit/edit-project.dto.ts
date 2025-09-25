@@ -6,30 +6,20 @@ import {
   IsOptional,
   IsNumber,
   IsString,
+  IsArray,
 } from 'class-validator';
 import { Types } from 'mongoose';
-import { User } from 'src/schemas/commons/user';
-import { Currency } from 'src/schemas/enums/common';
-import {
-  Priority,
-  ProjectStatus,
-  ProjectType,
-  RateType,
-} from 'src/schemas/enums/project';
+import { Priority, RateType } from 'src/schemas/enums/project';
 
 export class EditProjectDto {
   @IsString()
   @IsOptional()
   projectName?: String;
 
-  @IsEnum(ProjectType)
-  @IsOptional()
-  projectType?: String;
-
   @IsMongoId()
   @IsString()
   @IsOptional()
-  clientId?: String | Types.ObjectId | User;
+  clientId?: Types.ObjectId;
 
   @IsDate()
   @IsOptional()
@@ -44,11 +34,7 @@ export class EditProjectDto {
   @IsNumber()
   @Type(() => Number)
   @IsOptional()
-  rate?: number;
-
-  @IsEnum(Currency)
-  @IsOptional()
-  currency?: String;
+  rate?: Number;
 
   @IsEnum(RateType)
   @IsOptional()
@@ -61,12 +47,7 @@ export class EditProjectDto {
   @IsMongoId()
   @IsString()
   @IsOptional()
-  projectLeader?: String | Types.ObjectId | User;
-
-  @IsMongoId({ each: true })
-  @IsString({ each: true })
-  @IsOptional()
-  teamId?: String[] | Types.ObjectId[] | User[];
+  projectLeader?: Types.ObjectId;
 
   @IsString()
   @IsOptional()
@@ -74,28 +55,16 @@ export class EditProjectDto {
 
   files?: String[];
 
-  @IsEnum(ProjectStatus)
-  @IsOptional()
-  projectStatus?: String;
-
-  @IsString({ each: true })
-  @IsOptional()
-  tags?: String[];
-
-  @IsString({ each: true })
-  @IsOptional()
-  technologyStack?: String[];
-
-  @IsString({ each: true })
-  @IsOptional()
-  repositories?: String[];
-
-  @IsString({ each: true })
-  @IsOptional()
-  communicationChannels?: String[];
-
   @IsMongoId({ each: true })
-  @IsString({ each: true })
+  @IsArray()
   @IsOptional()
-  Stakeholders?: String[] | Types.ObjectId[] | User[];
+  teamMembers?: Types.ObjectId[];
+
+  @IsNumber()
+  @IsOptional()
+  totalHours?: Number;
+
+  @IsNumber()
+  @IsOptional()
+  remainingHours?: Number;
 }

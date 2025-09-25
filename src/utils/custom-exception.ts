@@ -7,8 +7,9 @@ import {
 } from '@nestjs/common';
 
 /**
- * @param message send to client
- * @param data default will be null
+ * This is wrapper on Nest Js Exception but with custom response.
+ * @param {String} message Message send to client.
+ * @param {Object} data Default data will be null.
  */
 export const conflictException = (message: string, data: any = null) => {
   return new ConflictException({
@@ -19,8 +20,9 @@ export const conflictException = (message: string, data: any = null) => {
 };
 
 /**
- * @param message send to client
- * @param data default will be null
+ * This is wrapper on Nest Js Exception but with custom response.
+ * @param {String} message Message send to client.
+ * @param {Object} data Default data will be null.
  */
 export const badRequestException = (message: string, data: any = null) => {
   return new BadRequestException({
@@ -31,8 +33,9 @@ export const badRequestException = (message: string, data: any = null) => {
 };
 
 /**
- * @param message send to client
- * @param data default will be null
+ * This is wrapper on Nest Js Exception but with custom response.
+ * @param {String} message Message send to client.
+ * @param {Object} data Default data will be null.
  */
 export const notFoundException = (message: string, data: any = null) => {
   return new NotFoundException({
@@ -43,8 +46,9 @@ export const notFoundException = (message: string, data: any = null) => {
 };
 
 /**
- * @param message send to client
- * @param data default will be null
+ * This is wrapper on Nest Js Exception but with custom response.
+ * @param {String} message Message send to client.
+ * @param {Object} data Default data will be null.
  */
 export const forbiddenException = (message: string, data: any = null) => {
   return new ForbiddenException({
@@ -55,8 +59,9 @@ export const forbiddenException = (message: string, data: any = null) => {
 };
 
 /**
- * @param message send to client
- * @param data default will be null
+ * This is wrapper on Nest Js Exception but with custom response.
+ * @param {String} message Message send to client.
+ * @param {Object} data Default data will be null.
  */
 export const unauthorizedException = (message: string, data: any = null) => {
   return new UnauthorizedException({

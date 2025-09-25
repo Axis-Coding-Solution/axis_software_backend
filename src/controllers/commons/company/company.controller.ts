@@ -19,6 +19,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/middlewares';
 import { AppConfigService } from 'src/config';
 import { FileValidationPipe } from 'src/pipes/file';
+import { Types } from 'mongoose';
+import { COMPANY_MODEL } from 'src/schemas/commons/company';
 @UseGuards(JwtAuthGuard)
 @Controller('company')
 export class CompanyController {
@@ -35,14 +37,14 @@ export class CompanyController {
   )
   async create(
     @Body() createCompanyDto: createCompanyDto,
-    @UploadedFile(new FileValidationPipe(true))
+    @UploadedFile(new FileValidationPipe(true, 'Profile image'))
     profileImage: Express.Multer.File,
   ) {
     if (profileImage) {
       createCompanyDto.profileImage = `${this.appConfigService.serverPath}/uploads/images/${profileImage.filename}`;
     }
     const company = await this.companyService.create(createCompanyDto);
-    return successfulResponse('Company created successfully', company);
+    return successfulResponse(`${COMPANY_MODEL} created successfully`, company);
   }
 
   @Put(':id')
@@ -52,7 +54,7 @@ export class CompanyController {
     }),
   )
   async update(
-    @Param('id') id: string,
+    @Param('id') id: Types.ObjectId,
     @Body() editCompanyDto: editCompanyDto,
     @UploadedFile(new FileValidationPipe(false)) profileImage: Express.Multer.File,
   ) {
@@ -61,13 +63,13 @@ export class CompanyController {
     }
     const editCompany = await this.companyService.edit(editCompanyDto, id);
 
-    return successfulResponse('Company edited successfully', editCompany);
+    return successfulResponse(`${COMPANY_MODEL} edited successfully`, editCompany);
   }
 
   @Get(':id')
-  async get(@Param('id') id: string) {
+  async get(@Param('id') id: Types.ObjectId) {
     const company = await this.companyService.getSingle(id);
-    return successfulResponse('Company found successfully', company);
+    return successfulResponse(`${COMPANY_MODEL} found successfully`, company);
   }
 
   @Get()
@@ -77,12 +79,12 @@ export class CompanyController {
     @Query('search') search: string,
   ) {
     const designations = await this.companyService.getAll(page, limit, search);
-    return successfulResponse('Company found successfully', designations);
+    return successfulResponse(`${COMPANY_MODEL} found successfully`, designations);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: Types.ObjectId) {
     const company = await this.companyService.delete(id);
-    return successfulResponse('Company deleted successfully', company);
+    return successfulResponse(`${COMPANY_MODEL} deleted successfully`, company);
   }
 }

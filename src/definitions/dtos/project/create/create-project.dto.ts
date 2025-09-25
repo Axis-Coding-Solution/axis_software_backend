@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsDate,
   IsEnum,
   IsMongoId,
@@ -9,29 +10,17 @@ import {
   IsString,
 } from 'class-validator';
 import { Types } from 'mongoose';
-import { User } from 'src/schemas/commons/user';
-import { Currency } from 'src/schemas/enums/common';
-import {
-  communicationChannels,
-  Priority,
-  ProjectStatus,
-  ProjectType,
-  RateType,
-} from 'src/schemas/enums/project';
+import { Priority, RateType } from 'src/schemas/enums/project';
 
 export class CreateProjectDto {
   @IsString()
   @IsNotEmpty()
   projectName: String;
 
-  @IsEnum(ProjectType)
-  @IsNotEmpty()
-  projectType: String;
-
   @IsMongoId()
   @IsString()
   @IsNotEmpty()
-  clientId: String | Types.ObjectId | User;
+  clientId: Types.ObjectId;
 
   @IsDate()
   @IsNotEmpty()
@@ -46,11 +35,7 @@ export class CreateProjectDto {
   @IsNumber()
   @Type(() => Number)
   @IsNotEmpty()
-  rate: number;
-
-  @IsEnum(Currency)
-  @IsOptional()
-  currency: String;
+  rate: Number;
 
   @IsEnum(RateType)
   @IsNotEmpty()
@@ -63,12 +48,7 @@ export class CreateProjectDto {
   @IsMongoId()
   @IsString()
   @IsNotEmpty()
-  projectLeader: String | Types.ObjectId | User;
-
-  @IsMongoId({ each: true })
-  @IsString({ each: true })
-  @IsNotEmpty()
-  teamId: String[] | Types.ObjectId[] | User[];
+  projectLeader: Types.ObjectId;
 
   @IsString()
   @IsNotEmpty()
@@ -78,29 +58,16 @@ export class CreateProjectDto {
   @IsOptional()
   files?: String[];
 
-  @IsEnum(ProjectStatus)
-  @IsOptional()
-  projectStatus?: String;
-
-  @IsString({ each: true })
-  @IsOptional()
-  tags?: String[];
-
-  @IsString({ each: true })
-  @IsOptional()
-  technologyStack?: String[];
-
-  @IsString({ each: true })
-  @IsOptional()
-  repositories?: String[];
-
-  @IsEnum(communicationChannels)
-  @IsString({ each: true })
-  @IsOptional()
-  communicationChannels?: communicationChannels[];
-
   @IsMongoId({ each: true })
-  @IsString({ each: true })
+  @IsArray()
+  @IsNotEmpty()
+  teamMembers?: Types.ObjectId[];
+
+  @IsNumber()
   @IsOptional()
-  Stakeholders?: String[] | Types.ObjectId[] | User[];
+  totalHours?: Number;
+
+  @IsNumber()
+  @IsOptional()
+  remainingHours?: Number;
 }

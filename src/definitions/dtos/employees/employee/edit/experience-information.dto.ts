@@ -4,15 +4,15 @@ import { IsDate, IsOptional, IsString } from 'class-validator';
 export class EditExperienceInformationDto {
   @IsString()
   @IsOptional()
-  companyName?: string;
+  companyName?: String;
 
   @IsString()
   @IsOptional()
-  location?: string;
+  location?: String;
 
   @IsString()
   @IsOptional()
-  designation?: string;
+  designation?: String;
 
   @IsDate()
   @IsOptional()

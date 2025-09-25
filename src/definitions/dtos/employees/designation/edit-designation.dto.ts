@@ -5,10 +5,10 @@ import { Department } from 'src/schemas/employees/department';
 export class editDesignationDto {
   @IsString()
   @IsOptional()
-  designationName: string;
+  designationName: String;
 
   @IsString({ message: 'Department id must be string' })
   @IsMongoId({ message: 'Department id is not valid' })
   @IsOptional()
-  departmentId: string | Types.ObjectId | Department;
+  departmentId: String | Types.ObjectId | Department;
 }

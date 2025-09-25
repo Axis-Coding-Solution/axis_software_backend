@@ -3,16 +3,11 @@ import { EmployeeService } from './employee.service';
 import { EmployeeController } from './employee.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { COMPANY_MODEL, companySchema } from 'src/schemas/commons/company';
-import {
-  DEPARTMENT_MODEL,
-  departmentSchema,
-} from 'src/schemas/employees/department';
-import {
-  DESIGNATION_MODEL,
-  designationSchema,
-} from 'src/schemas/employees/designation';
+import { DEPARTMENT_MODEL, departmentSchema } from 'src/schemas/employees/department';
+import { DESIGNATION_MODEL, designationSchema } from 'src/schemas/employees/designation';
 import { EMPLOYEE_MODEL, employeeSchema } from 'src/schemas/employees/employee';
 import { USER_MODEL, userSchema } from 'src/schemas/commons/user';
+import { AppConfigService } from 'src/config';
 
 @Module({
   imports: [
@@ -25,6 +20,6 @@ import { USER_MODEL, userSchema } from 'src/schemas/commons/user';
     ]),
   ],
   controllers: [EmployeeController],
-  providers: [EmployeeService],
+  providers: [EmployeeService, AppConfigService],
 })
 export class EmployeeModule {}

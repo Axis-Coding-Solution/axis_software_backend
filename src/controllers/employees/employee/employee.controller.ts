@@ -18,11 +18,18 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/middlewares';
 import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';
 import { EditEmployeeDto } from 'src/definitions/dtos/employees/employee/edit';
+import { FileValidationPipe } from 'src/pipes/file';
+import { AppConfigService } from 'src/config';
+import { Types } from 'mongoose';
+import { EMPLOYEE_MODEL } from 'src/schemas/employees/employee';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('employee')
 export class EmployeeController {
-  constructor(private readonly employeeService: EmployeeService) {}
+  constructor(
+    private readonly employeeService: EmployeeService,
+    private readonly appConfigService: AppConfigService,
+  ) {}
 
   @Post()
   @UseInterceptors(
@@ -32,14 +39,14 @@ export class EmployeeController {
   )
   async create(
     @Body() createEmployeeDto: CreateEmployeeDto,
-    @UploadedFile() profileImage: Express.Multer.File,
+    @UploadedFile(new FileValidationPipe(false, 'Profile image')) profileImage: Express.Multer.File,
   ) {
     if (profileImage) {
-      createEmployeeDto.profileImage = `${process.env.LOCAL_BACKEND_URL}/uploads/images/${profileImage.filename}`;
+      createEmployeeDto.profileImage = `${this.appConfigService.serverPath}/uploads/images/${profileImage.filename}`;
     }
 
     const employee = await this.employeeService.create(createEmployeeDto);
-    return successfulResponse('Employee created successfully', employee);
+    return successfulResponse(`${EMPLOYEE_MODEL} created successfully`, employee);
   }
 
   @Put(':id')
@@ -49,37 +56,45 @@ export class EmployeeController {
     }),
   )
   async edit(
-    @Param('id') id: string,
+    @Param('id') id: Types.ObjectId,
     @Body() editEmployeeDto: EditEmployeeDto,
-    @UploadedFile() profileImage: Express.Multer.File,
+    @UploadedFile(new FileValidationPipe(false)) profileImage: Express.Multer.File,
   ) {
     if (profileImage) {
-      editEmployeeDto.profileImage = `${process.env.LOCAL_BACKEND_URL}/uploads/images/${profileImage.filename}`;
+      editEmployeeDto.profileImage = `${this.appConfigService.serverPath}/uploads/images/${profileImage.filename}`;
     }
 
     const employee = await this.employeeService.edit(editEmployeeDto, id);
-    return successfulResponse('Employee edited successfully', employee);
+    return successfulResponse(`${EMPLOYEE_MODEL} edited successfully`, employee);
   }
 
   @Get(':id')
-  async getSingle(@Param('id') id: string) {
+  async getSingle(@Param('id') id: Types.ObjectId) {
     const employee = await this.employeeService.getSingle(id);
-    return successfulResponse('Employee found successfully', employee);
+    return successfulResponse(`${EMPLOYEE_MODEL} found successfully`, employee);
   }
 
   @Get()
   async getAll(
     @Query('page') page: string,
     @Query('limit') limit: string,
-    @Query('search') search: string,
+    @Query('employeeName') employeeName: string,
+    @Query('employeeId') employeeId: string,
+    @Query('designationName') designationName: string,
   ) {
-    const employees = await this.employeeService.getAll(page, limit, search);
-    return successfulResponse('Employees found successfully', employees);
+    const employees = await this.employeeService.getAll(
+      page,
+      limit,
+      employeeName,
+      employeeId,
+      designationName,
+    );
+    return successfulResponse(`${EMPLOYEE_MODEL} found successfully`, employees);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: Types.ObjectId) {
     const employee = await this.employeeService.delete(id);
-    return successfulResponse('Employee deleted successfully', employee);
+    return successfulResponse(`${EMPLOYEE_MODEL} deleted successfully`, employee);
   }
 }

@@ -4,11 +4,11 @@ import { IsDate, IsOptional, IsString } from 'class-validator';
 export class EducationInformationDto {
   @IsString()
   @IsOptional()
-  institution?: string;
+  institution?: String;
 
   @IsString()
   @IsOptional()
-  startDate?: string;
+  startDate?: String;
 
   @IsDate()
   @IsOptional()
@@ -17,9 +17,9 @@ export class EducationInformationDto {
 
   @IsString()
   @IsOptional()
-  degree?: string;
+  degree?: String;
 
   @IsString()
   @IsOptional()
-  grade?: string;
+  grade?: String;
 }

@@ -1,7 +1,5 @@
 import { IsNotEmpty, IsMongoId, IsOptional, IsString } from 'class-validator';
 import { Types } from 'mongoose';
-import { Company } from 'src/schemas/commons/company';
-import { IsFile } from 'src/validator';
 
 export class editCompanyDto {
   //* basic info
@@ -39,7 +37,7 @@ export class editCompanyDto {
   @IsNotEmpty()
   @IsMongoId({ message: 'Owner id is not valid' })
   @IsOptional()
-  owner?: string | Types.ObjectId | Company;
+  owner?: Types.ObjectId;
 
   @IsString({ each: true })
   @IsNotEmpty()

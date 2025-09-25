@@ -6,7 +6,7 @@ export class AppConfigService {
   constructor(private configService: ConfigService) {}
 
   get mode(): string {
-    return this.configService.get<string>('MODE', 'dev'); // Default: 'dev'
+    return this.configService.get<string>('MODE', 'dev'); //* Default: 'dev'
   }
 
   get localBackendUrl(): string {
@@ -30,10 +30,14 @@ export class AppConfigService {
   }
 
   get tokenExpiresIn(): string {
-    return this.configService.get<string>('TOKEN_EXPIRE_IN', '1h'); // Default: 1 hour
+    return this.configService.get<string>('TOKEN_EXPIRE_IN', '1h'); //* Default: 1 hour
   }
 
   get port(): number {
-    return Number(this.configService.get<number>('PORT', 4000)); // Default: 4000
+    return Number(this.configService.get<number>('PORT', 4000)); //* Default: 4000
+  }
+
+  get saltRounds(): number {
+    return Number(this.configService.get<number>('SALT_ROUNDS', 10)); //* Default: 10
   }
 }

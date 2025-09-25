@@ -1,17 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-project.dto';
 import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.dto';
+import { FindUserInterface } from 'src/interfaces/user';
+import { CLIENT_MODEL, ClientDocument } from 'src/schemas/client';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
-import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
+import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
 import {
-  badRequestException,
-  conflictException,
+  areDatesSame,
+  areDatesValid,
+  calculateBusinessHours,
+  forbiddenException,
+  isDateWeekend,
   notFoundException,
 } from 'src/utils';
-import { deleteHelper, getPagination, getSingleHelper } from 'src/utils/helper';
+import {
+  createHelper,
+  deleteHelper,
+  editHelper,
+  existsHelper,
+  getAllHelper,
+  getSingleHelper,
+} from 'src/utils/helper';
 
 @Injectable()
 export class ProjectService {
@@ -19,192 +31,134 @@ export class ProjectService {
     @InjectModel(PROJECT_MODEL)
     private readonly projectModel: Model<ProjectDocument>,
 
+    @InjectModel(CLIENT_MODEL)
+    private readonly clientModel: Model<ClientDocument>,
+
+    @InjectModel(EMPLOYEE_MODEL)
+    private readonly employeeModel: Model<EmployeeDocument>,
+
     @InjectModel(USER_MODEL)
     private readonly userModel: Model<UserDocument>,
-
-    @InjectModel(TEAM_MODEL)
-    private readonly teamModel: Model<TeamDocument>,
   ) {}
 
   async create(createProjectDto: CreateProjectDto) {
-    const { projectName, clientId, projectLeader, teamId, Stakeholders } =
+    const { projectName, clientId, projectLeader, teamMembers, startDate, endDate } =
       createProjectDto;
 
-    const [
-      isProjectNameExists,
-      isClientExists,
-      isProjectLeaderExists,
-      isTeamExists,
-      isStakeHoldersExists,
-    ] = await Promise.all([
-      projectName ? this.projectModel.exists({ projectName }).lean() : true,
-      clientId ? this.userModel.findById(clientId).lean() : null,
-      projectLeader ? this.userModel.findById(projectLeader).lean() : null,
-      teamId?.length > 0
-        ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean()
-        : [],
-      Stakeholders?.length > 0
-        ? this.userModel.find({ _id: { $in: Stakeholders } }, '_id').lean()
+    //* is start date a weekend
+    isDateWeekend(startDate, PROJECT_MODEL);
+
+    //* validate dates
+    areDatesValid(startDate, endDate);
+    areDatesSame(startDate, endDate);
+
+    //* search ids in db
+    const [, , , teamMembersData] = await Promise.all([
+      projectName ? await existsHelper(projectName, 'projectName', this.projectModel) : null,
+      clientId ? await getSingleHelper(clientId, CLIENT_MODEL, this.clientModel) : null,
+      projectLeader
+        ? await getSingleHelper(projectLeader, 'Project Leader', this.employeeModel)
+        : null,
+      teamMembers?.length > 0
+        ? this.employeeModel.find({ _id: { $in: teamMembers } }, '_id').lean()
         : [],
     ]);
 
-    if (isProjectNameExists) {
-      throw conflictException('Project name already exists');
-    }
+    //* search teamMembers
+    const validTeamMemberIds = teamMembersData?.map((member: any) => member._id.toString());
 
-    if (!isClientExists) {
-      throw badRequestException('Client not found');
-    }
-
-    if (!isProjectLeaderExists) {
-      throw badRequestException('Project Leader not found');
-    }
-
-    //* team members
-    const validTeamIds = isTeamExists.map((member: any) =>
-      member._id.toString(),
-    );
-
-    const missingTeamMembers = teamId?.filter(
-      (teamId: any) => !validTeamIds?.includes(teamId?.toString()),
+    const missingTeamMembers = teamMembers?.filter(
+      (teamMember: any) => !validTeamMemberIds?.includes(teamMember.toString()),
     );
     if (missingTeamMembers?.length > 0) {
-      throw notFoundException(
-        `Some team members not found: ${missingTeamMembers?.join(', ')}`,
-      );
+      throw notFoundException(`Some TeamMembers not found: ${missingTeamMembers?.join(', ')}`);
     }
 
-    //* stakeholders
-    const validStakeholderIds = isStakeHoldersExists?.map((member: any) =>
-      member._id.toString(),
-    );
+    //* calculate total hours btw startDate and endDate
+    const totalHours = calculateBusinessHours(startDate, endDate);
+    createProjectDto.totalHours = totalHours;
+    createProjectDto.remainingHours = totalHours;
 
-    const missingStakeholders = Stakeholders?.filter(
-      (stakeholder: any) =>
-        !validStakeholderIds?.includes(stakeholder.toString()),
-    );
-    if (missingStakeholders?.length > 0) {
-      throw notFoundException(
-        `Some stakeholders not found: ${missingStakeholders?.join(', ')}`,
-      );
-    }
-
-    // let { tags } = createProjectDto;
-    // if (tags) {
-    //   tags = JSON.parse(tags).map((tag: any) => tag?.value);
-    // }
-
-    const project = await this.projectModel.create(createProjectDto);
-    if (!project) {
-      throw badRequestException('Project not created');
-    }
+    const project = createHelper(createProjectDto, PROJECT_MODEL, this.projectModel);
 
     return project;
   }
 
-  async edit(editProjectDto: EditProjectDto, id: string) {
-    const { projectName, clientId, projectLeader, teamId, Stakeholders } =
+  async edit(editProjectDto: EditProjectDto, id: Types.ObjectId) {
+    const { projectName, clientId, projectLeader, teamMembers, startDate, endDate } =
       editProjectDto;
 
-    const [
-      isProjectNameExists,
-      isClientExists,
-      isProjectLeaderExists,
-      isTeamExists,
-      isStakeHoldersExists,
-    ] = await Promise.all([
-      projectName ? this.projectModel.exists({ projectName }).lean() : true,
-      clientId ? this.userModel.findById(clientId).lean() : null,
-      projectLeader ? this.userModel.findById(projectLeader).lean() : null,
-      teamId?.length > 0
-        ? this.teamModel.find({ _id: { $in: teamId } }, '_id').lean()
-        : [],
-      Stakeholders?.length > 0
-        ? this.userModel.find({ _id: { $in: Stakeholders } }, '_id').lean()
+    //* is start date a weekend
+    startDate ? isDateWeekend(startDate, PROJECT_MODEL) : null;
+
+    //* validate dates
+    startDate && endDate ? areDatesValid(startDate, endDate) : null;
+    endDate && startDate ? areDatesSame(endDate, startDate) : null;
+
+    //* search ids in db
+    const [, , , teamMembersData] = await Promise.all([
+      projectName ? await existsHelper(projectName, 'projectName', this.projectModel, id) : null,
+      clientId ? await getSingleHelper(clientId, CLIENT_MODEL, this.clientModel) : null,
+      projectLeader
+        ? await getSingleHelper(projectLeader, 'Project Leader', this.employeeModel)
+        : null,
+      teamMembers?.length > 0
+        ? this.employeeModel.find({ _id: { $in: teamMembers } }, '_id').lean()
         : [],
     ]);
 
-    if (projectName && isProjectNameExists) {
-      throw conflictException('Project name already exists');
-    }
+    //* search teamMembers
+    if (teamMembers?.length > 0) {
+      const validTeamMemberIds = teamMembersData?.map((member: any) => member._id.toString());
 
-    if (clientId && !isClientExists) {
-      throw badRequestException('Client not found');
-    }
-
-    if (projectLeader && !isProjectLeaderExists) {
-      throw badRequestException('Project Leader not found');
-    }
-
-    //* team members
-    if (teamId && teamId?.length > 0) {
-      const validTeamIds = isTeamExists.map((member: any) =>
-        member._id.toString(),
-      );
-      const missingTeamMembers = teamId?.filter(
-        (teamId: any) => !validTeamIds?.includes(teamId?.toString()),
+      const missingTeamMembers = teamMembers?.filter(
+        (teamMember: any) => !validTeamMemberIds?.includes(teamMember.toString()),
       );
       if (missingTeamMembers?.length > 0) {
-        throw notFoundException(
-          `Some team members not found: ${missingTeamMembers?.join(', ')}`,
-        );
+        throw notFoundException(`Some TeamMembers not found: ${missingTeamMembers?.join(', ')}`);
       }
     }
 
-    //* stakeholders
-    if (Stakeholders && Stakeholders?.length > 0) {
-      const validStakeholderIds = isStakeHoldersExists?.map((member: any) =>
-        member._id.toString(),
-      );
-
-      const missingStakeholders = Stakeholders?.filter(
-        (stakeholder: any) =>
-          !validStakeholderIds?.includes(stakeholder.toString()),
-      );
-      if (missingStakeholders?.length > 0) {
-        throw notFoundException(
-          `Some stakeholders not found: ${missingStakeholders?.join(', ')}`,
-        );
-      }
+    //* calculate total hours btw startDate and endDate
+    if (startDate && endDate) {
+      const totalHours = calculateBusinessHours(startDate, endDate);
+      editProjectDto.totalHours = totalHours;
+      editProjectDto.remainingHours = totalHours;
     }
 
-    // let { tags } = editProjectDto;
-    // if (tags) {
-    //   tags = JSON.parse(tags).map((tag: any) => tag?.value);
-    // }
-
-    const updateData: any = { ...editProjectDto };
-
-    const project = await this.projectModel.findByIdAndUpdate(id, updateData, {
-      new: true,
-    });
-    if (!project) {
-      throw notFoundException('Project not found');
-    }
+    const project = await editHelper(id, editProjectDto, PROJECT_MODEL, this.projectModel);
 
     return project;
   }
 
-  async getSingle(id: string): Promise<any> {
+  async getSingle(id: Types.ObjectId): Promise<any> {
     const project = await getSingleHelper(id, PROJECT_MODEL, this.projectModel);
 
     return project;
   }
 
   async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } =
-      await getPagination(
-        page,
-        limit,
-        this.projectModel,
-        search,
-        'projectName',
-        'clientId projectLeader teamId Stakeholders',
-      );
-
-    if (items.length === 0) {
-      throw notFoundException('Departments not found');
-    }
+    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
+      page,
+      limit,
+      this.projectModel,
+      search,
+      'projectName',
+      [
+        {
+          path: 'clientId',
+          select: 'firstName lastName userName -_id',
+        },
+        {
+          path: 'projectLeader',
+          select: 'firstName lastName userName -_id',
+        },
+        {
+          path: 'teamMembers',
+          select: 'firstName lastName userName -_id',
+        },
+      ],
+    );
 
     return {
       data: items,
@@ -217,9 +171,39 @@ export class ProjectService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: Types.ObjectId) {
     const project = await deleteHelper(id, PROJECT_MODEL, this.projectModel);
 
     return project;
+  }
+
+  async projectByRole(id: Types.ObjectId, role: string) {
+    if (role === 'admin') {
+      const { items } = await getAllHelper(null, null, this.projectModel, null, null);
+      // return items.map((item) => item?.projectName);
+      return items;
+    }
+    if (role === 'employee') {
+      //* find current user
+      const findCurrentUser = id
+        ? await getSingleHelper<FindUserInterface>(id, USER_MODEL, this.userModel)
+        : null;
+
+      //* assign employee id
+      const employeeId = findCurrentUser?.employeeId;
+
+      if (!employeeId) throw notFoundException('Employee not found');
+
+      const employeeIdStr = employeeId?.toString();
+      const project = await this.projectModel.find({
+        $or: [{ projectLeader: employeeIdStr }, { teamMembers: { $in: [employeeIdStr] } }],
+      });
+      if (project.length === 0) {
+        throw notFoundException('Currently, you are not added to any project');
+      }
+      return project;
+    } else {
+      throw forbiddenException(`${role} is not eligible to access this resource`);
+    }
   }
 }
