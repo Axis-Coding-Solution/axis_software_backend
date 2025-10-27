@@ -18,7 +18,7 @@ import { LEAVE_MODEL } from 'src/schemas/employees/leave';
 import { EditLeaveDto } from 'src/definitions/dtos/employees/leave/edit-leave.dto';
 import { Types } from 'mongoose';
 import { ApproveLeaveDto } from 'src/definitions/dtos/employees/leave/approve-leave.dto';
-import { User } from 'src/decorator';
+import { User } from '@/common/decorator';
 
 @UseGuards(JwtAuthGuard)
 @Controller('leave')

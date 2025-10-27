@@ -22,7 +22,7 @@ import { FileValidationPipe } from 'src/pipes/file';
 import { Types } from 'mongoose';
 import { JwtAuthGuard } from 'src/middlewares/guard';
 import { PROJECT_MODEL } from 'src/schemas/project';
-import { User } from 'src/decorator';
+import { User } from '@/common/decorator';
 
 @UseGuards(JwtAuthGuard)
 @Controller('project')
