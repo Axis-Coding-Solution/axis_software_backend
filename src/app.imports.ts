@@ -24,6 +24,7 @@ import { NotificationModule } from './controllers/notification/notification.modu
 import { minutes, ThrottlerModule } from '@nestjs/throttler';
 
 const GlobalImports = [
+  //* env global config
   ConfigModule.forRoot({
     isGlobal: true,
   }),
@@ -35,6 +36,12 @@ const GlobalImports = [
       limit: 60,
     },
   ]),
+  //* static file serving
+  ServeStaticModule.forRoot({
+    rootPath: `${process.cwd()}/uploads`,
+    serveRoot: '/uploads',
+  }),
+  //* other modules
   DataBaseModule,
   AuthModule,
   DepartmentModule,
@@ -46,10 +53,6 @@ const GlobalImports = [
   TeamModule,
   ProjectModule,
   TimesheetModule,
-  ServeStaticModule.forRoot({
-    rootPath: `${process.cwd()}/uploads`,
-    serveRoot: '/uploads',
-  }),
   OvertimeModule,
   LeaveModule,
   ClientModule,
