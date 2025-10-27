@@ -4,7 +4,7 @@ import { successfulResponse } from '@/utils';
 import { Types } from 'mongoose';
 import { NOTIFICATION_MODEL } from '@/schemas/notification';
 import { CreateNotificationDto, EditNotificationDto } from '@/definitions/dtos/notification';
-import { JwtAuthGuard } from '@/common/middlewares/guard';
+import { JwtAuthGuard } from '@/common/guards';
 
 @UseGuards(JwtAuthGuard)
 @Controller('notification')

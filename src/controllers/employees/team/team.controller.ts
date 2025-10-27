@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { TeamService } from './team.service';
-import { JwtAuthGuard, isAdminGuard } from '@/common/middlewares/guard';
+import { JwtAuthGuard, isAdminGuard } from '@/common/guards';
 import { successfulResponse } from 'src/utils';
 import { CreateTeamDto, EditTeamDto } from 'src/definitions/dtos/employees/team';
 import { Types } from 'mongoose';

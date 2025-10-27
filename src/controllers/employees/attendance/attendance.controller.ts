@@ -5,7 +5,7 @@ import { Types } from 'mongoose';
 import { PunchInDto, PunchOutDto } from 'src/definitions/dtos/employees/attendance';
 import { User } from '@/common/decorator';
 import { ATTENDANCE_MODEL } from 'src/schemas/employees/attendance';
-import { JwtAuthGuard, isAdminGuard } from '@/common/middlewares/guard';
+import { JwtAuthGuard, isAdminGuard } from '@/common/guards';
 
 @UseGuards(JwtAuthGuard)
 @Controller('attendance')

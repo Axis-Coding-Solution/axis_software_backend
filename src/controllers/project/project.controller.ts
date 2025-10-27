@@ -20,7 +20,7 @@ import { AppConfigService } from 'src/config';
 import { Types } from 'mongoose';
 import { PROJECT_MODEL } from 'src/schemas/project';
 import { User } from '@/common/decorator';
-import { JwtAuthGuard } from '@/common/middlewares/guard';
+import { JwtAuthGuard } from '@/common/guards';
 import { storage } from '@/common/middlewares';
 import { FileValidationPipe } from '@/common/pipes/file';
 

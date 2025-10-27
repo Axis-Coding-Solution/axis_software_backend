@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ClientService } from './client.service';
-import { JwtAuthGuard, isAdminGuard } from '@/common/middlewares/guard';
+import { JwtAuthGuard, isAdminGuard } from '@/common/guards';
 import { Types } from 'mongoose';
 import { successfulResponse } from 'src/utils';
 import { CreateClientDto, EditClientDto } from 'src/definitions/dtos/client';

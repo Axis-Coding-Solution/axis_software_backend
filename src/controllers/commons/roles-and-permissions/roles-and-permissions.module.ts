@@ -10,6 +10,7 @@ import {
   menuSchema,
 } from 'src/schemas/roles-and-permissions';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
