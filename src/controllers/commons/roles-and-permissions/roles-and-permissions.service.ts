@@ -70,6 +70,16 @@ export class RolesAndPermissionsService {
       page,
       limit,
       this.groupMenuModel,
+      undefined,
+      undefined,
+      [
+        {
+          path: 'groupId',
+        },
+        {
+          path: 'menuId',
+        },
+      ],
     );
 
     return {
