@@ -3,7 +3,7 @@ import {
   EditNotificationDto,
   SendNotificationDto,
 } from '@/definitions/dtos/notification';
-import { NotificationInterface } from '@/interfaces';
+import { NotificationInterface } from '@/common/interfaces';
 import { USER_MODEL, UserDocument } from '@/schemas/commons/user';
 import { NOTIFICATION_MODEL, NotificationDocument } from '@/schemas/notification';
 import { CustomBadRequestException, CustomConflictException } from '@/utils';
