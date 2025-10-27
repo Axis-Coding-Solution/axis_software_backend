@@ -22,12 +22,14 @@ import { GroupsModule } from './controllers/commons/groups/groups.module';
 import { MenusModule } from './controllers/commons/menus/menus.module';
 import { NotificationModule } from './controllers/notification/notification.module';
 import { minutes, ThrottlerModule } from '@nestjs/throttler';
+import { CacheModule } from '@nestjs/cache-manager';
 
 const GlobalImports = [
   //* env global config
   ConfigModule.forRoot({
     isGlobal: true,
   }),
+
   //* throttling implementation
   ThrottlerModule.forRoot([
     {
@@ -36,11 +38,20 @@ const GlobalImports = [
       limit: 60,
     },
   ]),
+
   //* static file serving
   ServeStaticModule.forRoot({
     rootPath: `${process.cwd()}/uploads`,
     serveRoot: '/uploads',
   }),
+
+  //* cache module
+  CacheModule.register({
+    isGlobal: true,
+    ttl: 300,
+    max: 100,
+  }),
+
   //* other modules
   DataBaseModule,
   AuthModule,

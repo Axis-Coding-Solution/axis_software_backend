@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {
@@ -6,8 +7,10 @@ import {
   EditGroupMenuDto,
 } from 'src/definitions/dtos/commons/roles-and-permissions';
 import {
+  Group,
   GROUP_MODEL,
   GroupDocument,
+  Menu,
   MENU_MODEL,
   MenuDocument,
 } from 'src/schemas/roles-and-permissions';
@@ -23,9 +26,12 @@ import {
   getAllHelper,
   getSingleHelper,
 } from 'src/utils/helper';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class RolesAndPermissionsService {
+  private readonly CACHE_PREFIX = 'menu_permission:';
+
   constructor(
     @InjectModel(GROUP_MENU_MODEL)
     private readonly groupMenuModel: Model<GroupMenuDocument>,
@@ -35,6 +41,9 @@ export class RolesAndPermissionsService {
 
     @InjectModel(MENU_MODEL)
     private readonly menuModel: Model<MenuDocument>,
+
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   async create(createGroupMenuDto: createGroupMenuDto) {
@@ -44,6 +53,9 @@ export class RolesAndPermissionsService {
     menuId ? await getSingleHelper(menuId, MENU_MODEL, this.menuModel) : null;
 
     const groupMenu = await createHelper(createGroupMenuDto, GROUP_MENU_MODEL, this.groupMenuModel);
+
+    //* Clear cache
+    await this.cacheManager.del(`${this.CACHE_PREFIX}${menuId}`);
 
     return groupMenu;
   }
@@ -55,6 +67,9 @@ export class RolesAndPermissionsService {
     menuId ? await getSingleHelper(menuId, MENU_MODEL, this.menuModel) : null;
 
     const groupMenu = await editHelper(id, editGroupMenuDto, GROUP_MENU_MODEL, this.groupMenuModel);
+
+    //* Clear cache
+    await this.clearCacheForGroupMenu(id);
 
     return groupMenu;
   }
@@ -96,6 +111,9 @@ export class RolesAndPermissionsService {
   async delete(id: Types.ObjectId) {
     const groupMenu = await deleteHelper(id, GROUP_MENU_MODEL, this.groupMenuModel);
 
+    //* Clear cache
+    await this.clearCacheForGroupMenu(id);
+
     return groupMenu;
   }
 
@@ -108,5 +126,34 @@ export class RolesAndPermissionsService {
     if (!groupMenu) throw CustomNotFoundException(`${GROUP_MENU_MODEL} not found`);
 
     return groupMenu;
+  }
+
+  private async clearCacheForGroupMenu(groupMenuId: Types.ObjectId) {
+    try {
+      const groupMenu = await this.groupMenuModel
+        .findById(groupMenuId)
+        .populate('groupId')
+        .populate('menuId')
+        .lean();
+
+      if (!groupMenu || !groupMenu.groupId || !groupMenu.menuId) {
+        return;
+      }
+
+      const role = (groupMenu.groupId as Group).role;
+      const menuTitle = (groupMenu.menuId as Menu).title;
+      const normalizedTitle = menuTitle.toLowerCase().trim();
+
+      const permissions = ['read', 'edit', 'delete', 'import', 'export'];
+
+      for (const permission of permissions) {
+        const cacheKey = `${this.CACHE_PREFIX}${role}:${normalizedTitle}:${permission}`;
+        await this.cacheManager.del(cacheKey);
+      }
+
+      console.log(`Cache cleared for role: ${role}, menu: ${menuTitle}`);
+    } catch (error) {
+      console.error('Error clearing cache:', error);
+    }
   }
 }
