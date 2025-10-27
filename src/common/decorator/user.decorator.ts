@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { UserPayloadInterface } from 'src/interfaces/user';
+import { UserPayloadInterface } from '@/common/interfaces/user';
 /**
  * Custom decorator used to get current user from the request
  * @param {keyof UserPayloadInterface | undefined} data Role or id. If no data is passed then whole user object will be returned.

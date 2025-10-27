@@ -3,8 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { createTimesheetDto } from 'src/definitions/dtos/employees/timesheet/create-timesheet.dto';
 import { editTimesheetDto } from 'src/definitions/dtos/employees/timesheet/edit-timesheet.dto';
-import { FindProjectInterface, FindTimesheetInterface } from 'src/interfaces';
-import { FindUserInterface } from 'src/interfaces/user';
+import { FindUserInterface } from 'src/common/interfaces/user';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { TIMESHEET_MODEL, TimesheetDocument } from 'src/schemas/employees/timesheet';
@@ -17,6 +16,7 @@ import {
   getAllHelper,
   getSingleHelper,
 } from 'src/utils/helper';
+import { FindProjectInterface, FindTimesheetInterface } from '@/common/interfaces';
 
 @Injectable()
 export class TimesheetService {

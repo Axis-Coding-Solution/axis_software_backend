@@ -1,9 +1,9 @@
+import { FindUserInterface } from '@/common/interfaces/user';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-project.dto';
 import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.dto';
-import { FindUserInterface } from 'src/interfaces/user';
 import { CLIENT_MODEL, ClientDocument } from 'src/schemas/client';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';

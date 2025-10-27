@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 import { ApproveLeaveDto } from 'src/definitions/dtos/employees/leave/approve-leave.dto';
 import { CreateLeaveDto } from 'src/definitions/dtos/employees/leave/create-leave.dto';
 import { EditLeaveDto } from 'src/definitions/dtos/employees/leave/edit-leave.dto';
-import { FindUserInterface } from 'src/interfaces/user';
+import { FindUserInterface } from 'src/common/interfaces/user';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { LEAVE_MODEL, LeaveDocument } from 'src/schemas/employees/leave';

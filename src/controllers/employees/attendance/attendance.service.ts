@@ -2,12 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { PunchInDto, PunchOutDto } from 'src/definitions/dtos/employees/attendance';
-import { FindAttendanceInterface } from 'src/interfaces';
-import { FindUserInterface } from 'src/interfaces/user';
+import { FindUserInterface } from 'src/common/interfaces/user';
+import { FindAttendanceInterface } from '@/common/interfaces';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { ATTENDANCE_MODEL, AttendanceDocument } from 'src/schemas/employees/attendance';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
-import { CustomBadRequestException, CustomForbiddenException, CustomNotFoundException } from 'src/utils';
+import {
+  CustomBadRequestException,
+  CustomForbiddenException,
+  CustomNotFoundException,
+} from 'src/utils';
 import { createHelper, editHelper, getSingleHelper } from 'src/utils/helper';
 import * as moment from 'moment';
 

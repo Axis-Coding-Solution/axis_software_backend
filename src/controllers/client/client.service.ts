@@ -14,7 +14,7 @@ import {
 } from 'src/utils/helper';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { InjectModel } from '@nestjs/mongoose';
-import { FindClientInterface } from 'src/interfaces/user';
+import { FindClientInterface } from '@/common/interfaces/user';
 
 @Injectable()
 export class ClientService {
