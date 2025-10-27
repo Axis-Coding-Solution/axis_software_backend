@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { HolidayService } from './holiday.service';
-import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
+import { JwtAuthGuard, isAdminGuard } from '@/common/middlewares/guard';
 import { CreateHolidayDto, EditHolidayDto } from 'src/definitions/dtos/employees/holiday';
 import { successfulResponse } from 'src/utils';
 import { Types } from 'mongoose';

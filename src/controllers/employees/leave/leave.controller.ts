@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { LeaveService } from './leave.service';
-import { JwtAuthGuard } from 'src/middlewares/guard';
+import { JwtAuthGuard } from '@/common/middlewares/guard';
 import { CreateLeaveDto } from 'src/definitions/dtos/employees/leave/create-leave.dto';
 import { successfulResponse } from 'src/utils';
 import { LEAVE_MODEL } from 'src/schemas/employees/leave';

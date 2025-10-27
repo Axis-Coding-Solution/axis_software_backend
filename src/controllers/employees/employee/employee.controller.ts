@@ -12,16 +12,16 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
-import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
+import { JwtAuthGuard, isAdminGuard } from '@/common/middlewares/guard';
 import { successfulResponse } from 'src/utils';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { storage } from 'src/middlewares';
 import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';
 import { EditEmployeeDto } from 'src/definitions/dtos/employees/employee/edit';
-import { FileValidationPipe } from 'src/pipes/file';
 import { AppConfigService } from 'src/config';
 import { Types } from 'mongoose';
 import { EMPLOYEE_MODEL } from 'src/schemas/employees/employee';
+import { storage } from '@/common/middlewares';
+import { FileValidationPipe } from '@/common/pipes/file';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('employee')

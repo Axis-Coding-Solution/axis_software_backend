@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } fro
 import { DepartmentService } from './department.service';
 import { createDepartmentDto, editDepartmentDto } from 'src/definitions/dtos/employees/department';
 import { successfulResponse } from 'src/utils';
-import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
+import { JwtAuthGuard, isAdminGuard } from '@/common/middlewares/guard';
 import { Types } from 'mongoose';
 import { DEPARTMENT_MODEL } from 'src/schemas/employees/department';
 

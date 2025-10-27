@@ -17,9 +17,9 @@ import { successfulResponse } from 'src/utils';
 import { OVERTIME_MODEL } from 'src/schemas/employees/overtime';
 import { Types } from 'mongoose';
 import { EditOvertimeDto } from 'src/definitions/dtos/employees/overtime/edit-overtime.dto';
-import { JwtAuthGuard } from 'src/middlewares/guard';
 import { User } from '@/common/decorator';
 import { ApproveOvertimeDto } from 'src/definitions/dtos/employees/overtime/approve-overtime.dto';
+import { JwtAuthGuard } from '@/common/middlewares/guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('overtime')

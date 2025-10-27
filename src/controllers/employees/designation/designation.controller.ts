@@ -5,7 +5,7 @@ import {
   createDesignationDto,
   editDesignationDto,
 } from 'src/definitions/dtos/employees/designation';
-import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
+import { JwtAuthGuard, isAdminGuard } from '@/common/middlewares/guard';
 import { Types } from 'mongoose';
 import { DESIGNATION_MODEL } from 'src/schemas/employees/designation';
 

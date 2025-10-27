@@ -7,7 +7,7 @@ import {
   EditLeaveSettingDto,
 } from 'src/definitions/dtos/employees/leave-setting';
 import { LEAVE_SETTING_MODEL } from 'src/schemas/employees/leave-setting';
-import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
+import { JwtAuthGuard, isAdminGuard } from '@/common/middlewares/guard';
 
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('leave-setting')

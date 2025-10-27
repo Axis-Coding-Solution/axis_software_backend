@@ -14,13 +14,13 @@ import {
 import { CompanyService } from './company.service';
 import { createCompanyDto, editCompanyDto } from 'src/definitions/dtos/commons/company';
 import { successfulResponse } from 'src/utils';
-import { JwtAuthGuard } from 'src/middlewares/guard';
+import { JwtAuthGuard } from '@/common/middlewares/guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { storage } from 'src/middlewares';
 import { AppConfigService } from 'src/config';
-import { FileValidationPipe } from 'src/pipes/file';
+import { FileValidationPipe } from '@/common/pipes/file';
 import { Types } from 'mongoose';
 import { COMPANY_MODEL } from 'src/schemas/commons/company';
+import { storage } from '@/common/middlewares';
 @UseGuards(JwtAuthGuard)
 @Controller('company')
 export class CompanyController {
