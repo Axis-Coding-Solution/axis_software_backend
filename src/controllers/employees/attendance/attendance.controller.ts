@@ -3,9 +3,9 @@ import { AttendanceService } from './attendance.service';
 import { successfulResponse } from 'src/utils';
 import { Types } from 'mongoose';
 import { PunchInDto, PunchOutDto } from 'src/definitions/dtos/employees/attendance';
-import { User } from 'src/decorator';
+import { User } from '@/common/decorator';
 import { ATTENDANCE_MODEL } from 'src/schemas/employees/attendance';
-import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
+import { JwtAuthGuard, isAdminGuard } from '@/common/middlewares/guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('attendance')

@@ -7,8 +7,8 @@ import {
   createGroupMenuDto,
   EditGroupMenuDto,
 } from 'src/definitions/dtos/commons/roles-and-permissions';
-import { User } from 'src/decorator';
-import { JwtAuthGuard } from 'src/middlewares/guard';
+import { User } from '@/common/decorator';
+import { JwtAuthGuard } from '@/common/middlewares/guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('roles-and-permissions')

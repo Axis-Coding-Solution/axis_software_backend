@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { successfulResponse } from 'src/utils';
-import { isAdminGuard, JwtAuthGuard } from 'src/middlewares/guard';
+import { JwtAuthGuard, isAdminGuard } from '@/common/middlewares/guard';
 import { USER_MODEL } from 'src/schemas/commons/user';
 @UseGuards(JwtAuthGuard, isAdminGuard)
 @Controller('user')

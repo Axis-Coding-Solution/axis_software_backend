@@ -13,16 +13,16 @@ import {
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { storage } from 'src/middlewares';
 import { CreateProjectDto } from 'src/definitions/dtos/project/create/create-project.dto';
 import { successfulResponse } from 'src/utils';
 import { EditProjectDto } from 'src/definitions/dtos/project/edit/edit-project.dto';
 import { AppConfigService } from 'src/config';
-import { FileValidationPipe } from 'src/pipes/file';
 import { Types } from 'mongoose';
-import { JwtAuthGuard } from 'src/middlewares/guard';
 import { PROJECT_MODEL } from 'src/schemas/project';
-import { User } from 'src/decorator';
+import { User } from '@/common/decorator';
+import { JwtAuthGuard } from '@/common/middlewares/guard';
+import { storage } from '@/common/middlewares';
+import { FileValidationPipe } from '@/common/pipes/file';
 
 @UseGuards(JwtAuthGuard)
 @Controller('project')
