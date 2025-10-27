@@ -4,10 +4,10 @@ import { Model, Types } from 'mongoose';
 import { CreateHolidayDto, EditHolidayDto } from 'src/definitions/dtos/employees/holiday';
 import { HOLIDAY_MODEL, HolidayDocument } from 'src/schemas/employees/holiday';
 import {
-  badRequestException,
-  conflictException,
+  CustomBadRequestException,
+  CustomConflictException,
   isValidMongoId,
-  notFoundException,
+  CustomNotFoundException,
 } from 'src/utils';
 import { deleteHelper, getAllHelper, getSingleHelper } from 'src/utils/helper';
 
@@ -20,7 +20,7 @@ export class HolidayService {
 
   async create(createHolidayDto: CreateHolidayDto) {
     if (createHolidayDto.constructor === Object && Object.keys(createHolidayDto).length === 0) {
-      throw badRequestException('body is empty');
+      throw CustomBadRequestException('body is empty');
     }
 
     const { holidayName, holidayDate } = createHolidayDto;
@@ -29,7 +29,7 @@ export class HolidayService {
       holidayName,
     });
     if (holidayExists) {
-      throw conflictException('Holiday already exists');
+      throw CustomConflictException('Holiday already exists');
     }
 
     const dayName = (date: Date, locale: string) => {
@@ -40,7 +40,7 @@ export class HolidayService {
 
     const holiday = await this.holidayModel.create(createHolidayDto);
     if (!holiday) {
-      throw badRequestException('Holiday not created');
+      throw CustomBadRequestException('Holiday not created');
     }
 
     return holiday;
@@ -48,7 +48,7 @@ export class HolidayService {
 
   async edit(editHolidayDto: EditHolidayDto, id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
-      throw badRequestException('Holiday id is not valid');
+      throw CustomBadRequestException('Holiday id is not valid');
     }
 
     const { holidayName, holidayDate } = editHolidayDto;
@@ -65,7 +65,7 @@ export class HolidayService {
       _id: { $ne: id },
     });
     if (holidayExists) {
-      throw conflictException('Holiday already exists');
+      throw CustomConflictException('Holiday already exists');
     }
 
     const editHoliday = await this.holidayModel.findByIdAndUpdate(
@@ -76,7 +76,7 @@ export class HolidayService {
       { new: true },
     );
     if (!editHoliday) {
-      throw notFoundException('Holiday not found');
+      throw CustomNotFoundException('Holiday not found');
     }
 
     return editHoliday;

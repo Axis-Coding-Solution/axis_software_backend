@@ -1,6 +1,6 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
 import { ParseFilePipeBuilder } from '@nestjs/common';
-import { badRequestException } from 'src/utils';
+import { CustomBadRequestException } from 'src/utils';
 
 /** 
   Pipe for validate file. This will validate file's type and size
@@ -30,7 +30,7 @@ export class FileValidationPipe implements PipeTransform {
             message = `${this.fileName} is required`;
           }
 
-          throw badRequestException(message);
+          throw CustomBadRequestException(message);
         },
       })
       .transform(value);

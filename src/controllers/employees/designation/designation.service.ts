@@ -7,7 +7,7 @@ import {
 } from 'src/definitions/dtos/employees/designation';
 import { DEPARTMENT_MODEL, DepartmentDocument } from 'src/schemas/employees/department';
 import { DESIGNATION_MODEL, DesignationDocument } from 'src/schemas/employees/designation';
-import { badRequestException, isValidMongoId, notFoundException } from 'src/utils';
+import { CustomBadRequestException, isValidMongoId, CustomNotFoundException } from 'src/utils';
 import { getAllHelper } from 'src/utils/helper';
 
 @Injectable()
@@ -26,12 +26,12 @@ export class DesignationService {
       designationName,
     });
     if (designationExists) {
-      throw badRequestException('Designation already exists');
+      throw CustomBadRequestException('Designation already exists');
     }
 
     const departmentExists = await this.departmentModel.findById(departmentId);
     if (!departmentExists) {
-      throw badRequestException('Department not found');
+      throw CustomBadRequestException('Department not found');
     }
 
     const designation = await this.designationModel.create({
@@ -39,7 +39,7 @@ export class DesignationService {
       departmentId,
     });
     if (!designation) {
-      throw badRequestException('Designation not created');
+      throw CustomBadRequestException('Designation not created');
     }
 
     return designation;
@@ -47,7 +47,7 @@ export class DesignationService {
 
   async edit(editDesignationDto: editDesignationDto, id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
-      throw badRequestException('Designation id is not valid');
+      throw CustomBadRequestException('Designation id is not valid');
     }
 
     let { designationName, departmentId } = editDesignationDto;
@@ -57,7 +57,7 @@ export class DesignationService {
         designationName,
       });
       if (designationExists) {
-        throw badRequestException('Designation already exists');
+        throw CustomBadRequestException('Designation already exists');
       }
     }
 
@@ -65,7 +65,7 @@ export class DesignationService {
       const departmentExists = await this.departmentModel.findById(departmentId);
 
       if (!departmentExists) {
-        throw badRequestException('Department not found');
+        throw CustomBadRequestException('Department not found');
       }
     }
 
@@ -78,7 +78,7 @@ export class DesignationService {
       { new: true },
     );
     if (!editDesignation) {
-      throw notFoundException('Designation not found');
+      throw CustomNotFoundException('Designation not found');
     }
 
     return editDesignation;
@@ -86,12 +86,12 @@ export class DesignationService {
 
   async getSingle(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
-      throw badRequestException('Designation id is not valid');
+      throw CustomBadRequestException('Designation id is not valid');
     }
 
     const designation = await this.designationModel.findById(id).populate('departmentId');
     if (!designation) {
-      throw notFoundException('Designation not found');
+      throw CustomNotFoundException('Designation not found');
     }
 
     return designation;
@@ -125,12 +125,12 @@ export class DesignationService {
 
   async delete(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
-      throw badRequestException('Designation id is not valid');
+      throw CustomBadRequestException('Designation id is not valid');
     }
 
     const designation = await this.designationModel.findByIdAndDelete(id);
     if (!designation) {
-      throw notFoundException('Designation not found');
+      throw CustomNotFoundException('Designation not found');
     }
 
     return designation;

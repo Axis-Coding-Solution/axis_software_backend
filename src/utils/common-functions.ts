@@ -1,5 +1,5 @@
 import { isValidObjectId, Model, Types } from 'mongoose';
-import { badRequestException } from './custom-exception';
+import { CustomBadRequestException } from './custom-exception';
 /**
  * Return true if given parameter is valid mongo id
  * @param {Types.ObjectId} id id comes from client
@@ -51,7 +51,7 @@ export function calculateBusinessHours(startDate: Date, endDate: Date): number {
 export function areDatesValid(date1: Date, date2: Date) {
   // console.log('object', date1, date2);
   if (date1 > date2) {
-    throw badRequestException('Dates are not valid!');
+    throw CustomBadRequestException('Dates are not valid!');
   }
 }
 
@@ -62,7 +62,7 @@ export function areDatesValid(date1: Date, date2: Date) {
  */
 export function areDatesSame(date1: Date, date2: Date) {
   if (date1.getTime() === date2.getTime()) {
-    throw badRequestException('Dates cannot be same');
+    throw CustomBadRequestException('Dates cannot be same');
   }
 }
 
@@ -73,6 +73,6 @@ export function areDatesSame(date1: Date, date2: Date) {
  */
 export function isDateWeekend(date: Date, MODEL: string) {
   if (date.getDay() === 0 || date.getDay() === 6) {
-    throw badRequestException(`${MODEL} cannot be created on a weekend`);
+    throw CustomBadRequestException(`${MODEL} cannot be created on a weekend`);
   }
 }

@@ -1,5 +1,5 @@
 import { Model, Types } from 'mongoose';
-import { conflictException } from '../custom-exception';
+import { CustomConflictException } from '../custom-exception';
 /**
  *To check if the value is already exists in the database
  * @param {String} fieldValue What needs to be compared
@@ -21,7 +21,7 @@ export const existsHelper = async (
 
   const documentExists = await modelName.exists(query);
   if (documentExists) {
-    throw conflictException(`${fieldValue} already exists`);
+    throw CustomConflictException(`${fieldValue} already exists`);
   }
   return;
 };

@@ -11,7 +11,7 @@ import {
  * @param {String} message Message send to client.
  * @param {Object} data Default data will be null.
  */
-export const conflictException = (message: string, data: any = null) => {
+export const CustomConflictException = (message: string, data: any = null) => {
   return new ConflictException({
     success: false,
     message,
@@ -24,7 +24,7 @@ export const conflictException = (message: string, data: any = null) => {
  * @param {String} message Message send to client.
  * @param {Object} data Default data will be null.
  */
-export const badRequestException = (message: string, data: any = null) => {
+export const CustomBadRequestException = (message: string, data: any = null) => {
   return new BadRequestException({
     success: false,
     message,
@@ -37,7 +37,7 @@ export const badRequestException = (message: string, data: any = null) => {
  * @param {String} message Message send to client.
  * @param {Object} data Default data will be null.
  */
-export const notFoundException = (message: string, data: any = null) => {
+export const CustomNotFoundException = (message: string, data: any = null) => {
   return new NotFoundException({
     success: false,
     message,
@@ -50,7 +50,7 @@ export const notFoundException = (message: string, data: any = null) => {
  * @param {String} message Message send to client.
  * @param {Object} data Default data will be null.
  */
-export const forbiddenException = (message: string, data: any = null) => {
+export const CustomForbiddenException = (message: string, data: any = null) => {
   return new ForbiddenException({
     success: false,
     message,
@@ -63,7 +63,7 @@ export const forbiddenException = (message: string, data: any = null) => {
  * @param {String} message Message send to client.
  * @param {Object} data Default data will be null.
  */
-export const unauthorizedException = (message: string, data: any = null) => {
+export const CustomUnauthorizedException = (message: string, data: any = null) => {
   return new UnauthorizedException({
     success: false,
     message,

@@ -9,7 +9,7 @@ import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { TIMESHEET_MODEL, TimesheetDocument } from 'src/schemas/employees/timesheet';
 import { PROJECT_MODEL, ProjectDocument } from 'src/schemas/project';
-import { notFoundException } from 'src/utils';
+import { CustomNotFoundException } from 'src/utils';
 import {
   createHelper,
   deleteHelper,
@@ -42,7 +42,7 @@ export class TimesheetService {
 
     //* assign employee id
     const employeeId = findCurrentUser?.employeeId;
-    if (!employeeId) throw notFoundException('Employee not found');
+    if (!employeeId) throw CustomNotFoundException('Employee not found');
 
     //* search employee
     await getSingleHelper(employeeId, EMPLOYEE_MODEL, this.employeeModel);

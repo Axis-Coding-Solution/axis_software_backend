@@ -7,7 +7,7 @@ import { FindUserInterface } from 'src/interfaces/user';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { ATTENDANCE_MODEL, AttendanceDocument } from 'src/schemas/employees/attendance';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
-import { badRequestException, forbiddenException, notFoundException } from 'src/utils';
+import { CustomBadRequestException, CustomForbiddenException, CustomNotFoundException } from 'src/utils';
 import { createHelper, editHelper, getSingleHelper } from 'src/utils/helper';
 import * as moment from 'moment';
 
@@ -26,7 +26,7 @@ export class AttendanceService {
   async punchIn(punchInDto: PunchInDto, currentUserId: Types.ObjectId) {
     const { isPunch } = punchInDto;
     if (!isPunch) {
-      throw badRequestException('Punch In is required');
+      throw CustomBadRequestException('Punch In is required');
     }
     //* find current user
     const findCurrentUser = currentUserId
@@ -35,7 +35,7 @@ export class AttendanceService {
 
     //* find employee id
     const employeeId = findCurrentUser?.employeeId;
-    if (!employeeId) throw notFoundException('Employee not found');
+    if (!employeeId) throw CustomNotFoundException('Employee not found');
 
     //* search employee
     await getSingleHelper(employeeId, EMPLOYEE_MODEL, this.employeeModel);
@@ -57,7 +57,7 @@ export class AttendanceService {
   async punchOut(punchOutDto: PunchOutDto, currentUserId: Types.ObjectId, id: Types.ObjectId) {
     const { isPunch } = punchOutDto;
     if (isPunch) {
-      throw badRequestException('Punch Out is required');
+      throw CustomBadRequestException('Punch Out is required');
     }
 
     //* find current user
@@ -67,7 +67,7 @@ export class AttendanceService {
 
     //* find employee id
     const employeeId = findCurrentUser?.employeeId;
-    if (!employeeId) throw notFoundException('Employee not found');
+    if (!employeeId) throw CustomNotFoundException('Employee not found');
 
     //* find document
     let attendance = await getSingleHelper<FindAttendanceInterface>(
@@ -78,7 +78,7 @@ export class AttendanceService {
 
     //* is this same employee who punchIn?
     if (attendance?.employeeId.toString() !== employeeId.toString()) {
-      throw forbiddenException('You cannot punch out other employee');
+      throw CustomForbiddenException('You cannot punch out other employee');
     }
 
     const date: Date = attendance?.date;
@@ -299,7 +299,7 @@ export class AttendanceService {
     ]);
 
     if (items.length === 0) {
-      throw notFoundException(`${ATTENDANCE_MODEL} not found`);
+      throw CustomNotFoundException(`${ATTENDANCE_MODEL} not found`);
     }
 
     const totalPages = Math.ceil(totalItems / limitNumber);

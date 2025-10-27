@@ -5,7 +5,7 @@ import { createCompanyDto, editCompanyDto } from 'src/definitions/dtos/commons/c
 import { CLIENT_MODEL, ClientDocument } from 'src/schemas/client';
 import { COMPANY_MODEL, CompanyDocument } from 'src/schemas/commons/company';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
-import { badRequestException, isValidMongoId, notFoundException } from 'src/utils';
+import { CustomBadRequestException, isValidMongoId, CustomNotFoundException } from 'src/utils';
 import {
   createHelper,
   deleteHelper,

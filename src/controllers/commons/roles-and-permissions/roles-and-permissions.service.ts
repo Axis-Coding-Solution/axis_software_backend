@@ -15,7 +15,7 @@ import {
   GROUP_MENU_MODEL,
   GroupMenuDocument,
 } from 'src/schemas/roles-and-permissions/group-menu.schema';
-import { notFoundException } from 'src/utils';
+import { CustomNotFoundException } from 'src/utils';
 import {
   createHelper,
   deleteHelper,
@@ -105,7 +105,7 @@ export class RolesAndPermissionsService {
 
     const groupMenu = await this.groupMenuModel.find({ groupId }).populate('groupId menuId').exec();
 
-    if (!groupMenu) throw notFoundException(`${GROUP_MENU_MODEL} not found`);
+    if (!groupMenu) throw CustomNotFoundException(`${GROUP_MENU_MODEL} not found`);
 
     return groupMenu;
   }

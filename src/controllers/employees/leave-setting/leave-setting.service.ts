@@ -7,7 +7,7 @@ import {
 } from 'src/definitions/dtos/employees/leave-setting';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { LEAVE_SETTING_MODEL, LeaveSettingDocument } from 'src/schemas/employees/leave-setting';
-import { badRequestException, notFoundException } from 'src/utils';
+import { CustomBadRequestException, CustomNotFoundException } from 'src/utils';
 import {
   createHelper,
   deleteHelper,
@@ -30,7 +30,7 @@ export class LeaveSettingService {
   async create(createLeaveSetting: CreateLeaveSettingDto) {
     const { policyName, employeeIds, isCustomPolicy } = createLeaveSetting;
     if (!isCustomPolicy && employeeIds?.length > 0) {
-      throw badRequestException('Only custom policy can have employees');
+      throw CustomBadRequestException('Only custom policy can have employees');
     }
 
     const [, validEmployeeIds]: any = await Promise.all([
@@ -46,7 +46,7 @@ export class LeaveSettingService {
       (id: any) => !validEmployeeIdsSet?.has(id?.toString()),
     );
     if (missingEmployeeIds?.length > 0) {
-      throw notFoundException(`Some employees not found: ${missingEmployeeIds?.join(', ')}`);
+      throw CustomNotFoundException(`Some employees not found: ${missingEmployeeIds?.join(', ')}`);
     }
 
     const leaveSetting = await createHelper(
@@ -61,7 +61,7 @@ export class LeaveSettingService {
   async edit(editLeaveSetting: EditLeaveSettingDto, id: Types.ObjectId) {
     const { policyName, employeeIds, isCustomPolicy } = editLeaveSetting;
     if (!isCustomPolicy && employeeIds?.length > 0) {
-      throw badRequestException('Only custom policy can have employees');
+      throw CustomBadRequestException('Only custom policy can have employees');
     }
 
     const [, validEmployeeIds]: any = await Promise.all([
@@ -77,7 +77,7 @@ export class LeaveSettingService {
       (id: any) => !validEmployeeIdsSet?.has(id?.toString()),
     );
     if (missingEmployeeIds?.length > 0) {
-      throw notFoundException(`Some employees not found: ${missingEmployeeIds?.join(', ')}`);
+      throw CustomNotFoundException(`Some employees not found: ${missingEmployeeIds?.join(', ')}`);
     }
 
     const leaveSetting = await editHelper(

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
-import { notFoundException } from 'src/utils';
+import { CustomNotFoundException } from 'src/utils';
 
 @Injectable()
 export class UserService {
@@ -13,7 +13,7 @@ export class UserService {
   async getAll() {
     const users = await this.userModel.find();
     if (users.length === 0) {
-      throw notFoundException('Users not found');
+      throw CustomNotFoundException('Users not found');
     }
 
     return users;

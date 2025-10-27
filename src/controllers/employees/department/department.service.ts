@@ -10,9 +10,9 @@ import {
   editDepartmentDto,
 } from 'src/definitions/dtos/employees/department';
 import {
-  badRequestException,
+  CustomBadRequestException,
   isValidMongoId,
-  notFoundException,
+  CustomNotFoundException,
 } from 'src/utils';
 import { getAllHelper } from 'src/utils/helper';
 
@@ -26,19 +26,19 @@ export class DepartmentService {
   async create(createDepartmentDto: createDepartmentDto) {
     const { departmentName } = createDepartmentDto;
     if (!departmentName) {
-      throw badRequestException('Department name is required');
+      throw CustomBadRequestException('Department name is required');
     }
 
     const departmentExists = await this.departmentModel.exists({
       departmentName,
     });
     if (departmentExists) {
-      throw badRequestException('Department already exists');
+      throw CustomBadRequestException('Department already exists');
     }
 
     const department = await this.departmentModel.create({ departmentName });
     if (!department) {
-      throw badRequestException('Department not created');
+      throw CustomBadRequestException('Department not created');
     }
 
     return department;
@@ -46,12 +46,12 @@ export class DepartmentService {
 
   async edit(editDepartmentDto: editDepartmentDto, id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
-      throw badRequestException('Department id is not valid');
+      throw CustomBadRequestException('Department id is not valid');
     }
 
     const { departmentName } = editDepartmentDto;
     if (!departmentName) {
-      throw badRequestException('Department name is required');
+      throw CustomBadRequestException('Department name is required');
     }
 
     const editDepartment = await this.departmentModel.findByIdAndUpdate(
@@ -62,7 +62,7 @@ export class DepartmentService {
       { new: true },
     );
     if (!editDepartment) {
-      throw notFoundException('Department not updated');
+      throw CustomNotFoundException('Department not updated');
     }
 
     return editDepartment;
@@ -70,12 +70,12 @@ export class DepartmentService {
 
   async getSingle(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
-      throw badRequestException('Department id is not valid');
+      throw CustomBadRequestException('Department id is not valid');
     }
 
     const department = await this.departmentModel.findById(id);
     if (!department) {
-      throw notFoundException('Department not found');
+      throw CustomNotFoundException('Department not found');
     }
 
     return department;
@@ -92,7 +92,7 @@ export class DepartmentService {
       );
 
     if (items.length === 0) {
-      throw notFoundException('Departments not found');
+      throw CustomNotFoundException('Departments not found');
     }
 
     return {
@@ -108,12 +108,12 @@ export class DepartmentService {
 
   async delete(id: Types.ObjectId) {
     if (!isValidMongoId(id)) {
-      throw badRequestException('Department id is not valid');
+      throw CustomBadRequestException('Department id is not valid');
     }
 
     const department = await this.departmentModel.findByIdAndDelete(id);
     if (!department) {
-      throw notFoundException('Department not found');
+      throw CustomNotFoundException('Department not found');
     }
 
     return department;
