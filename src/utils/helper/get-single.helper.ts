@@ -1,5 +1,5 @@
 import { Model, Types } from 'mongoose';
-import { badRequestException, notFoundException } from '../custom-exception';
+import { CustomBadRequestException, CustomNotFoundException } from '../custom-exception';
 import { isValidMongoId } from '../common-functions';
 /**
  * To get single document from db
@@ -20,7 +20,7 @@ export const getSingleHelper = async <T>(
   message: string = `${MODEL} not found`,
 ) => {
   if (!isValidMongoId(id)) {
-    throw badRequestException('Id is not valid');
+    throw CustomBadRequestException('Id is not valid');
   }
 
   const singleDocument = await modelName
@@ -28,7 +28,7 @@ export const getSingleHelper = async <T>(
     .populate(populate, fieldsToIncludeInPopulate)
     .lean();
   if (!singleDocument) {
-    throw notFoundException(message);
+    throw CustomNotFoundException(message);
   }
 
   return singleDocument as T;

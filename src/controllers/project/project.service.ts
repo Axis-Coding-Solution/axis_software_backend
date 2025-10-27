@@ -12,9 +12,9 @@ import {
   areDatesSame,
   areDatesValid,
   calculateBusinessHours,
-  forbiddenException,
+  CustomForbiddenException,
   isDateWeekend,
-  notFoundException,
+  CustomNotFoundException,
 } from 'src/utils';
 import {
   createHelper,
@@ -71,7 +71,7 @@ export class ProjectService {
       (teamMember: any) => !validTeamMemberIds?.includes(teamMember.toString()),
     );
     if (missingTeamMembers?.length > 0) {
-      throw notFoundException(`Some TeamMembers not found: ${missingTeamMembers?.join(', ')}`);
+      throw CustomNotFoundException(`Some TeamMembers not found: ${missingTeamMembers?.join(', ')}`);
     }
 
     //* calculate total hours btw startDate and endDate
@@ -115,7 +115,7 @@ export class ProjectService {
         (teamMember: any) => !validTeamMemberIds?.includes(teamMember.toString()),
       );
       if (missingTeamMembers?.length > 0) {
-        throw notFoundException(`Some TeamMembers not found: ${missingTeamMembers?.join(', ')}`);
+        throw CustomNotFoundException(`Some TeamMembers not found: ${missingTeamMembers?.join(', ')}`);
       }
     }
 
@@ -192,18 +192,18 @@ export class ProjectService {
       //* assign employee id
       const employeeId = findCurrentUser?.employeeId;
 
-      if (!employeeId) throw notFoundException('Employee not found');
+      if (!employeeId) throw CustomNotFoundException('Employee not found');
 
       const employeeIdStr = employeeId?.toString();
       const project = await this.projectModel.find({
         $or: [{ projectLeader: employeeIdStr }, { teamMembers: { $in: [employeeIdStr] } }],
       });
       if (project.length === 0) {
-        throw notFoundException('Currently, you are not added to any project');
+        throw CustomNotFoundException('Currently, you are not added to any project');
       }
       return project;
     } else {
-      throw forbiddenException(`${role} is not eligible to access this resource`);
+      throw CustomForbiddenException(`${role} is not eligible to access this resource`);
     }
   }
 }

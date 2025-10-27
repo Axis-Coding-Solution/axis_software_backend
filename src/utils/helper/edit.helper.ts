@@ -1,5 +1,5 @@
 import { Model, Types } from 'mongoose';
-import { badRequestException, notFoundException } from '../custom-exception';
+import { CustomBadRequestException, CustomNotFoundException } from '../custom-exception';
 import { isValidMongoId } from '../common-functions';
 
 /**
@@ -17,12 +17,12 @@ export const editHelper = async <T>(
   modelName: Model<any>,
 ) => {
   if (!isValidMongoId(id)) {
-    throw badRequestException('Id is not valid');
+    throw CustomBadRequestException('Id is not valid');
   }
 
   const updateDocument = await modelName.findByIdAndUpdate(id, dto, { new: true }).lean();
   if (!updateDocument) {
-    throw notFoundException(`${MODEL} not found`);
+    throw CustomNotFoundException(`${MODEL} not found`);
   }
 
   return updateDocument as T;

@@ -6,7 +6,7 @@ import { UserDocument } from 'src/schemas/commons/user';
 import { DEPARTMENT_MODEL } from 'src/schemas/employees/department';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { TEAM_MODEL, TeamDocument } from 'src/schemas/employees/team';
-import { notFoundException } from 'src/utils';
+import { CustomNotFoundException } from 'src/utils';
 import { deleteHelper, existsHelper, getAllHelper, getSingleHelper } from 'src/utils/helper';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class TeamService {
     const validMembersIds = validMembers.map((member: any) => member._id.toString());
     const missingMembers = teamMembers.filter((id) => !validMembersIds.includes(id.toString()));
     if (missingMembers?.length > 0) {
-      throw notFoundException(`Some team members not found: ${missingMembers?.join(', ')}`);
+      throw CustomNotFoundException(`Some team members not found: ${missingMembers?.join(', ')}`);
     }
 
     const team = await this.teamModel.create({
@@ -64,7 +64,7 @@ export class TeamService {
     const validMembersIds = validMembers.map((member: any) => member._id.toString());
     const missingMembers = teamMembers.filter((id) => !validMembersIds.includes(id.toString()));
     if (missingMembers?.length > 0) {
-      throw notFoundException(`Some team members not found: ${missingMembers?.join(', ')}`);
+      throw CustomNotFoundException(`Some team members not found: ${missingMembers?.join(', ')}`);
     }
 
     const updateData: Partial<EditTeamDto> = {};
@@ -81,7 +81,7 @@ export class TeamService {
       { new: true, lean: true },
     );
     if (!team) {
-      throw notFoundException('team not found');
+      throw CustomNotFoundException('team not found');
     }
 
     return team;

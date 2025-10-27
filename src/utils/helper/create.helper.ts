@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { badRequestException } from '../custom-exception';
+import { CustomBadRequestException } from '../custom-exception';
 
 /**
  * To create a new document in db
@@ -11,7 +11,7 @@ import { badRequestException } from '../custom-exception';
 export const createHelper = async (dto: any, MODEL: string, modelName: Model<any>) => {
   const createDocument = await modelName.create(dto);
   if (!createDocument) {
-    throw badRequestException(`${MODEL} not created`);
+    throw CustomBadRequestException(`${MODEL} not created`);
   }
 
   return createDocument;

@@ -5,9 +5,9 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto, RegisterUserDto } from 'src/definitions/dtos/auth';
 import {
-  badRequestException,
-  conflictException,
-  notFoundException,
+  CustomBadRequestException,
+  CustomConflictException,
+  CustomNotFoundException,
 } from 'src/utils';
 import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 
@@ -22,7 +22,7 @@ export class AuthService {
       email: registerUserDto.email,
     });
     if (userExist) {
-      throw conflictException('User already exist');
+      throw CustomConflictException('User already exist');
     }
 
     const salt = bcrypt.genSaltSync(10);
@@ -33,7 +33,7 @@ export class AuthService {
       password: passwordHash,
     });
     if (!newUser) {
-      throw badRequestException('User not created!');
+      throw CustomBadRequestException('User not created!');
     }
     return newUser;
   }
@@ -44,7 +44,7 @@ export class AuthService {
     });
 
     if (!findUser) {
-      throw notFoundException('User not found');
+      throw CustomNotFoundException('User not found');
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -53,7 +53,7 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw badRequestException('Invalid credentials');
+      throw CustomBadRequestException('Invalid credentials');
     }
 
     const { id, role } = findUser;

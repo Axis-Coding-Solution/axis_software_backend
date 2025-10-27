@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { notFoundException } from '../custom-exception';
+import { CustomNotFoundException } from '../custom-exception';
 /**
  * To get all documents from db with pagination
  * @param {Number} page Page no comes form query
@@ -37,7 +37,7 @@ export const getAllHelper = async (
   ]);
 
   if (items.length === 0) {
-    throw notFoundException(`${modelName.modelName} not found`);
+    throw CustomNotFoundException(`${modelName.modelName} not found`);
   }
 
   const totalPages = Math.ceil(totalItems / limitNumber);

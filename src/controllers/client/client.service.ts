@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { CreateClientDto, EditClientDto } from 'src/definitions/dtos/client';
 import { CLIENT_MODEL, ClientDocument } from 'src/schemas/client';
-import { badRequestException } from 'src/utils';
+import { CustomBadRequestException } from 'src/utils';
 import * as bcrypt from 'bcrypt';
 import {
   createHelper,
@@ -31,7 +31,7 @@ export class ClientService {
     if (!password || !confirmPassword) return null;
 
     if (password !== confirmPassword) {
-      throw badRequestException('Password and confirm password does not match');
+      throw CustomBadRequestException('Password and confirm password does not match');
     }
 
     const salt = bcrypt.genSaltSync(10);
@@ -84,7 +84,7 @@ export class ClientService {
       { new: true },
     );
     if (!updateUser) {
-      throw badRequestException('User not updated');
+      throw CustomBadRequestException('User not updated');
     }
 
     return editClient;

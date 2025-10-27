@@ -9,7 +9,7 @@ import { USER_MODEL, UserDocument } from 'src/schemas/commons/user';
 import { EMPLOYEE_MODEL, EmployeeDocument } from 'src/schemas/employees/employee';
 import { LEAVE_MODEL, LeaveDocument } from 'src/schemas/employees/leave';
 import { LEAVE_SETTING_MODEL, LeaveSettingDocument } from 'src/schemas/employees/leave-setting';
-import { badRequestException, notFoundException } from 'src/utils';
+import { CustomBadRequestException, CustomNotFoundException } from 'src/utils';
 import { createHelper, deleteHelper, editHelper, getSingleHelper } from 'src/utils/helper';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class LeaveService {
 
     //? assign employee id
     const employeeId = findCurrentUser?.employeeId;
-    if (!employeeId) throw notFoundException('Employee not found');
+    if (!employeeId) throw CustomNotFoundException('Employee not found');
 
     //? search employee
     await getSingleHelper(employeeId, EMPLOYEE_MODEL, this.employeeModel);
@@ -46,11 +46,11 @@ export class LeaveService {
     await getSingleHelper(leaveType, LEAVE_SETTING_MODEL, this.leaveSettingModel);
 
     if (from > to) {
-      throw badRequestException('From date should be less than to date');
+      throw CustomBadRequestException('From date should be less than to date');
     }
 
     if (from.getTime() === to.getTime()) {
-      throw badRequestException('From date and to date should not be same');
+      throw CustomBadRequestException('From date and to date should not be same');
     }
 
     const noOfDays = Math.ceil((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
@@ -70,7 +70,7 @@ export class LeaveService {
 
     if (from && to) {
       if (from > to || from === to) {
-        throw badRequestException('From date should be less than to date');
+        throw CustomBadRequestException('From date should be less than to date');
       }
 
       const noOfDays = Math.ceil((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
@@ -141,7 +141,7 @@ export class LeaveService {
     ]);
 
     if (items.length === 0) {
-      throw notFoundException(`${LEAVE_MODEL} not found`);
+      throw CustomNotFoundException(`${LEAVE_MODEL} not found`);
     }
 
     const totalPages = Math.ceil(totalItems / limitNumber);

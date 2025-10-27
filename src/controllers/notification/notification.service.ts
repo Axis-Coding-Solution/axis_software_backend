@@ -6,7 +6,7 @@ import {
 import { NotificationInterface } from '@/interfaces';
 import { USER_MODEL, UserDocument } from '@/schemas/commons/user';
 import { NOTIFICATION_MODEL, NotificationDocument } from '@/schemas/notification';
-import { badRequestException, conflictException } from '@/utils';
+import { CustomBadRequestException, CustomConflictException } from '@/utils';
 import {
   createHelper,
   deleteHelper,
@@ -120,14 +120,14 @@ export class NotificationService {
       NOTIFICATION_MODEL,
       this.notificationModel,
     );
-    if (notification.read) throw conflictException('Notification already read');
+    if (notification.read) throw CustomConflictException('Notification already read');
 
     const updatedNotification = await this.notificationModel.findOneAndUpdate(
       { _id: id },
       { $set: { read: true } },
       { new: true },
     );
-    if (!updatedNotification) throw badRequestException('Notification not found');
+    if (!updatedNotification) throw CustomBadRequestException('Notification not found');
 
     return updatedNotification;
   }

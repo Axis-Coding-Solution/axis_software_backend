@@ -1,6 +1,7 @@
-import { badRequestException } from '@/utils';
+import { CustomBadRequestException } from '@/utils';
+import { ValidationPipeOptions } from '@nestjs/common';
 
-const responseValidation = {
+const responseValidation: ValidationPipeOptions = {
   whitelist: true,
   forbidNonWhitelisted: true,
   transform: true,
@@ -10,7 +11,7 @@ const responseValidation = {
       property: error.property,
       message: error.constraints?.[Object.keys(error.constraints)[0]],
     }));
-    throw badRequestException(result.map((r: any) => `${r.message}`).join(', '));
+    throw CustomBadRequestException(result.map((r: any) => `${r.message}`).join(', '));
   },
 };
 
