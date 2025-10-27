@@ -14,7 +14,7 @@ import {
 import { CompanyService } from './company.service';
 import { createCompanyDto, editCompanyDto } from 'src/definitions/dtos/commons/company';
 import { successfulResponse } from 'src/utils';
-import { JwtAuthGuard } from '@/common/middlewares/guard';
+import { JwtAuthGuard } from '@/common/guards';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AppConfigService } from 'src/config';
 import { FileValidationPipe } from '@/common/pipes/file';

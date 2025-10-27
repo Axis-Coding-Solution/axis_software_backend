@@ -4,7 +4,7 @@ import { successfulResponse } from 'src/utils';
 import { createTimesheetDto } from 'src/definitions/dtos/employees/timesheet/create-timesheet.dto';
 import { editTimesheetDto } from 'src/definitions/dtos/employees/timesheet/edit-timesheet.dto';
 import { Types } from 'mongoose';
-import { JwtAuthGuard } from '@/common/middlewares/guard';
+import { JwtAuthGuard } from '@/common/guards';
 import { TIMESHEET_MODEL } from 'src/schemas/employees/timesheet';
 import { User } from '@/common/decorator';
 

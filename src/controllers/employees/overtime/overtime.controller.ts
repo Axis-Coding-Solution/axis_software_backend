@@ -19,7 +19,7 @@ import { Types } from 'mongoose';
 import { EditOvertimeDto } from 'src/definitions/dtos/employees/overtime/edit-overtime.dto';
 import { User } from '@/common/decorator';
 import { ApproveOvertimeDto } from 'src/definitions/dtos/employees/overtime/approve-overtime.dto';
-import { JwtAuthGuard } from '@/common/middlewares/guard';
+import { JwtAuthGuard } from '@/common/guards';
 
 @UseGuards(JwtAuthGuard)
 @Controller('overtime')

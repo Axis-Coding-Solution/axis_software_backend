@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
-import { JwtAuthGuard, isAdminGuard } from '@/common/middlewares/guard';
+import { JwtAuthGuard, isAdminGuard } from '@/common/guards';
 import { successfulResponse } from 'src/utils';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';
