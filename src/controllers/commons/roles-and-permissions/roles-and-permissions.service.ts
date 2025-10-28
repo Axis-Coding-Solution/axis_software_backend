@@ -144,7 +144,7 @@ export class RolesAndPermissionsService {
       const menuTitle = (groupMenu.menuId as Menu).title;
       const normalizedTitle = menuTitle.toLowerCase().trim();
 
-      const permissions = ['read', 'edit', 'delete', 'import', 'export'];
+      const permissions = ['read', 'write', 'import', 'export'];
 
       for (const permission of permissions) {
         const cacheKey = `${this.CACHE_PREFIX}${role}:${normalizedTitle}:${permission}`;

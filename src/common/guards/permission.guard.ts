@@ -100,8 +100,8 @@ export class MenuPermissionGuard implements CanActivate {
 
       const groupMenu = await this.groupMenuModel
         .findOne({
-          groupId: group._id,
-          menuId: menu._id,
+          groupId: group?._id?.toString,
+          menuId: menu?._id?.toString,
         })
         .select(permission)
         .lean();
