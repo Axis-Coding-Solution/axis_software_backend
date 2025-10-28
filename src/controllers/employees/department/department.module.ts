@@ -6,13 +6,9 @@ import {
 } from 'src/schemas/employees/department/department.schema';
 import { DepartmentController } from './department.controller';
 import { DepartmentService } from './department.service';
-import { GuardsModule } from '@/common/guards/guards.module';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: DEPARTMENT_MODEL, schema: departmentSchema }]),
-    GuardsModule,
-  ],
+  imports: [MongooseModule.forFeature([{ name: DEPARTMENT_MODEL, schema: departmentSchema }])],
   controllers: [DepartmentController],
   providers: [DepartmentService],
 })
