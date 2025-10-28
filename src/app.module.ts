@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import GlobalImports from './app.imports';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { MenuPermissionGuard } from './common/guards/permission.guard';
 @Module({
   imports: GlobalImports,
   controllers: [AppController],
@@ -17,6 +18,10 @@ import { ThrottlerGuard } from '@nestjs/throttler';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: MenuPermissionGuard,
+    // },
   ],
 })
 export class AppModule {}

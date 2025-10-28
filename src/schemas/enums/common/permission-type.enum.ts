@@ -1,7 +1,6 @@
 export enum PermissionType {
   read = 'read',
-  edit = 'edit',
-  delete = 'delete',
+  write = 'write',
   import = 'import',
   export = 'export',
 }

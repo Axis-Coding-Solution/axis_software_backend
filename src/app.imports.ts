@@ -23,6 +23,7 @@ import { MenusModule } from './controllers/commons/menus/menus.module';
 import { NotificationModule } from './controllers/notification/notification.module';
 import { minutes, ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
+import { GuardsModule } from './common/guards/guards.module';
 
 const GlobalImports = [
   //* env global config
@@ -51,6 +52,9 @@ const GlobalImports = [
     ttl: 300,
     max: 100,
   }),
+
+  //* Guards Module
+  GuardsModule,
 
   //* other modules
   DataBaseModule,

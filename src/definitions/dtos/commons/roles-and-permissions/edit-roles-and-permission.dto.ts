@@ -16,11 +16,7 @@ export class EditGroupMenuDto {
 
   @IsBoolean()
   @IsOptional()
-  edit: Boolean;
-
-  @IsBoolean()
-  @IsOptional()
-  delete?: Boolean;
+  write?: Boolean;
 
   @IsBoolean()
   @IsOptional()

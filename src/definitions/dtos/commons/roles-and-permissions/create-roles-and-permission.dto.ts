@@ -16,11 +16,7 @@ export class createGroupMenuDto {
 
   @IsBoolean()
   @IsNotEmpty()
-  edit: Boolean;
-
-  @IsBoolean()
-  @IsNotEmpty()
-  delete: Boolean;
+  write: Boolean;
 
   @IsBoolean()
   @IsNotEmpty()

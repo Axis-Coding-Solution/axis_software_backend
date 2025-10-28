@@ -11,19 +11,16 @@ export class GroupMenu {
   @Prop({ type: Types.ObjectId, ref: MENU_MODEL, required: true })
   menuId: String | Types.ObjectId | Menu;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: false })
   read: Boolean;
 
-  @Prop({ required: true })
-  edit: Boolean;
+  @Prop({ required: true, default: false })
+  write: Boolean;
 
-  @Prop({ required: true })
-  delete: Boolean;
-
-  @Prop({ required: true })
+  @Prop({ required: true, default: false })
   import: Boolean;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: false })
   export: Boolean;
 }
 
