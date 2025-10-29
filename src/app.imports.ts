@@ -24,6 +24,7 @@ import { NotificationModule } from './controllers/notification/notification.modu
 import { minutes, ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
 import { LocationModule } from './controllers/commons/location/location.module';
+import { GuardsModule } from './common/guards/guards.module';
 
 const GlobalImports = [
   //* env global config
@@ -49,9 +50,12 @@ const GlobalImports = [
   //* cache module
   CacheModule.register({
     isGlobal: true,
-    ttl: 300,
+    ttl: 300000,
     max: 100,
   }),
+
+  //* Guards module
+  GuardsModule,
 
   //* other modules
   DataBaseModule,
