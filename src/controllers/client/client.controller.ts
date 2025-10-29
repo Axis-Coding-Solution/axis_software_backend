@@ -13,8 +13,8 @@ export class ClientController {
 
   @Post()
   async create(@Body() createClientDto: CreateClientDto) {
-    const holiday = await this.clientService.create(createClientDto);
-    return successfulResponse(`${CLIENT_MODEL} created successfully`, holiday);
+    const client = await this.clientService.create(createClientDto);
+    return successfulResponse(`${CLIENT_MODEL} created successfully`, client);
   }
 
   @Put(':id')
@@ -26,8 +26,8 @@ export class ClientController {
 
   @Get(':id')
   async get(@Param('id') id: Types.ObjectId) {
-    const holiday = await this.clientService.getSingle(id);
-    return successfulResponse(`${CLIENT_MODEL} found successfully`, holiday);
+    const client = await this.clientService.getSingle(id);
+    return successfulResponse(`${CLIENT_MODEL} found successfully`, client);
   }
 
   @Get()
@@ -36,13 +36,13 @@ export class ClientController {
     @Query('limit') limit: string,
     @Query('search') search: string,
   ) {
-    const holidays = await this.clientService.getAll(page, limit, search);
-    return successfulResponse(`${CLIENT_MODEL} found successfully`, holidays);
+    const clients = await this.clientService.getAll(page, limit, search);
+    return successfulResponse(`${CLIENT_MODEL} found successfully`, clients);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: Types.ObjectId) {
-    const holiday = await this.clientService.delete(id);
-    return successfulResponse(`${CLIENT_MODEL} deleted successfully`, holiday);
+    const client = await this.clientService.delete(id);
+    return successfulResponse(`${CLIENT_MODEL} deleted successfully`, client);
   }
 }

@@ -23,6 +23,7 @@ import { MenusModule } from './controllers/commons/menus/menus.module';
 import { NotificationModule } from './controllers/notification/notification.module';
 import { minutes, ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
+import { LocationModule } from './controllers/commons/location/location.module';
 
 const GlobalImports = [
   //* env global config
@@ -74,6 +75,7 @@ const GlobalImports = [
   GroupsModule,
   MenusModule,
   NotificationModule,
+  LocationModule,
 ];
 
 export default GlobalImports;
