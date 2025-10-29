@@ -6,7 +6,6 @@ import * as compression from 'compression';
 import { corsConfig } from './lib';
 import { ValidationPipe } from '@nestjs/common';
 import responseValidation from './validation/exception-factory.validation';
-import { SeedingService } from './seeding/module/seeding.service';
 import { AllExceptionsFilter } from './utils';
 import { createDocument } from './swagger/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -18,11 +17,6 @@ export const createApp = async () => {
   const configService = app.get(AppConfigService);
   // const API_VERSION = configService.apiVersion;
   const PORT = configService.port;
-
-  //* seeding
-  // const seedService = app.get(SeedingService);
-  // await seedService.seedGroups();
-  // await seedService.seedMenus();
 
   //* middlewares
   app.use(helmet());
