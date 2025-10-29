@@ -14,7 +14,7 @@ export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
   @Post()
-  @RequireMenuPermission(PermissionType.write)
+  @RequireMenuPermission('departments', PermissionType.write)
   async create(@Body() createDepartmentDto: createDepartmentDto) {
     const department = await this.departmentService.create(createDepartmentDto);
 
@@ -22,7 +22,7 @@ export class DepartmentController {
   }
 
   @Put(':id')
-  @RequireMenuPermission(PermissionType.write)
+  @RequireMenuPermission('departments', PermissionType.write)
   async update(@Param('id') id: Types.ObjectId, @Body() editDepartmentDto: editDepartmentDto) {
     const editDepartment = await this.departmentService.edit(editDepartmentDto, id);
 
@@ -30,7 +30,7 @@ export class DepartmentController {
   }
 
   @Get(':id')
-  @RequireMenuPermission(PermissionType.read)
+  @RequireMenuPermission('departments', PermissionType.read)
   async get(@Param('id') id: Types.ObjectId) {
     const department = await this.departmentService.getSingle(id);
 
@@ -38,7 +38,7 @@ export class DepartmentController {
   }
 
   @Get()
-  @RequireMenuPermission(PermissionType.read)
+  @RequireMenuPermission('departments', PermissionType.read)
   async getAll(
     @Query('page') page: string,
     @Query('limit') limit: string,
@@ -50,7 +50,7 @@ export class DepartmentController {
   }
 
   @Delete(':id')
-  @RequireMenuPermission(PermissionType.write)
+  @RequireMenuPermission('departments', PermissionType.write)
   async delete(@Param('id') id: Types.ObjectId) {
     const department = await this.departmentService.delete(id);
 
