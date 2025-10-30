@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { DepartmentService } from './department.service';
 import { createDepartmentDto, editDepartmentDto } from 'src/definitions/dtos/employees/department';
 import { successfulResponse } from 'src/utils';
@@ -8,6 +19,7 @@ import { DEPARTMENT_MODEL } from 'src/schemas/employees/department';
 import { RequireMenuPermission } from '@/common/decorator';
 import { PermissionType } from '@/schemas/enums/common';
 import { MenuPermissionGuard } from '@/common/guards/permission.guard';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 @UseGuards(JwtAuthGuard, MenuPermissionGuard)
 @Controller('department')
 export class DepartmentController {
@@ -39,6 +51,7 @@ export class DepartmentController {
 
   @Get()
   @RequireMenuPermission('departments', PermissionType.read)
+  @UseInterceptors(CacheInterceptor)
   async getAll(
     @Query('page') page: string,
     @Query('limit') limit: string,
