@@ -50,7 +50,7 @@ const GlobalImports = [
   //* cache module
   CacheModule.register({
     isGlobal: true,
-    ttl: 300000,
+    ttl: 0,
     max: 100,
   }),
 
