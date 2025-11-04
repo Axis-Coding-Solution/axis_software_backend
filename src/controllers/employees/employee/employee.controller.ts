@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
-import { JwtAuthGuard, isAdminGuard } from '@/common/guards';
+import { JwtAuthGuard } from '@/common/guards';
 import { successfulResponse } from 'src/utils';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateEmployeeDto } from 'src/definitions/dtos/employees/employee/create';
@@ -23,13 +23,13 @@ import { EMPLOYEE_MODEL } from 'src/schemas/employees/employee';
 import { storage } from '@/common/middlewares';
 import { FileValidationPipe } from '@/common/pipes/file';
 
-@UseGuards(JwtAuthGuard, isAdminGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('employee')
 export class EmployeeController {
   constructor(
     private readonly employeeService: EmployeeService,
     private readonly appConfigService: AppConfigService,
-  ) {}
+  ) { }
 
   @Post()
   @UseInterceptors(

@@ -1,18 +1,15 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { LocationService } from './location.service';
-import { JwtAuthGuard, RolesGuard } from '@/common/guards';
-import { Roles } from '@/common/decorator';
-import { Role } from '@/schemas/constants';
+import { JwtAuthGuard } from '@/common/guards';
 import { CreateLocationDto, EditLocationDto } from '@/definitions/dtos/commons/location';
 import { successfulResponse } from '@/utils';
 import { LOCATION_MODEL } from '@/schemas/commons/location';
 import { Types } from 'mongoose';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(Role.admin)
+@UseGuards(JwtAuthGuard)
 @Controller('location')
 export class LocationController {
-  constructor(private readonly locationService: LocationService) {}
+  constructor(private readonly locationService: LocationService) { }
 
   @Post()
   async create(@Body() createLocationDto: CreateLocationDto) {

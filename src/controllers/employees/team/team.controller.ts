@@ -1,15 +1,15 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { TeamService } from './team.service';
-import { JwtAuthGuard, isAdminGuard } from '@/common/guards';
+import { JwtAuthGuard } from '@/common/guards';
 import { successfulResponse } from 'src/utils';
 import { CreateTeamDto, EditTeamDto } from 'src/definitions/dtos/employees/team';
 import { Types } from 'mongoose';
 import { TEAM_MODEL } from 'src/schemas/employees/team';
 
-@UseGuards(JwtAuthGuard, isAdminGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('team')
 export class TeamController {
-  constructor(private readonly teamService: TeamService) {}
+  constructor(private readonly teamService: TeamService) { }
 
   @Post()
   async create(@Body() createTeamDto: CreateTeamDto) {
