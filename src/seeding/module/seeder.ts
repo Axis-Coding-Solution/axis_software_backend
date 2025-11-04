@@ -9,16 +9,16 @@ async function bootstrap(): Promise<void> {
   const seedService = app.get(SeedingService);
 
   //* groups
-  // await seedService
-  //   .seedGroups()
-  //   .then(() => console.log('Groups seeded'))
-  //   .catch((err) => console.log('Error seeding groups', err));
+  await seedService
+    .seedGroups()
+    .then(() => console.log('Groups seeded'))
+    .catch((err) => console.log('Error seeding groups', err));
 
   //* menus
-  // await seedService
-  //   .seedMenus()
-  //   .then(() => console.log('Menus seeded'))
-  //   .catch((err) => console.log('Error seeding menus', err));
+  await seedService
+    .seedMenus()
+    .then(() => console.log('Menus seeded'))
+    .catch((err) => console.log('Error seeding menus', err));
 
   //* group-menus
   await seedService

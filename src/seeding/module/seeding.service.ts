@@ -55,44 +55,26 @@ export class SeedingService {
   async seedGroupMenus() {
     const groups = await this.groupModel.find();
     const menus = await this.menuModel.find();
+
     for (const group of groups) {
-      //* if group is admin then assign all permissions to true
-      const isGroupAdmin = await this.groupModel.findOne({ role: 'superadmin' }).exec();
-      console.log('🚀 ~ SeedingService ~ seedGroupMenus ~ isGroupAdmin:', isGroupAdmin);
-      if (isGroupAdmin.role === 'superadmin') {
-        for (const menu of menus) {
-          const groupMenu = await this.groupMenuModel.findOne({
+      //* if group is admin then assign all permissions to true else false
+      const isAdmin = group.role === 'superadmin';
+
+      for (const menu of menus) {
+        const existing = await this.groupMenuModel.findOne({
+          groupId: group._id,
+          menuId: menu._id,
+        });
+
+        if (!existing) {
+          await this.groupMenuModel.create({
             groupId: group._id,
             menuId: menu._id,
+            read: isAdmin,
+            write: isAdmin,
+            import: isAdmin,
+            export: isAdmin,
           });
-          if (!groupMenu) {
-            await this.groupMenuModel.create({
-              groupId: group._id,
-              menuId: menu._id,
-              read: true,
-              write: true,
-              import: true,
-              export: true,
-            });
-          }
-        }
-      } else {
-        //* if group is not admin then assign all permissions to false
-        for (const menu of menus) {
-          const groupMenu = await this.groupMenuModel.findOne({
-            groupId: group._id,
-            menuId: menu._id,
-          });
-          if (!groupMenu) {
-            await this.groupMenuModel.create({
-              groupId: group._id,
-              menuId: menu._id,
-              read: false,
-              write: false,
-              import: false,
-              export: false,
-            });
-          }
         }
       }
     }
