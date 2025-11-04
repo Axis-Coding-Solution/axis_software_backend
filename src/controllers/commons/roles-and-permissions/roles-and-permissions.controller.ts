@@ -29,9 +29,20 @@ export class RolesAndPermissionsController {
     return successfulResponse(`${GROUP_MENU_MODEL} edited successfully`, editRolesAndPermission);
   }
 
-  @Get('group-menu')
-  async getGroupMenu(@User('role') role: string) {
-    const groupMenu = await this.rolesAndPermissionsService.getGroupMenu(role);
+  @Get('group-menu-by-login')
+  async getGroupMenuByLogin(@User('role') role: string) {
+    const groupMenu = await this.rolesAndPermissionsService.getGroupMenuByLogin(role);
+
+    return successfulResponse(`${GROUP_MENU_MODEL} found successfully`, groupMenu);
+  }
+
+  @Get('group-menu-by-role/:role')
+  async getGroupMenuByRole(
+    @Param('role') role: string,
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+  ) {
+    const groupMenu = await this.rolesAndPermissionsService.getGroupMenuByRole(role, page, limit);
 
     return successfulResponse(`${GROUP_MENU_MODEL} found successfully`, groupMenu);
   }
