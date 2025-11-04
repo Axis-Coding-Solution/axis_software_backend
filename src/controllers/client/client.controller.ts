@@ -1,15 +1,15 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ClientService } from './client.service';
-import { JwtAuthGuard, isAdminGuard } from '@/common/guards';
+import { JwtAuthGuard } from '@/common/guards';
 import { Types } from 'mongoose';
 import { successfulResponse } from 'src/utils';
 import { CreateClientDto, EditClientDto } from 'src/definitions/dtos/client';
 import { CLIENT_MODEL } from 'src/schemas/client';
 
-@UseGuards(JwtAuthGuard, isAdminGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('client')
 export class ClientController {
-  constructor(private readonly clientService: ClientService) {}
+  constructor(private readonly clientService: ClientService) { }
 
   @Post()
   async create(@Body() createClientDto: CreateClientDto) {

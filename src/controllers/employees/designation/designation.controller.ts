@@ -5,14 +5,14 @@ import {
   createDesignationDto,
   editDesignationDto,
 } from 'src/definitions/dtos/employees/designation';
-import { JwtAuthGuard, isAdminGuard } from '@/common/guards';
+import { JwtAuthGuard } from '@/common/guards';
 import { Types } from 'mongoose';
 import { DESIGNATION_MODEL } from 'src/schemas/employees/designation';
 
-@UseGuards(JwtAuthGuard, isAdminGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('designation')
 export class DesignationController {
-  constructor(private readonly designationService: DesignationService) {}
+  constructor(private readonly designationService: DesignationService) { }
 
   @Post()
   async create(@Body() createDesignationDto: createDesignationDto) {

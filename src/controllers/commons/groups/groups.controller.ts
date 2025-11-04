@@ -7,15 +7,12 @@ import {
   CreateGroupDto,
   EditGroupDto,
 } from '@/definitions/dtos/commons/roles-and-permissions/groups';
-import { isAdminGuard, JwtAuthGuard, RolesGuard } from '@/common/guards';
-import { Roles } from '@/common/decorator';
-import { Role } from '@/schemas/constants';
+import { JwtAuthGuard, RolesGuard } from '@/common/guards';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(Role.admin)
+@UseGuards(JwtAuthGuard)
 @Controller('groups')
 export class GroupsController {
-  constructor(private readonly groupsService: GroupsService) {}
+  constructor(private readonly groupsService: GroupsService) { }
 
   @Post()
   async create(@Body() createGroupDto: CreateGroupDto) {

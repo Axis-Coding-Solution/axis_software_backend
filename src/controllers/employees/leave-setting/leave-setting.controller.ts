@@ -7,12 +7,12 @@ import {
   EditLeaveSettingDto,
 } from 'src/definitions/dtos/employees/leave-setting';
 import { LEAVE_SETTING_MODEL } from 'src/schemas/employees/leave-setting';
-import { JwtAuthGuard, isAdminGuard } from '@/common/guards';
+import { JwtAuthGuard } from '@/common/guards';
 
-@UseGuards(JwtAuthGuard, isAdminGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('leave-setting')
 export class LeaveSettingController {
-  constructor(private readonly leaveSettingService: LeaveSettingService) {}
+  constructor(private readonly leaveSettingService: LeaveSettingService) { }
 
   @Post()
   async create(@Body() createLeaveDto: CreateLeaveSettingDto) {

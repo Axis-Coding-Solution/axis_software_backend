@@ -1,6 +1,6 @@
 export const groupData = [
   {
-    role: 'admin',
+    role: 'superadmin',
     description: 'Administrator with full access',
   },
   {

@@ -1,15 +1,15 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { HolidayService } from './holiday.service';
-import { JwtAuthGuard, isAdminGuard } from '@/common/guards';
+import { JwtAuthGuard } from '@/common/guards';
 import { CreateHolidayDto, EditHolidayDto } from 'src/definitions/dtos/employees/holiday';
 import { successfulResponse } from 'src/utils';
 import { Types } from 'mongoose';
 import { HOLIDAY_MODEL } from 'src/schemas/employees/holiday';
 
-@UseGuards(JwtAuthGuard, isAdminGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('holiday')
 export class HolidayController {
-  constructor(private readonly holidayService: HolidayService) {}
+  constructor(private readonly holidayService: HolidayService) { }
 
   @Post()
   async create(@Body() createHolidayDto: CreateHolidayDto) {
