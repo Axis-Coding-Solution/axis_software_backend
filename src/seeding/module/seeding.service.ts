@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
+  GROUP_MENU_MODEL,
   GROUP_MODEL,
   GroupDocument,
+  GroupMenuDocument,
   MENU_MODEL,
   MenuDocument,
 } from 'src/schemas/roles-and-permissions';
@@ -16,6 +18,9 @@ export class SeedingService {
 
     @InjectModel(MENU_MODEL)
     private readonly menuModel: Model<MenuDocument>,
+
+    @InjectModel(GROUP_MENU_MODEL)
+    private readonly groupMenuModel: Model<GroupMenuDocument>,
   ) {}
 
   async seedGroups() {
@@ -44,6 +49,52 @@ export class SeedingService {
     const isMenuExist = menuData.filter((menu) => !menus.find((m) => m.title === menu.title));
     if (isMenuExist) {
       await this.menuModel.create(isMenuExist);
+    }
+  }
+
+  async seedGroupMenus() {
+    const groups = await this.groupModel.find();
+    const menus = await this.menuModel.find();
+    for (const group of groups) {
+      //* if group is admin then assign all permissions to true
+      const isGroupAdmin = await this.groupModel.findOne({ role: 'superadmin' }).exec();
+      console.log('🚀 ~ SeedingService ~ seedGroupMenus ~ isGroupAdmin:', isGroupAdmin);
+      if (isGroupAdmin.role === 'superadmin') {
+        for (const menu of menus) {
+          const groupMenu = await this.groupMenuModel.findOne({
+            groupId: group._id,
+            menuId: menu._id,
+          });
+          if (!groupMenu) {
+            await this.groupMenuModel.create({
+              groupId: group._id,
+              menuId: menu._id,
+              read: true,
+              write: true,
+              import: true,
+              export: true,
+            });
+          }
+        }
+      } else {
+        //* if group is not admin then assign all permissions to false
+        for (const menu of menus) {
+          const groupMenu = await this.groupMenuModel.findOne({
+            groupId: group._id,
+            menuId: menu._id,
+          });
+          if (!groupMenu) {
+            await this.groupMenuModel.create({
+              groupId: group._id,
+              menuId: menu._id,
+              read: false,
+              write: false,
+              import: false,
+              export: false,
+            });
+          }
+        }
+      }
     }
   }
 }
