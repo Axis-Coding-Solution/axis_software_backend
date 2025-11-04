@@ -116,7 +116,7 @@ export class RolesAndPermissionsService {
     return groupMenu;
   }
 
-  async getGroupMenu(role: string) {
+  async getGroupMenuByLogin(role: string) {
     const groupDocument = await this.groupModel.findOne({ role });
     const groupId = groupDocument?._id;
 
@@ -127,6 +127,39 @@ export class RolesAndPermissionsService {
     }
 
     return groupMenu;
+  }
+
+  async getGroupMenuByRole(role: string, page?: string, limit?: string) {
+    const pageNumber = parseInt(page) || 1;
+    const limitNumber = parseInt(limit) || 10;
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const groupDocument = await this.groupModel.findOne({ role });
+    const groupId = groupDocument?._id;
+
+    const groupMenu = await this.groupMenuModel
+      .find({ groupId })
+      .skip(skip)
+      .limit(limitNumber)
+      .populate('groupId menuId')
+      .exec();
+
+    if (groupMenu.length === 0) {
+      throw CustomNotFoundException(`${GROUP_MENU_MODEL} not found`);
+    }
+
+    const totalItems = await this.groupMenuModel.countDocuments({ groupId });
+    const totalPages = Math.ceil(totalItems / limitNumber);
+
+    return {
+      records: groupMenu,
+      pagination: {
+        totalItems: totalItems,
+        totalPages: totalPages,
+        itemsPerPage: limitNumber,
+        currentPage: pageNumber,
+      },
+    };
   }
 
   private async clearCacheForGroupMenu(groupMenuId: Types.ObjectId) {
