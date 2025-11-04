@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
+  GROUP_MENU_MODEL,
   GROUP_MODEL,
   GroupDocument,
+  GroupMenuDocument,
   MENU_MODEL,
   MenuDocument,
 } from 'src/schemas/roles-and-permissions';
@@ -16,6 +18,9 @@ export class SeedingService {
 
     @InjectModel(MENU_MODEL)
     private readonly menuModel: Model<MenuDocument>,
+
+    @InjectModel(GROUP_MENU_MODEL)
+    private readonly groupMenuModel: Model<GroupMenuDocument>,
   ) {}
 
   async seedGroups() {
@@ -44,6 +49,34 @@ export class SeedingService {
     const isMenuExist = menuData.filter((menu) => !menus.find((m) => m.title === menu.title));
     if (isMenuExist) {
       await this.menuModel.create(isMenuExist);
+    }
+  }
+
+  async seedGroupMenus() {
+    const groups = await this.groupModel.find();
+    const menus = await this.menuModel.find();
+
+    for (const group of groups) {
+      //* if group is admin then assign all permissions to true else false
+      const isAdmin = group.role === 'superadmin';
+
+      for (const menu of menus) {
+        const existing = await this.groupMenuModel.findOne({
+          groupId: group._id,
+          menuId: menu._id,
+        });
+
+        if (!existing) {
+          await this.groupMenuModel.create({
+            groupId: group._id,
+            menuId: menu._id,
+            read: isAdmin,
+            write: isAdmin,
+            import: isAdmin,
+            export: isAdmin,
+          });
+        }
+      }
     }
   }
 }

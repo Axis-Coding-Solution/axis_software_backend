@@ -118,11 +118,13 @@ export class RolesAndPermissionsService {
 
   async getGroupMenu(role: string) {
     const groupDocument = await this.groupModel.findOne({ role });
-    const groupId = groupDocument._id.toString();
+    const groupId = groupDocument?._id;
 
     const groupMenu = await this.groupMenuModel.find({ groupId }).populate('groupId menuId').exec();
 
-    if (!groupMenu) throw CustomNotFoundException(`${GROUP_MENU_MODEL} not found`);
+    if (groupMenu.length === 0) {
+      throw CustomNotFoundException(`${GROUP_MENU_MODEL} not found`);
+    }
 
     return groupMenu;
   }
