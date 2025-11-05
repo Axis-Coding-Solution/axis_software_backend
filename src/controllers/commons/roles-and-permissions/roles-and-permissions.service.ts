@@ -48,6 +48,17 @@ export class RolesAndPermissionsService {
   async create(createGroupMenuDto: createGroupMenuDto) {
     const { groupId, menuId } = createGroupMenuDto;
 
+    const parseGroupId = new Types.ObjectId(groupId);
+    const parseMenuId = new Types.ObjectId(menuId);
+
+    if (groupId) {
+      createGroupMenuDto.groupId = parseGroupId;
+    }
+
+    if (menuId) {
+      createGroupMenuDto.menuId = parseMenuId;
+    }
+
     groupId ? await getSingleHelper(groupId, GROUP_MODEL, this.groupModel) : null;
     menuId ? await getSingleHelper(menuId, MENU_MODEL, this.menuModel) : null;
 
@@ -61,6 +72,16 @@ export class RolesAndPermissionsService {
 
   async edit(editGroupMenuDto: EditGroupMenuDto, id: Types.ObjectId) {
     const { groupId, menuId } = editGroupMenuDto;
+    const parseGroupId = new Types.ObjectId(groupId);
+    const parseMenuId = new Types.ObjectId(menuId);
+
+    if (groupId) {
+      editGroupMenuDto.groupId = parseGroupId;
+    }
+
+    if (menuId) {
+      editGroupMenuDto.menuId = parseMenuId;
+    }
 
     groupId ? await getSingleHelper(groupId, GROUP_MODEL, this.groupModel) : null;
     menuId ? await getSingleHelper(menuId, MENU_MODEL, this.menuModel) : null;
