@@ -2,6 +2,7 @@ import {
   CreateGroupDto,
   EditGroupDto,
 } from '@/definitions/dtos/commons/roles-and-permissions/groups';
+import { CustomNotFoundException } from '@/utils';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -48,24 +49,17 @@ export class GroupsService {
     return group;
   }
 
-  async getAll(page: string, limit: string, search: string) {
-    const { items, totalItems, totalPages, itemsPerPage, currentPage } = await getAllHelper(
-      page,
-      limit,
-      this.groupModel,
-      search,
-      'role',
-    );
+  async getAll(search: string) {
+    const filters = {};
+    if (search) {
+      filters['role'] = { $regex: search, $options: 'i' };
+    }
+    const allGroups = await this.groupModel.find(filters).exec();
+    if (allGroups.length === 0) {
+      throw CustomNotFoundException(`${GROUP_MODEL} not found`);
+    }
 
-    return {
-      data: items,
-      pagination: {
-        totalItems: totalItems,
-        totalPages: totalPages,
-        itemsPerPage: itemsPerPage,
-        currentPage: currentPage,
-      },
-    };
+    return allGroups;
   }
 
   async delete(id: Types.ObjectId) {
