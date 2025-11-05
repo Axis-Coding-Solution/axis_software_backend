@@ -12,7 +12,7 @@ import { JwtAuthGuard, RolesGuard } from '@/common/guards';
 @UseGuards(JwtAuthGuard)
 @Controller('groups')
 export class GroupsController {
-  constructor(private readonly groupsService: GroupsService) { }
+  constructor(private readonly groupsService: GroupsService) {}
 
   @Post()
   async create(@Body() createGroupDto: CreateGroupDto) {
@@ -36,12 +36,8 @@ export class GroupsController {
   }
 
   @Get()
-  async getAll(
-    @Query('page') page: string,
-    @Query('limit') limit: string,
-    @Query('search') search: string,
-  ) {
-    const allGroups = await this.groupsService.getAll(page, limit, search);
+  async getAll(@Query('search') search: string) {
+    const allGroups = await this.groupsService.getAll(search);
 
     return successfulResponse(`${GROUP_MODEL} found successfully`, allGroups);
   }
